@@ -19,7 +19,7 @@
     [Parameter] public bool hidden { get; set; } = true;
     [Parameter] public EventCallback changeButton { get; set; }
 
-    private DateTime savedTimestamp;
+    private DateTime? savedTimestamp;
     public float elapsedTime = 0; // Förfluten tid
 
     [Inject] private Blazored.LocalStorage.ILocalStorageService localStorage { get; set; }
@@ -27,13 +27,13 @@
     protected override async Task OnInitializedAsync()
     {
         // Hämta sparad timestamp från localStorage
-        var savedTime = await localStorage.GetItemAsync<DateTime?>("savedTimestamp");
+        savedTimestamp = await localStorage.GetItemAsync<DateTime?>("savedTimestamp");
 
         // Kontrollera om det finns en sparad timestamp
-        if (savedTime.HasValue)
+        if (savedTimestamp.HasValue)
         {
             // Beräkna förfluten tid
-            var timeSpan = DateTime.Now - savedTime.Value;
+            var timeSpan = DateTime.Now - savedTimestamp.Value;
             elapsedTime = (float)timeSpan.TotalSeconds; // Återställ elapsedTime med den förflutna tiden
             isRunning = true;
             hidden = false;
@@ -46,7 +46,6 @@
             StartTimer(); // Starta timern om det finns en sparad tid
         }
     }
-
     public async Task Start()
     {
         savedTimestamp = DateTime.Now; // Spara den aktuella tidpunkten
@@ -69,7 +68,9 @@
 
     private void UpdateElapsedTime(object sender, System.Timers.ElapsedEventArgs e)
     {
-        elapsedTime += 0.01f; // Öka tiden med 0.01 sekunder
+        // Beräkna förfluten tid
+        var timeSpan = DateTime.Now - savedTimestamp.Value;
+        elapsedTime = (float)timeSpan.TotalSeconds; // Återställ elapsedTime med den förflutna tiden
         InvokeAsync(StateHasChanged); // Uppdatera UI
     }
 
@@ -77,7 +78,8 @@
     {
         timer?.Stop(); // Stoppa timern
         isRunning = false;
-        localStorage.RemoveItemAsync("savedTimestamp");
+        localStorage.RemoveItemAsync("savedTimestamp"); // Rensa timestamp från localStorage
+        StateHasChanged(); // Uppdatera UI
     }
 
     public void Reset()
@@ -85,8 +87,6 @@
         Stop(); // Stoppa timern
         elapsedTime = 0; // Återställ förfluten tid
         StateHasChanged(); // Uppdatera UI
-                           // Rensa timestamp från localStorage
-        localStorage.RemoveItemAsync("savedTimestamp");
     }
 
     public void Dispose()
