@@ -1,0 +1,60 @@
+﻿@page "/home"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<div class="text-center">
+	<PageTitle>Race</PageTitle>
+
+
+	<div>
+
+		@if (!stopwatch.isRunning)
+		{
+			<button class="btn btn-primary" @onclick="StartStopwatch">Start Race</button>
+		}
+
+		<RaceTimer.Components.Stopwatch @ref="stopwatch" changeButton="ChangeButton"></RaceTimer.Components.Stopwatch>
+
+	</div>
+	<div>
+		@if (stopwatch.isRunning)
+		{
+			<button class="btn btn-danger" @onclick="ResetStopwatch">Cancel Race</button>
+		}
+	</div>
+</div>
+
+
+@code {
+
+	private RaceTimer.Components.Stopwatch stopwatch = new RaceTimer.Components.Stopwatch();
+
+	private async Task StartStopwatch()
+	{
+		await stopwatch.Start();
+		ChangeButton();
+	}
+
+	private void ResetStopwatch()
+	{
+		stopwatch.Reset();
+		ChangeButton();
+	}
+
+	public void ChangeButton()
+	{
+		if (stopwatch.isRunning)
+		{
+			stopwatch.hidden = false;
+		}
+		else
+		{
+			stopwatch.hidden = true;
+		}
+		StateHasChanged();
+	}
+}
