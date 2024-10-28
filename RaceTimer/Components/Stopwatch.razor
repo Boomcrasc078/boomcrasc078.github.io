@@ -22,7 +22,7 @@
     private DateTime? savedTimestamp;
     public float elapsedTime = 0; // Förfluten tid
 
-    [Inject] private Blazored.LocalStorage.ILocalStorageService localStorage { get; set; }
+    [Inject] private Blazored.LocalStorage.ILocalStorageService? localStorage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,11 +37,6 @@
             elapsedTime = (float)timeSpan.TotalSeconds; // Återställ elapsedTime med den förflutna tiden
             isRunning = true;
             hidden = false;
-
-            if (changeButton.HasDelegate)
-            {
-                changeButton.InvokeAsync();
-            }
 
             StartTimer(); // Starta timern om det finns en sparad tid
         }

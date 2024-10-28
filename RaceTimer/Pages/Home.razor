@@ -1,14 +1,45 @@
 ﻿@page "/home"
 
 <PageTitle>Home</PageTitle>
+<br />
+<h1 class="text-center fw-bold">Welcome arranger!</h1>
+<br />
+<div class="row">
+	<div class="col">
+		<div class="container">
+			<br />
+			<div class="align-baseline m-2">
+				<h2>This is <b>RaceTimer</b></h2>
+				Create and manage races seamlessly with RaceTimer. Set up race events, generate start lists, accurately time the race, and easily share results with your participants.
+				<br />
+				<button class="btn btn-primary">
+					Start Racing
+				</button>
+			</div>
+			<br />
+		</div>
+	</div>
+	<div class="col"></div>
+</div>
+<br>
+<div class="row">
+	<div class="col"></div>
+	<div class="col">
+		<div class="container">
+			<br />
+			<div class="align-baseline m-2">
+				<h2><b>Learn RaceTimer</b></h2>
+				Easily set up your race, create start lists, time each participant, and share results with ease. RaceTimer is designed to simplify race management, making it the ideal solution for organizers looking for a straightforward, reliable timing tool.
+			</div>
+			<br />
+		</div>
+	</div>
+</div>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<br />
 
 <div class="text-center">
 	<PageTitle>Race</PageTitle>
-
 
 	<div>
 
@@ -17,7 +48,7 @@ Welcome to your new app.
 			<button class="btn btn-primary" @onclick="StartStopwatch">Start Race</button>
 		}
 
-		<RaceTimer.Components.Stopwatch @ref="stopwatch" changeButton="ChangeButton"></RaceTimer.Components.Stopwatch>
+		<RaceTimer.Components.Stopwatch @ref="stopwatch"></RaceTimer.Components.Stopwatch>
 
 	</div>
 	<div>
@@ -45,6 +76,11 @@ Welcome to your new app.
 		ChangeButton();
 	}
 
+	protected override async Task OnInitializedAsync()
+	{
+		ChangeButton();
+	}
+
 	public void ChangeButton()
 	{
 		if (stopwatch.isRunning)
@@ -55,6 +91,6 @@ Welcome to your new app.
 		{
 			stopwatch.hidden = true;
 		}
-		StateHasChanged();
+		InvokeAsync(StateHasChanged);
 	}
 }
