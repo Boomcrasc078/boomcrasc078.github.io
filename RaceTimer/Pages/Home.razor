@@ -5,33 +5,28 @@
 <h1 class="text-center fw-bold">Welcome arranger!</h1>
 <br />
 <div class="container">
-	<br />
-	<div class="m-3">
+	<div class="px-4 py-4">
 		<h2><b>This is PocketRace</b></h2>
 		Create and manage races seamlessly with PocketRace. Set up race events, generate start lists, accurately time the race, and easily share results with your participants.
 		<br />
 	</div>
-	<br />
 </div>
 <br>
 <div class="container">
-	<br />
-	<div class="m-3">
+	<div class="px-4 py-4">
 		<h2><b>Learn PocketRace</b></h2>
 		<div>
-			Easily set up your race, create start lists, time each participant, and share results with ease. RaceTimer is designed to simplify race management, making it the ideal solution for organizers looking for a straightforward, reliable timing tool.
+			Easily set up your race, create start lists, time each participant, and share results with ease. PocketRace is designed to simplify race management, making it the ideal solution for organizers looking for a straightforward, reliable timing tool.
 		</div>
 		<br />
 		<button class="btn btn-primary">
 			Learn PocketRace
 		</button>
 	</div>
-	<br />
 </div>
 <br />
 <div class="container">
-	<br />
-	<div class="m-3">
+	<div class="px-4 py-4">
 		<h2><b>Me, The Developer</b></h2>
 		<div>
 			I'm Mose Fredrik Grafström, a 17-year-old from just outside Stockholm, Sweden. I created this app because most other race-timing applications are costly and geared toward large-scale events. My aim with PocketRace is to provide an easy-to-use solution for smaller clubs and groups, allowing them to organize their races without the high costs.
@@ -41,7 +36,6 @@
 			Read More
 		</button>
 	</div>
-	<br />
 </div>
 <br />
 <div class="text-center">
@@ -51,7 +45,7 @@
 
 		@if (!stopwatch.isRunning)
 		{
-			<button class="btn btn-primary" @onclick="StartStopwatch">Start Race</button>
+			<button class="btn btn-success" @onclick="StartStopwatch">Start Race</button>
 		}
 
 		<RaceTimer.Components.Stopwatch @ref="stopwatch"></RaceTimer.Components.Stopwatch>

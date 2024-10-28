@@ -9,18 +9,18 @@ main {
 }
 
 .sidebar {
-    background-color: #0094ff
+    background-color: #0e7dcd
 }
 
 .top-row {
-    background-color: #0094ff64;
-    border-bottom: 3px solid #d6d5d5;
+    background-color: #0e7dcd;
     justify-content: center;
     height: 3.5rem;
     display: flex;
     align-items: center;
     border-end-start-radius: 20px;
     border-end-end-radius: 20px;
+    color: white;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
