@@ -11,7 +11,7 @@ a, .btn-link {
 }
 
 .btn-primary {
-    color: #fff;
+    color: var(--bs-light);
     background-color: var(--bs-primary);
     border-color: var(--bs-primary-border-subtle);
 }

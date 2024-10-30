@@ -1,7 +1,5 @@
-﻿body {
-}
-
-.container {
-    background-color: var(--bs-light);
+﻿
+.text-box {
+    background-color: var(--bs-primary-bg-subtle);
     border-radius: 20px;
 }
