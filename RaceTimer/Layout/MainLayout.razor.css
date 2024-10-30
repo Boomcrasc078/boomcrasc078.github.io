@@ -2,6 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background-color: var( --bs-body-bg)
 }
 
 main {
@@ -9,18 +10,18 @@ main {
 }
 
 .sidebar {
-    background-color: #0e7dcd
+    background-color: var(--bs-primary)
 }
 
 .top-row {
-    background-color: #0e7dcd;
+    background-color: var(--bs-primary);
     justify-content: center;
     height: 3.5rem;
     display: flex;
     align-items: center;
     border-end-start-radius: 20px;
     border-end-end-radius: 20px;
-    color: white;
+    color: var(--bs-primary-text-emphasis);
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
