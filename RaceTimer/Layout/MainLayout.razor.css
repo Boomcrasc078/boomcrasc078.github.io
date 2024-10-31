@@ -20,7 +20,7 @@ main {
     display: flex;
     align-items: center;
     color: var(--bs-secondary);
-    border-block-end: solid;
+    border-block-end: outset;
     border-block-end-color: var(--bs-dark-bg-subtle);
 }
 

@@ -1,11 +1,12 @@
 .top-row {
+    align-content: center;
     height: 3.5rem;
-    border-block-end: solid;
+    border-block-end: outset;
     border-block-color: var(--bs-dark-bg-subtle);
 }
 
 .navbar-toggle{
-    border-block: none;
+    border: none;
 }
 
 .navbar-brand {
@@ -16,11 +17,11 @@
 .bi {
     display: inline-block;
     position: relative;
-    width: 1.75rem;
-    height: 1.75rem;
     margin-right: 0.75rem;
     top: -1px;
     background-size: cover;
+    font-size: 30px;
+    color: var(--bs-emphasis)
 }
 
 .nav-item {
@@ -57,7 +58,7 @@
 }
 
 @media (min-width: 641px) {
-    .navbar-toggler {
+    .navbar-toggle {
         display: none;
     }
 

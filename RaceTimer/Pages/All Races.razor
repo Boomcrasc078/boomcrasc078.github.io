@@ -1,73 +1,70 @@
 ﻿@page "/races"
+@using Classes
+
 <PageTitle>PocketRace | All Races</PageTitle>
 
 <h1>All Races</h1>
-
-<table class="table table-borderless">
-	<thead class="fw-bold table-primary">
-		<tr>
-			<td>Name</td>
-			<td>Surname</td>
-			<td>Bib</td>
-			<td>Start</td>
-			<td>Time</td>
-
-		</tr>
-	</thead>
-	<tbody>
-		@foreach(Classes.Racer racer in racers)
-		{
-			<tr>
-				<td><input type="text" aria-label="Name" class="form-control" value="@racer.name" placeholder="Name" ></td>
-				<td><input type="text" aria-label="Surname" class="form-control" value="@racer.surname" placeholder="Surname"></td>
-				<td><input type="text" aria-label="Bib" class="form-control" value="@racer.bib" placeholder="Bib"></td>
-				<td>
-					@if (racer.startDateTime != null)
+<br />
+<div>
+	@foreach(Race race in races)
+	{
+		<div class="card mb-3">
+			<div class="card-body">
+				<h5 class="card-title">@race.name</h5>
+				<p class="card-text">@if(race.startlists.Count > 0)
 					{
-						<input type="time" aria-label="Start" class="form-control" value="@racer.startDateTime.Value.TimeOfDay">
+						<ul>
+							@foreach (Startlist startlist in race.startlists)
+							{
+								<li>@startlist.name</li>
+							}
+						</ul>
 					}
 					else
 					{
-						<input type="time" aria-label="Start" class="form-control">
+						<span>Empty</span>
 					}
-				</td>
-				<td>
-					@if(racer.startDateTime != null && racer.lapDateTime.Count > 0)
-					{
-						<input type="text" aria-label="Time" class="form-control" value="@((racer.lapDateTime[racer.lapDateTime.Count-1]-racer.startDateTime))">
-					}
-					else
-					{
-						<input type="text" aria-label="Time" class="form-control">
-					}
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+				</p>
+				<a href="#" class="btn btn-primary"><i class="bi bi-pencil-square" /> Edit</a>
+				<button href="#" class="btn btn-secondary"><i class="bi bi-box-arrow-up" /> Export</button>
+			</div>
+		</div>
+	}
+</div>
+
 
 @code {
-	public List<Classes.Racer> racers = new List<Classes.Racer>
+
+	public List<Race> races = new List<Race>
 	{
-		new Classes.Racer()
+		new Race()
 		{
-			name = "Mose",
-			surname = "Grafström",
-			bib = "110",
-			startDateTime = new DateTime(2024, 1, 1, 18, 0, 0),
-			lapDateTime = new List<DateTime>()
-			{
-				new DateTime(2024, 1, 1, 18, 22, 36, 100)
-			}
+			name = "TestRace",
+			startlists = new List<Startlist>()
 		},
-		new Classes.Racer()
+		new Race()
 		{
-			name = "Fredrik",
-			surname = "Grafström",
-			bib = "111",
-			startDateTime = new DateTime(2024, 1, 1, 18, 0, 0),
-			lapDateTime = new List<DateTime>()
+			name = "Spring i Böllingetorp 2025",
+			startlists = new List<Startlist>()
+			{
+				new Startlist()
+				{
+					name = "1 Varv - 1.6 Km",
+					racers = new List<Racer>()
+				},
+				new Startlist()
+				{
+					name = "3 Varv - 4.8 Km",
+					racers = new List<Racer>()
+				},
+				new Startlist()
+				{
+					name = "5 Varv - 8 Km",
+					racers = new List<Racer>()
+				},
+			}
 		}
+
 	};
 
 }

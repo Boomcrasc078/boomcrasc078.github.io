@@ -21,7 +21,7 @@ main[b-9rqfbddzmr] {
     display: flex;
     align-items: center;
     color: var(--bs-secondary);
-    border-block-end: solid;
+    border-block-end: outset;
     border-block-end-color: var(--bs-dark-bg-subtle);
 }
 
@@ -83,13 +83,14 @@ main[b-9rqfbddzmr] {
 }
 /* /Layout/NavMenu.razor.rz.scp.css */
 .top-row[b-jp4pc1ht9l] {
+    align-content: center;
     height: 3.5rem;
-    border-block-end: solid;
+    border-block-end: outset;
     border-block-color: var(--bs-dark-bg-subtle);
 }
 
 .navbar-toggle[b-jp4pc1ht9l]{
-    border-block: none;
+    border: none;
 }
 
 .navbar-brand[b-jp4pc1ht9l] {
@@ -100,11 +101,11 @@ main[b-9rqfbddzmr] {
 .bi[b-jp4pc1ht9l] {
     display: inline-block;
     position: relative;
-    width: 1.75rem;
-    height: 1.75rem;
     margin-right: 0.75rem;
     top: -1px;
     background-size: cover;
+    font-size: 30px;
+    color: var(--bs-emphasis)
 }
 
 .nav-item[b-jp4pc1ht9l] {
@@ -141,7 +142,7 @@ main[b-9rqfbddzmr] {
 }
 
 @media (min-width: 641px) {
-    .navbar-toggler[b-jp4pc1ht9l] {
+    .navbar-toggle[b-jp4pc1ht9l] {
         display: none;
     }
 
@@ -155,6 +156,19 @@ main[b-9rqfbddzmr] {
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
+}
+/* /Pages/All Races.razor.rz.scp.css */
+body[b-1dkaduaizg] {
+}
+
+.btn[b-1dkaduaizg] {
+    font-size: 16px;
+    color: var(--bs-light);
+    
+}
+
+.card[b-1dkaduaizg] {
+    max-width: 500px;
 }
 /* /Pages/Home.razor.rz.scp.css */
 
