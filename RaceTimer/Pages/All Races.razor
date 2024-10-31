@@ -3,23 +3,44 @@
 
 <h1>All Races</h1>
 
-<table class="table table-bordered">
-	<thead class="table-primary fw-bold">
+<table class="table table-borderless">
+	<thead class="fw-bold table-primary">
 		<tr>
 			<td>Name</td>
 			<td>Surname</td>
 			<td>Bib</td>
-			<td>Start Time</td>
+			<td>Start</td>
+			<td>Time</td>
+
 		</tr>
 	</thead>
 	<tbody>
 		@foreach(Classes.Racer racer in racers)
 		{
 			<tr>
-				<td>@racer.name</td>
-				<td>@racer.surname</td>
-				<td>@racer.bib</td>
-				<td>@racer.startDateTime.TimeOfDay</td>
+				<td><input type="text" aria-label="Name" class="form-control" value="@racer.name" placeholder="Name" ></td>
+				<td><input type="text" aria-label="Surname" class="form-control" value="@racer.surname" placeholder="Surname"></td>
+				<td><input type="text" aria-label="Bib" class="form-control" value="@racer.bib" placeholder="Bib"></td>
+				<td>
+					@if (racer.startDateTime != null)
+					{
+						<input type="time" aria-label="Start" class="form-control" value="@racer.startDateTime.Value.TimeOfDay">
+					}
+					else
+					{
+						<input type="time" aria-label="Start" class="form-control">
+					}
+				</td>
+				<td>
+					@if(racer.startDateTime != null && racer.lapDateTime.Count > 0)
+					{
+						<input type="text" aria-label="Time" class="form-control" value="@((racer.lapDateTime[racer.lapDateTime.Count-1]-racer.startDateTime))">
+					}
+					else
+					{
+						<input type="text" aria-label="Time" class="form-control">
+					}
+				</td>
 			</tr>
 		}
 	</tbody>
@@ -36,8 +57,16 @@
 			startDateTime = new DateTime(2024, 1, 1, 18, 0, 0),
 			lapDateTime = new List<DateTime>()
 			{
-				new DateTime(2024, 1, 1, 18, 22, 36, 010)
+				new DateTime(2024, 1, 1, 18, 22, 36, 100)
 			}
+		},
+		new Classes.Racer()
+		{
+			name = "Fredrik",
+			surname = "Grafström",
+			bib = "111",
+			startDateTime = new DateTime(2024, 1, 1, 18, 0, 0),
+			lapDateTime = new List<DateTime>()
 		}
 	};
 
