@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: var( --bs-body-bg)
+    background-color: var(--bs-body-bg)
 }
 
 main {
@@ -10,18 +10,18 @@ main {
 }
 
 .sidebar {
-    background-color: var(--bs-primary)
+    background-color: var(--bs-secondary-bg);
 }
 
 .top-row {
-    background-color: var(--bs-primary);
+    background-color: var(--bs-secondary-bg);
     justify-content: center;
     height: 3.5rem;
     display: flex;
     align-items: center;
-    border-end-start-radius: 20px;
-    border-end-end-radius: 20px;
-    color: var(--bs-primary-text-emphasis);
+    color: var(--bs-secondary);
+    border-block-end: solid;
+    border-block-end-color: var(--bs-dark-bg-subtle);
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
@@ -59,6 +59,8 @@ main {
         height: 100vh;
         position: sticky;
         top: 0;
+        border-right: solid;
+        border-right-color: var(--bs-dark-bg-subtle);
     }
 
     .top-row {

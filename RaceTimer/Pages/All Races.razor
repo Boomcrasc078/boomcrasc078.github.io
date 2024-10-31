@@ -1,6 +1,44 @@
 ﻿@page "/races"
-<h3>All_Races</h3>
+<PageTitle>PocketRace | All Races</PageTitle>
+
+<h1>All Races</h1>
+
+<table class="table table-bordered">
+	<thead class="table-primary fw-bold">
+		<tr>
+			<td>Name</td>
+			<td>Surname</td>
+			<td>Bib</td>
+			<td>Start Time</td>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(Classes.Racer racer in racers)
+		{
+			<tr>
+				<td>@racer.name</td>
+				<td>@racer.surname</td>
+				<td>@racer.bib</td>
+				<td>@racer.startDateTime.TimeOfDay</td>
+			</tr>
+		}
+	</tbody>
+</table>
 
 @code {
+	public List<Classes.Racer> racers = new List<Classes.Racer>
+	{
+		new Classes.Racer()
+		{
+			name = "Mose",
+			surname = "Grafström",
+			bib = "110",
+			startDateTime = new DateTime(2024, 1, 1, 18, 0, 0),
+			lapDateTime = new List<DateTime>()
+			{
+				new DateTime(2024, 1, 1, 18, 22, 36, 010)
+			}
+		}
+	};
 
 }

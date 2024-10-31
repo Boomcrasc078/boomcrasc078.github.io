@@ -1,5 +1,5 @@
 ﻿
 .text-box {
-    background-color: var(--bs-primary-bg-subtle);
+    background-color: var(--bs-secondary-bg-subtle);
     border-radius: 20px;
 }
