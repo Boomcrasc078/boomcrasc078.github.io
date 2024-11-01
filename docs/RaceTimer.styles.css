@@ -157,18 +157,42 @@ main[b-9rqfbddzmr] {
         overflow-y: auto;
     }
 }
-/* /Pages/All Races.razor.rz.scp.css */
-body[b-1dkaduaizg] {
+/* /Pages/AllRaces.razor.rz.scp.css */
+body[b-a4x7s374tm] {
 }
 
-.btn[b-1dkaduaizg] {
-    font-size: 16px;
+.btn[b-a4x7s374tm] {
     color: var(--bs-light);
     
 }
 
-.card[b-1dkaduaizg] {
+.btn-edit[b-a4x7s374tm] {
+    font-size: 16px;
+}
+
+.btn-export[b-a4x7s374tm] {
+    font-size: 16px;
+}
+
+.btn-delete[b-a4x7s374tm] {
+    font-size: 16px;
+}
+
+.btn-add-race[b-a4x7s374tm] {
+    font-size: 20px;
+}
+
+.all-races-container[b-a4x7s374tm] {
     max-width: 500px;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 20px;
+    min-height: 600px;
+}
+
+.top-row[b-a4x7s374tm] {
+    background-color: var(--bs-primary-bg);
+    border-block-end: solid;
+    border-block-color: var(--bs-border-color)
 }
 /* /Pages/Home.razor.rz.scp.css */
 

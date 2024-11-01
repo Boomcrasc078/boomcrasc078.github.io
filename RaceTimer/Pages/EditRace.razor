@@ -1,0 +1,37 @@
+﻿@page "/races/edit/{RaceId:int}"
+@using Classes
+@inject RaceService raceService
+@inject NavigationManager NavManager
+
+
+<h3>Edit Race</h3>
+
+@if (currentRace != null)
+{
+    <div>
+        <label>Race Name:</label>
+        <input type="text" @bind="currentRace.Name" class="form-control" />
+    </div>
+    <button class="btn btn-success mt-3" @onclick="SaveRace">Save</button>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public int RaceId { get; set; }
+    private Race currentRace;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentRace = await raceService.GetRaceByIdAsync(RaceId);
+    }
+
+    private async Task SaveRace()
+    {
+        await raceService.UpdateRaceAsync(currentRace);
+        // Redirect back to the races list
+        NavManager.NavigateTo("races");
+    }
+}

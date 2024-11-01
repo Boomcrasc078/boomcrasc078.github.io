@@ -1,0 +1,36 @@
+﻿body {
+}
+
+.btn {
+    color: var(--bs-light);
+    
+}
+
+.btn-edit {
+    font-size: 16px;
+}
+
+.btn-export {
+    font-size: 16px;
+}
+
+.btn-delete {
+    font-size: 16px;
+}
+
+.btn-add-race {
+    font-size: 20px;
+}
+
+.all-races-container {
+    max-width: 500px;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 20px;
+    min-height: 600px;
+}
+
+.top-row {
+    background-color: var(--bs-primary-bg);
+    border-block-end: solid;
+    border-block-color: var(--bs-border-color)
+}

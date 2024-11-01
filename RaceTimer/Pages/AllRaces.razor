@@ -1,0 +1,102 @@
+﻿@page "/races"
+@using Classes
+@inject RaceService raceService
+
+<PageTitle>PocketRace | All Races</PageTitle>
+<div class="all-races-container">
+    <div class="container">
+        <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
+            <h1 class="fw-bold">All Races</h1>
+            <button class="btn btn-primary btn-add-race" onclick="@AddRace">
+                <i class="bi bi-journal-plus"></i>
+            </button>
+        </div>
+        <div class="py-2">
+            @if (races != null)
+            {
+                @foreach (Race race in races)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">@race.Name</h5>
+                            <p class="card-text">
+                                @if (race.Startlists.Count > 0)
+                                {
+                                    <ul>
+                                        @foreach (Startlist startlist in race.Startlists)
+                                        {
+                                            <li>@startlist.Name</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>Empty</span>
+                                }
+                            </p>
+                            <a href="@($"/races/edit/{race.Id}")" class="btn btn-primary btn-edit">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <button class="btn btn-danger btn-delete" @onclick="() => DeleteRace(race.Id)">
+                                <i class="bi bi-journal-x"></i> Delete
+                            </button>
+                            <button class="btn btn-secondary btn-export">
+                                <i class="bi bi-box-arrow-up"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    private Random random = new Random();
+    private List<Race> races;
+
+    protected override async Task OnInitializedAsync()
+    {
+        races = await raceService.GetRacesAsync();
+    }
+
+    private async Task AddRace()
+    {
+        Race addRace = new Race()
+        {
+            Id = random.Next(0, 10000),
+            Startlists = new List<Startlist>()
+        };
+
+        addRace.Name = $"Untitled Race: {addRace.Id}";
+
+        races.Add(addRace);
+
+        await raceService.SaveRacesAsync(races);
+    }
+
+    private async Task DeleteRace(int Id)
+    {
+        Race? removeRace;
+        try
+        {
+            removeRace = races.Find(race => race.Id == Id);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Couldn't find race {Id} to delete");
+            return;
+        }
+
+        if(removeRace!=null)
+            races.Remove(removeRace);
+
+        await raceService.SaveRacesAsync(races);
+        
+        
+    }
+}

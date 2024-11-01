@@ -1,8 +1,7 @@
-﻿namespace RaceTimer.Classes
+﻿using RaceTimer.Classes;
+
+public class Startlist
 {
-    public class Startlist
-    {
-        public string name;
-        public List<Racer> racers;
-    }
+    public string Name { get; set; }
+    public List<Racer> Racers { get; set; } = new List<Racer>();
 }
