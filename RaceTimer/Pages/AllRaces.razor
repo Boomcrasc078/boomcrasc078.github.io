@@ -10,7 +10,7 @@
         <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
             <h1 class="fw-bold">All Races</h1>
             <button class="btn btn-primary btn-add-race" onclick="@AddRace">
-                <i class="bi bi-journal-plus"></i>
+                <i class="bi bi-plus-lg"></i>
             </button>
         </div>
         <div class="py-2">
@@ -39,9 +39,26 @@
                             <a href="@($"races/edit/{race.Id}")" class="btn btn-primary btn-edit">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                            <button class="btn btn-danger btn-delete" @onclick="() => DeleteRace(race.Id)">
-                                <i class="bi bi-journal-x"></i> Delete
+                            <button type="button" class="btn btn-danger btn-delete" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="bi bi-trash3"></i> Delete
                             </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete?</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @race.Name
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="() => DeleteRace(race.Id)">Delete</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <button class="btn btn-secondary btn-export">
                                 <i class="bi bi-box-arrow-up"></i> Export
                             </button>
