@@ -1,4 +1,6 @@
-﻿@page "/races"
+﻿
+@page "/RaceTimer/races"
+
 @using Classes
 @inject RaceService raceService
 
@@ -34,7 +36,7 @@
                                     <span>Empty</span>
                                 }
                             </p>
-                            <a href="@($"/races/edit/{race.Id}")" class="btn btn-primary btn-edit">
+                            <a href="@($"races/edit/{race.Id}")" class="btn btn-primary btn-edit">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
                             <button class="btn btn-danger btn-delete" @onclick="() => DeleteRace(race.Id)">

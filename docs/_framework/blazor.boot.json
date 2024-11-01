@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "RaceTimer",
   "resources": {
-    "hash": "sha256-xWRYLp0WjzKqJR103REvNiZ4MMn9UbxS1UNJzqKOwhM=",
+    "hash": "sha256-3pg3rBk4y5jkLyzWxn4O35AXhilaHn16NGl0UcyUKGY=",
     "jsModuleNative": {
       "dotnet.native.8.0.8.ltesyytitt.js": "sha256-juC5sA7gHTLXFEhAKgdM2/RavswpwCtDfjYGsAz2FXg="
     },
@@ -32,7 +32,7 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-6187ynEahDlSLMBvD4vAmiLpZ3clRb5xu6rM7O8AxNo=",
       "Microsoft.JSInterop.wasm": "sha256-vouTe4QgkAUd5a1MywWt4+lDckgaO+lkVNrn2DrMlNg=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-r/+bWAAxKn2+Wu3MRYDXvKEbHjLNuptflgNuNhQdK6w=",
-      "RaceTimer.wasm": "sha256-Nt33gq5aBZunRNCCVSeXN7vPt0jSO0/hxjNRCAUuOME=",
+      "RaceTimer.wasm": "sha256-GcqI9Or5oldQZziMsjHoZbaE8wUDk2wFONSPl8ooSKs=",
       "System.Collections.Concurrent.wasm": "sha256-NVEciweq4C45AijA3PT3fpwPDZ/4qnRVDko7sjqMGcc=",
       "System.Collections.wasm": "sha256-bvBd7UuVMdNGwvDjnnWS/xCyFuLiPMWMDQpHHEe55is=",
       "System.ComponentModel.Primitives.wasm": "sha256-GrBdUl/TYNyBPDxA+jBNf9KMEVhwYz7osRsIbtxB9og=",
