@@ -1,6 +1,4 @@
-﻿
-
-using RaceTimer.Classes;
+﻿using RaceTimer.Classes;
 using System.Buffers.Text;
 using System.Collections.Generic;
 

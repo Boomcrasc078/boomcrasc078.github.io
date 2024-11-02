@@ -1,0 +1,68 @@
+﻿body {
+}
+
+.btn {
+    color: var(--bs-light);
+    
+}
+
+.btn-edit {
+    font-size: 16px;
+}
+
+.btn-export {
+    font-size: 16px;
+}
+
+.btn-delete {
+    font-size: 16px;
+}
+
+.btn-add-race {
+    font-size: 20px;
+}
+
+.startlists-container {
+    margin-top: 20px;
+    max-width: 500px;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 20px;
+    min-height: 600px;
+}
+
+.top-row {
+    background-color: var(--bs-primary-bg);
+    border-block-end: solid;
+    border-block-color: var(--bs-border-color)
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-out {
+    opacity: 1;
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to{
+        opacity: 0;
+    }
+    
+}

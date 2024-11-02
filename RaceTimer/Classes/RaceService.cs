@@ -26,7 +26,7 @@ public class RaceService
 
     public async Task SaveRacesAsync(List<Race> races)
     {
-        races = races.OrderByDescending(race => race.lastEditDateTime).ToList();
+        //races = races.OrderByDescending(race => race.lastEditDateTime).ToList();
         var racesJson = JsonSerializer.Serialize(races);
         await js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, racesJson);
     }

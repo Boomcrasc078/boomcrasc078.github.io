@@ -47,7 +47,7 @@
                                         <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
                                         <div>Last edited <span class="text-primary">@(Math.Floor((DateTime.Now - race.lastEditDateTime).TotalDays)) days ago</span></div>
                                     </div>
-
+                                    @race.Id
                                     @if (race.Startlists.Count > 0)
                                     {
                                         <div class="fw-bold">Startlists:</div>
@@ -103,35 +103,38 @@
         {
             Name = "Untitled Race",
             Startlists = new List<Startlist>(),
-            Id = RandomBase64Generator.GenerateBase64String(10),
             creationDateTime = DateTime.Now,
             lastEditDateTime = DateTime.Now
         };
 
+        addRace.Id = IdGenerator.GenerateId(addRace.Name);
+        Console.WriteLine("Name = " + addRace.Id);
+
+        int i = 0;
         while(races.Exists(race => race.Id == addRace.Id) || addRace.Id.Contains("/"))
         {
-            addRace.Id = RandomBase64Generator.GenerateBase64String(10);
+            i++;
+            addRace.Id = IdGenerator.GenerateId(addRace.Name) + "-" + i;
         }
 
         races.Add(addRace);
         await raceService.SaveRacesAsync(races);
 
-        NavManager.NavigateTo($"races/edit/{addRace.Id}");
+        //NavManager.NavigateTo($"races/edit/{addRace.Id}");
     }
 
     private async Task DeleteRace(Race deleteRace)
     {
+        if (deleteRace == null)
+            return;
+        if (!races.Contains(deleteRace))
+            return;
+
         deleteRace.currentAnimation = "fade-out";
 
         await Task.Delay(500);
 
         deleteRace.currentAnimation = "";
-
-
-        if(deleteRace == null)
-            return;
-        if (!races.Contains(deleteRace))
-            return;
 
         races.Remove(deleteRace);
         await raceService.SaveRacesAsync(races);
