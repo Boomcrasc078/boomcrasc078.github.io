@@ -1,22 +1,19 @@
-﻿@page "/races/edit/{RaceId:int}"
+﻿@page "/races/edit/{RaceId}"
 @using Classes
+@using Pages
 @inject RaceService raceService
 @inject NavigationManager NavManager
 
 
-<h3>Edit Race</h3>
+<h3>@currentRace.Name</h3>
 
 @if (currentRace != null)
 {
     <div>
-        <label>Race Name:</label>
+        <label>Name:</label>
         <input type="text" @bind="currentRace.Name" class="form-control" />
     </div>
     <button class="btn btn-success mt-3" @onclick="SaveRace">Save</button>
-
-
-
-
 }
 else
 {
@@ -24,7 +21,7 @@ else
 }
 
 @code {
-    [Parameter] public int RaceId { get; set; }
+    [Parameter] public string RaceId { get; set; }
     private Race currentRace;
 
     protected override async Task OnInitializedAsync()
@@ -34,6 +31,7 @@ else
 
     private async Task SaveRace()
     {
+        currentRace.lastEditDateTime = DateTime.Now;
         await raceService.UpdateRaceAsync(currentRace);
         // Redirect back to the races list
         NavManager.NavigateTo("/races");

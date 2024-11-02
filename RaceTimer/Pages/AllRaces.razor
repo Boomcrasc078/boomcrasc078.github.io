@@ -3,6 +3,7 @@
 
 @using Classes
 @inject RaceService raceService
+@inject NavigationManager NavManager
 
 <PageTitle>PocketRace | All Races</PageTitle>
 
@@ -37,23 +38,25 @@
             {
                 @foreach (Race race in races)
                 {
-                    <div class="card mb-3">
+                    <div class="card mb-3 @race.currentAnimation">
                         <div class="card-body d-flex justify-content-between">
                             <div>
                                 <h5 class="card-title">@race.Name</h5>
                                 <p class="card-text">
+                                    <div class="container">
+                                        <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
+                                        <div>Last edited <span class="text-primary">@(Math.Floor((DateTime.Now - race.lastEditDateTime).TotalDays)) days ago</span></div>
+                                    </div>
+
                                     @if (race.Startlists.Count > 0)
                                     {
+                                        <div class="fw-bold">Startlists:</div>
                                         <ul>
                                             @foreach (Startlist startlist in race.Startlists)
                                             {
                                                 <li>@startlist.Name</li>
                                             }
                                         </ul>
-                                    }
-                                    else
-                                    {
-                                        <span>Empty</span>
                                     }
                                 </p>
                             </div>
@@ -76,7 +79,6 @@
                     </div>
                 }
             }
-
         </div>
     </div>
 </div>
@@ -88,6 +90,7 @@
     private Random random = new Random();
     private List<Race> races = new List<Race>();
     private Race modalRace = new Race();
+    private string deleteAnimation = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,22 +102,32 @@
         Race addRace = new Race()
         {
             Name = "Untitled Race",
-            Id = random.Next(10000, 99999),
-            Startlists = new List<Startlist>()
+            Startlists = new List<Startlist>(),
+            Id = RandomBase64Generator.GenerateBase64String(10),
+            creationDateTime = DateTime.Now,
+            lastEditDateTime = DateTime.Now
         };
 
-        while(races.Exists(race => race.Id == addRace.Id))
+        while(races.Exists(race => race.Id == addRace.Id) || addRace.Id.Contains("/"))
         {
-            addRace.Id = random.Next(10000, 99999);
+            addRace.Id = RandomBase64Generator.GenerateBase64String(10);
         }
 
         races.Add(addRace);
-
         await raceService.SaveRacesAsync(races);
+
+        NavManager.NavigateTo($"races/edit/{addRace.Id}");
     }
 
     private async Task DeleteRace(Race deleteRace)
     {
+        deleteRace.currentAnimation = "fade-out";
+
+        await Task.Delay(500);
+
+        deleteRace.currentAnimation = "";
+
+
         if(deleteRace == null)
             return;
         if (!races.Contains(deleteRace))
