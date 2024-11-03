@@ -10,16 +10,15 @@
                 switch (letter)
                 {
                     case ' ':
-                        generatedId.Append<char>('-');
+                        generatedId = generatedId + "-"; 
                         break;
                     case '/':
-                        generatedId.Append<char>('-');
+                        generatedId = generatedId + "-";
                         break;
                     default:
-                        generatedId.Append<char>(letter);
+                        generatedId = generatedId + letter;
                         break;
                 }
-                
             }
             return generatedId;
         }
