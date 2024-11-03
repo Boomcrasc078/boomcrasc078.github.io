@@ -1,28 +1,4 @@
-﻿body {
-}
-
-.btn {
-    color: var(--bs-light);
-    
-}
-
-.btn-edit {
-    font-size: 16px;
-}
-
-.btn-export {
-    font-size: 16px;
-}
-
-.btn-delete {
-    font-size: 16px;
-}
-
-.btn-add {
-    font-size: 20px;
-}
-
-.startlists-container {
+﻿.startlist-container {
     margin-top: 20px;
     max-width: 500px;
     background-color: var(--bs-secondary-bg);
@@ -61,8 +37,11 @@
         opacity: 1;
     }
 
-    to{
+    to {
         opacity: 0;
     }
-    
+}
+
+.btn-add {
+    font-size: 20px;
 }
