@@ -1,9 +1,11 @@
-﻿
-@page "/races"
+﻿@page "/races"
 
 @using Classes
 @inject RaceService raceService
 @inject NavigationManager NavManager
+@inject IJSRuntime JS
+@using System.IO
+@using Microsoft.AspNetCore.Components
 
 <PageTitle>PocketRace | All Races</PageTitle>
 
@@ -29,9 +31,15 @@
     <div class="container">
         <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
             <h1 class="fw-bold">All Races</h1>
-            <button class="btn btn-primary btn-add-race" @onclick="()=>AddRace()">
-                <i class="bi bi-plus-lg"></i>
-            </button>
+            <div>
+                <input type="file" accept=".xlsx" @onchange="HandleFileSelected" class="d-none" id="fileInput" />
+                <label for="fileInput" class="btn btn-secondary btn-add-race">
+                    <i class="bi bi-box-arrow-in-down"></i>
+                </label>
+                <button class="btn btn-primary btn-add-race" @onclick="()=>AddRace()">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </div>
         </div>
         <div class="py-2">
             @if (races != null)
@@ -42,7 +50,14 @@
                         <div class="card-body d-flex justify-content-between">
                             <div>
                                 <h5 class="card-title">
-                                    @if (race.Name == "") {<span>Untitled Race</span>} else {<span>@race.Name</span> }
+                                    @if (race.Name == "")
+                                    {
+                                        <span>Untitled Race</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@race.Name</span>
+                                    }
                                 </h5>
                                 <p class="card-text">
                                     <div class="container">
@@ -72,7 +87,7 @@
                                 <button class="btn btn-secondary mb-2">
                                     <i class="bi bi-copy"></i> Duplicate
                                 </button>
-                                <button class="btn btn-secondary">
+                                <button class="btn btn-secondary" @onclick="() => ExportAndDownloadRace(race)">
                                     <i class="bi bi-box-arrow-up"></i> Export
                                 </button>
                             </div>
@@ -84,14 +99,12 @@
     </div>
 </div>
 
-
-
-
 @code {
     private Random random = new Random();
     private List<Race> races = new List<Race>();
     private Race modalRace = new Race();
     private string deleteAnimation = "";
+    private ExcelHandler excelHandler = new ExcelHandler();
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,12 +114,12 @@
     private async Task AddRace()
     {
         Race addRace = new Race()
-        {
-            Name = "",
-            Startlists = new List<Startlist>(),
-            creationDateTime = DateTime.UtcNow,
-            lastEditDateTime = DateTime.UtcNow
-        };
+            {
+                Name = "",
+                Startlists = new List<Startlist>(),
+                creationDateTime = DateTime.UtcNow,
+                lastEditDateTime = DateTime.UtcNow
+            };
 
         addRace.Id = RandomBase64Generator.GenerateBase64String(5);
 
@@ -136,5 +149,73 @@
 
         races.Remove(deleteRace);
         await raceService.SaveRacesAsync(races);
+    }
+
+    private async Task ExportAndDownloadRace(Race race)
+    {
+        using var memoryStream = excelHandler.ExportRaceToExcel(race);
+        var fileName = $"{race.Name.Replace(" ", "_")}.xlsx";
+        var fileBytes = memoryStream.ToArray();
+        await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+    {
+        var base64Data = Convert.ToBase64String(fileBytes);
+        await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
+    }
+
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        var file = (IBrowserFile)e.Value;
+
+        // Check if the file is null and validate its size
+        if (file != null)
+        {
+            // Define a maximum file size (for example, 2 MB)
+            const long maxFileSize = 2 * 1024 * 1024; // 2 MB in bytes
+
+            if (file.Size > maxFileSize)
+            {
+                // Handle the case where the file is too large
+                Console.WriteLine("File is too large. Maximum size is 2 MB.");
+                return;
+            }
+
+            // Proceed to read the file
+            using var stream = file.OpenReadStream(); // No need for maxFileSize here
+
+            var race = excelHandler.ImportRaceFromExcel(stream, file.Name);
+            await ImportRace(race);
+        }
+        else
+        {
+            // Handle the case when no file is selected
+            Console.WriteLine("Invalid file selected.");
+        }
+    }
+
+
+
+
+
+    private async Task ImportRace(Race race)
+    {
+        race.Id = RandomBase64Generator.GenerateBase64String(5);
+
+        while (races.Exists(race => race.Id == race.Id))
+        {
+            race.Id = RandomBase64Generator.GenerateBase64String(5);
+        }
+
+        race.creationDateTime = DateTime.UtcNow;
+        race.lastEditDateTime = DateTime.UtcNow;
+
+        race.Name = "";
+
+        races.Add(race);
+        await raceService.SaveRacesAsync(races);
+
+        NavManager.NavigateTo($"/races/edit/{race.Id}");
     }
 }

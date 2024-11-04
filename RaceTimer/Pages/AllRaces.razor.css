@@ -1,11 +1,6 @@
 ﻿body {
 }
 
-.btn {
-    color: var(--bs-light);
-    
-}
-
 .btn-edit {
     font-size: 16px;
 }

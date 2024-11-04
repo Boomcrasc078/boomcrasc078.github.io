@@ -30,7 +30,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="()=>GetStartlist()" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<form>
+				<div>
 					<div class="border-3 border-bottom pb-4">
 						<div class="form-floating mb-3">
 							<input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="selectedRacer.Name">
@@ -46,9 +46,36 @@
 						</div>
 					</div>
 					<div class="border-3 border-bottom py-4">
-						<button class="btn btn-primary btn-add" @onclick="AddCustomField">
+						<button class="btn btn-primary" @onclick="AddCustomField">
 							<i class="bi bi-plus-lg"></i> Add Custom Field
 						</button>
+						<div class="my-3">
+							@foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
+							{
+								<div class="input-group mb-3">
+									<div class="form-floating">
+										<input type="text" class="form-control" placeholder="Custom Field Name"
+											   @bind="selectedRacer.CustomFields[customField.index].Name" />
+										<label>Custom Field Name</label>
+									</div>
+									<div class="form-floating">
+										<input type="text" class="form-control" placeholder="Custom Field Data"
+											   @bind="selectedRacer.CustomFields[customField.index].Data" />
+										<label>
+											@if (@selectedRacer.CustomFields[customField.index].Name != "")
+											{
+												@selectedRacer.CustomFields[customField.index].Name
+											}
+											else
+											{
+												<span>Custom Field Data</span>
+											}
+										</label>
+
+									</div>
+								</div>
+							}
+						</div>
 
 					</div>
 					<div class="border-3 pt-4">
@@ -64,7 +91,7 @@
 							<label for="floatingInput">Start Time</label>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bs-dismiss="modal" @onclick="()=>SaveRace()">Save</button>
@@ -206,9 +233,10 @@ else
 	{
 		if (selectedRacer?.CustomFields == null)
 		{
-			selectedRacer.CustomFields = new List<CustomField>();
+			selectedRacer.CustomFields = new List<Racer.CustomField>();
 		}
 
-		selectedRacer.CustomFields.Add(new CustomField());
+		selectedRacer.CustomFields.Add(new Racer.CustomField("", ""));
 	}
+
 }

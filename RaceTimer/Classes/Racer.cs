@@ -1,16 +1,6 @@
 ﻿namespace RaceTimer.Classes
 {
-	public struct CustomField
-	{
-		string Name { get; set; }
-		string Data { get; set; }
 
-		public CustomField()
-		{
-			this.Name = "";
-			this.Data = "";
-		}
-	}
 	public class Racer
 	{
 
@@ -23,5 +13,17 @@
 		public List<DateTime> LapDateTime { get; set; } = new List<DateTime>();
 		public string currentAnimation { get; set; } = string.Empty;
 		public List<CustomField> CustomFields { get; set; } = new List<CustomField>();
+		public class CustomField
+		{
+			public string Name { get; set; }
+			public string Data { get; set; }
+
+			public CustomField(string name, string data)
+			{
+				Name = name;
+				Data = data;
+			}
+		}
+
 	}
 }
