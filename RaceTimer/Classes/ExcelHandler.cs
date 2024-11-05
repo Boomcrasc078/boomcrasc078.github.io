@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using System.Globalization;
 using RaceTimer.Classes;
+using System.IO;
+using System.Linq;
 
 public class ExcelHandler
 {
@@ -64,45 +66,41 @@ public class ExcelHandler
     {
         var race = new Race { Name = raceName, creationDateTime = DateTime.UtcNow, lastEditDateTime = DateTime.UtcNow };
 
-        using var workbook = new XLWorkbook(fileStream); // ClosedXML ska kunna läsa direkt från memoryStream
-        var worksheet = workbook.Worksheet(1);
-
-        foreach (var row in worksheet.RowsUsed().Skip(1))
+        using (var workbook = new XLWorkbook(fileStream))
         {
-            string startlistName = row.Cell(6).GetString();
-            var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
+            var worksheet = workbook.Worksheet(1);
+
+            foreach (var row in worksheet.RowsUsed().Skip(1))
+            {
+                string startlistName = row.Cell(6).GetString();
+                var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
 
                 if (!race.Startlists.Contains(startlist))
                     race.Startlists.Add(startlist);
 
-            var racer = new Racer
-            {
-                Name = row.Cell(1).GetString(),
-                Surname = row.Cell(2).GetString(),
-                Bib = row.Cell(3).GetValue<string>(),
-                StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
-                                ? startDateTime : (DateTime?)null,
-                Id = Guid.NewGuid().ToString()
-            };
-
-            for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
-            {
-                var customFieldData = row.Cell(i).GetString();
-                if (!string.IsNullOrEmpty(customFieldData))
+                var racer = new Racer
                 {
-                    racer.CustomFields.Add(new Racer.CustomField(worksheet.FirstRowUsed().Cell(i).GetString(), customFieldData));
+                    Name = row.Cell(1).GetString(),
+                    Surname = row.Cell(2).GetString(),
+                    Bib = row.Cell(3).GetValue<string>(),
+                    StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
+                                    ? startDateTime : (DateTime?)null,
+                    Id = Guid.NewGuid().ToString()
+                };
+
+                for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
+                {
+                    var customFieldData = row.Cell(i).GetString();
+                    if (!string.IsNullOrEmpty(customFieldData))
+                    {
+                        racer.CustomFields.Add(new Racer.CustomField(worksheet.FirstRowUsed().Cell(i).GetString(), customFieldData));
+                    }
                 }
-            }
 
                 startlist.Racers.Add(racer);
             }
         }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException($"Error processing Excel file: {ex.Message}");
-        }
 
         return race;
     }
-
 }

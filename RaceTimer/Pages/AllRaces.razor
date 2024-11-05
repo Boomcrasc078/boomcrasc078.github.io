@@ -194,7 +194,7 @@
     {
         race.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == race.Id) && !race.Id.Contains("/"))
+        while (races.Exists(race => race.Id == race.Id) && race.Id.Contains("/"))
         {
             race.Id = RandomBase64Generator.GenerateBase64String(5);
         }
