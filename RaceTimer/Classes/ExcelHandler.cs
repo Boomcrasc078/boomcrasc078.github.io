@@ -72,8 +72,8 @@ public class ExcelHandler
             string startlistName = row.Cell(6).GetString();
             var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
 
-            if (!race.Startlists.Contains(startlist))
-                race.Startlists.Add(startlist);
+                if (!race.Startlists.Contains(startlist))
+                    race.Startlists.Add(startlist);
 
             var racer = new Racer
             {
@@ -94,7 +94,12 @@ public class ExcelHandler
                 }
             }
 
-            startlist.Racers.Add(racer);
+                startlist.Racers.Add(racer);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Error processing Excel file: {ex.Message}");
         }
 
         return race;
