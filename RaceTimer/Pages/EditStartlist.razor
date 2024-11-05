@@ -99,17 +99,20 @@
 		</div>
 	</div>
 </div>
-
+<div>
+	<a class="btn btn-secondary my-3" href="@($"/races/edit/{currentRace.Id}")">Back</a>
+</div>
 @if(currentRace != null && currentStartlist != null)
 {
-	<h1>@currentStartlist.Name</h1>
+	<h1 class="col">@currentStartlist.Name</h1>
+
 	<div>
-		<div>
+		<div >
 			<label>Name:</label>
-			<input type="text" @onchange="UpdateName" class="form-control" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
+			<input type="text" @onchange="UpdateName" class="form-control startlist-input" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
 		</div>
 
-		<div class="my-3">
+		<div class="">
 			<div class="startlist-container">
 				<div class="container">
 					<div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
@@ -150,6 +153,7 @@ else
 	<PageTitle>Loading...</PageTitle>
 	<p>Loading...</p>
 }
+
 
 
 @code {

@@ -19,7 +19,7 @@ public class ExcelHandler
             worksheet.Cell(1, 3).Value = "Bib";
             worksheet.Cell(1, 4).Value = "StartDate";
             worksheet.Cell(1, 5).Value = "StartTime";
-            worksheet.Cell(1, 6).Value = "Startlist Name";
+            worksheet.Cell(1, 6).Value = "Startlist";
 
             // Custom fields dynamically added
             int col = 7;

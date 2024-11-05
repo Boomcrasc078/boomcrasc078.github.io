@@ -87,6 +87,9 @@
                 </div>
             </div>
         </div>
+        <div>
+            <a class="btn btn-secondary my-3" href="@($"/races")">Back</a>
+        </div>
     </div>
 }
 else
@@ -134,7 +137,7 @@ else
         currentRace.Startlists.Add(addStartlist);
         await SaveRace();
 
-        //NavManager.NavigateTo($"races/edit/{currentRace.Id}/{addStartlist.Id}");
+        NavManager.NavigateTo($"races/edit/{currentRace.Id}/{addStartlist.Id}");
 
     }
 
