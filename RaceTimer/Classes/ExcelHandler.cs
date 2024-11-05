@@ -67,39 +67,74 @@ public class ExcelHandler
         using var workbook = new XLWorkbook(fileStream);
         var worksheet = workbook.Worksheet(1);
 
-        foreach (var row in worksheet.RowsUsed().Skip(1))
+        try
         {
-            // Retrieve the startlist name from the sixth column
-            string startlistName = row.Cell(6).GetString();
-            var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
-
-            if (!race.Startlists.Contains(startlist))
-                race.Startlists.Add(startlist);
-
-            var racer = new Racer
+            foreach (var row in worksheet.RowsUsed().Skip(1))
             {
-                Name = row.Cell(1).GetString(),
-                Surname = row.Cell(2).GetString(),
-                Bib = row.Cell(3).GetValue<string>(), // Get as string to avoid cast issues
-                StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
-                                ? startDateTime : (DateTime?)null,
-                Id = Guid.NewGuid().ToString()
-            };
-
-            // Add custom fields if available
-            for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
-            {
-                var customFieldData = row.Cell(i).GetString();
-                if (!string.IsNullOrEmpty(customFieldData))
+                string startlistName;
+                try
                 {
-                    // Avoid using direct index for field name; consider generating a unique name
-                    racer.CustomFields.Add(new Racer.CustomField($"CustomField{i - 6}", customFieldData));
+                    startlistName = row.Cell(6).GetValue<string>();
                 }
-            }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error reading Startlist Name in row {row.RowNumber()}: {ex.Message}");
+                }
 
-            startlist.Racers.Add(racer);
+                var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
+
+                if (!race.Startlists.Contains(startlist))
+                    race.Startlists.Add(startlist);
+
+                var racer = new Racer();
+                try
+                {
+                    racer.Name = row.Cell(1).GetValue<string>();
+                    racer.Surname = row.Cell(2).GetValue<string>();
+                    racer.Bib = row.Cell(3).GetValue<string>();  // Läsa Bib som string
+                    racer.StartDateTime = ParseDateTime(row.Cell(4).GetValue<string>(), row.Cell(5).GetValue<string>());
+                    racer.Id = Guid.NewGuid().ToString();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error reading racer data in row {row.RowNumber()}: {ex.Message}");
+                }
+
+                // Lägg till Custom Fields
+                try
+                {
+                    for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
+                    {
+                        var customFieldData = row.Cell(i).GetValue<string>();
+                        if (!string.IsNullOrEmpty(customFieldData))
+                        {
+                            racer.CustomFields.Add(new Racer.CustomField($"CustomField{i - 6}", customFieldData));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error reading custom fields in row {row.RowNumber()}: {ex.Message}");
+                }
+
+                startlist.Racers.Add(racer);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Error processing Excel file: {ex.Message}");
         }
 
         return race;
+    }
+
+    // Hjälpmetod för att slå ihop datum och tid
+    private DateTime? ParseDateTime(string date, string time)
+    {
+        if (DateTime.TryParse($"{date} {time}", out DateTime parsedDateTime))
+        {
+            return parsedDateTime;
+        }
+        return null;
     }
 }
