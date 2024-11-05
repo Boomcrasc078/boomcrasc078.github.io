@@ -32,7 +32,7 @@
         <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
             <h1 class="fw-bold">All Races</h1>
             <div>
-                <input type="file" accept=".xlsx" @onchange="HandleFileSelected" class="d-none" id="fileInput" />
+                <InputFile OnChange="HandleFileSelected" accept=".xlsx" class="d-none" id="fileInput" />
                 <label for="fileInput" class="btn btn-secondary btn-add-race">
                     <i class="bi bi-box-arrow-in-down"></i>
                 </label>
@@ -123,7 +123,7 @@
 
         addRace.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == addRace.Id))
+        while (races.Exists(race => race.Id == addRace.Id) && addRace.Id.Contains("/"))
         {
             addRace.Id = RandomBase64Generator.GenerateBase64String(5);
         }
@@ -165,37 +165,28 @@
         await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
     }
 
-    private async Task HandleFileSelected(ChangeEventArgs e)
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var file = (IBrowserFile)e.Value;
-
-        // Check if the file is null and validate its size
-        if (file != null)
+        try
         {
-            // Define a maximum file size (for example, 2 MB)
-            const long maxFileSize = 2 * 1024 * 1024; // 2 MB in bytes
+            var file = e.File;
+            var memoryStream = new MemoryStream();
 
-            if (file.Size > maxFileSize)
-            {
-                // Handle the case where the file is too large
-                Console.WriteLine("File is too large. Maximum size is 2 MB.");
-                return;
-            }
+            // Läs filen asynkront
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Position = 0; // Sätt positionen till början av streamen
 
-            // Proceed to read the file
-            using var stream = file.OpenReadStream(); // No need for maxFileSize here
+            // Importera racet från minnesströmmen
+            var raceName = "Imported Race"; // Du kan lägga till ett valbart namn här
+            var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, raceName);
 
-            var race = excelHandler.ImportRaceFromExcel(stream, file.Name);
-            await ImportRace(race);
+            ImportRace(importedRace);
         }
-        else
+        catch (Exception ex)
         {
-            // Handle the case when no file is selected
-            Console.WriteLine("Invalid file selected.");
+            Console.WriteLine($"Error during file import: {ex.Message}");
         }
     }
-
-
 
 
 
@@ -203,10 +194,22 @@
     {
         race.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == race.Id))
+        while (races.Exists(race => race.Id == race.Id) && !race.Id.Contains("/"))
         {
             race.Id = RandomBase64Generator.GenerateBase64String(5);
         }
+
+        foreach(Startlist startlist in race.Startlists)
+        {
+            startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+
+            while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) && startlist.Id.Contains("/"))
+            {
+                startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+            }
+        }
+
+        race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
 
         race.creationDateTime = DateTime.UtcNow;
         race.lastEditDateTime = DateTime.UtcNow;

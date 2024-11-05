@@ -64,12 +64,11 @@ public class ExcelHandler
     {
         var race = new Race { Name = raceName, creationDateTime = DateTime.UtcNow, lastEditDateTime = DateTime.UtcNow };
 
-        using var workbook = new XLWorkbook(fileStream);
+        using var workbook = new XLWorkbook(fileStream); // ClosedXML ska kunna läsa direkt från memoryStream
         var worksheet = workbook.Worksheet(1);
 
         foreach (var row in worksheet.RowsUsed().Skip(1))
         {
-            // Retrieve the startlist name from the sixth column
             string startlistName = row.Cell(6).GetString();
             var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
 
@@ -80,20 +79,18 @@ public class ExcelHandler
             {
                 Name = row.Cell(1).GetString(),
                 Surname = row.Cell(2).GetString(),
-                Bib = row.Cell(3).GetValue<string>(), // Get as string to avoid cast issues
+                Bib = row.Cell(3).GetValue<string>(),
                 StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
                                 ? startDateTime : (DateTime?)null,
                 Id = Guid.NewGuid().ToString()
             };
 
-            // Add custom fields if available
             for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
             {
                 var customFieldData = row.Cell(i).GetString();
                 if (!string.IsNullOrEmpty(customFieldData))
                 {
-                    // Avoid using direct index for field name; consider generating a unique name
-                    racer.CustomFields.Add(new Racer.CustomField($"CustomField{i - 6}", customFieldData));
+                    racer.CustomFields.Add(new Racer.CustomField(worksheet.FirstRowUsed().Cell(i).GetString(), customFieldData));
                 }
             }
 
@@ -102,4 +99,5 @@ public class ExcelHandler
 
         return race;
     }
+
 }
