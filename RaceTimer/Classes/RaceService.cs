@@ -76,8 +76,21 @@ public class DateTimeConverter : System.Text.Json.Serialization.JsonConverter<Da
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var dateStr = reader.GetString();
-        Console.WriteLine($"Läser datumsträng: {dateStr}");
-        return DateTime.TryParse(dateStr, out var date) ? date : DateTime.MinValue;
+        if (string.IsNullOrWhiteSpace(dateStr)) // Kolla om strängen är tom
+        {
+            Console.WriteLine("Datumsträngen var tom eller null");
+            return DateTime.MinValue;
+        }
+
+        if (DateTime.TryParse(dateStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out var date))
+        {
+            return date;
+        }
+        else
+        {
+            Console.WriteLine($"Ogiltigt datumformat: {dateStr}");
+            return DateTime.MinValue;
+        }
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
@@ -85,3 +98,4 @@ public class DateTimeConverter : System.Text.Json.Serialization.JsonConverter<Da
         writer.WriteStringValue(value.ToString("o")); // ISO 8601-format
     }
 }
+

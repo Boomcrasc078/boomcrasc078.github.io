@@ -115,7 +115,7 @@ else
 
     private async Task SaveRace()
     {
-        currentRace.lastEditDateTime = DateTime.UtcNow;
+        currentRace.lastEditDateTime = DateTime.Now;
         await raceService.UpdateRaceAsync(currentRace);
     }
 

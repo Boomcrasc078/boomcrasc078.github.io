@@ -62,7 +62,9 @@
                                 <p class="card-text">
                                     <div class="container">
                                         <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
-                                        <div>Last edited <span class="text-primary">@(Math.Floor((DateTime.UtcNow - race.lastEditDateTime).TotalSeconds)) seconds ago</span></div>
+                                        <div>
+                                            Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+                                        </div>
                                     </div>
                                     @if (race.Startlists.Count > 0)
                                     {
@@ -117,13 +119,13 @@
             {
                 Name = "",
                 Startlists = new List<Startlist>(),
-                creationDateTime = DateTime.UtcNow,
-                lastEditDateTime = DateTime.UtcNow
+                creationDateTime = DateTime.Now,
+                lastEditDateTime = DateTime.Now
             };
 
         addRace.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == addRace.Id) && addRace.Id.Contains("/"))
+        while (races.Exists(race => race.Id == addRace.Id) || addRace.Id.Contains("/"))
         {
             addRace.Id = RandomBase64Generator.GenerateBase64String(5);
         }
@@ -131,7 +133,7 @@
         races.Add(addRace);
         await raceService.SaveRacesAsync(races);
 
-        //NavManager.NavigateTo($"/races/edit/{addRace.Id}");
+        NavManager.NavigateTo($"/races/edit/{addRace.Id}");
     }
 
     private async Task DeleteRace(Race deleteRace)
@@ -194,7 +196,7 @@
     {
         race.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == race.Id) && race.Id.Contains("/"))
+        while (races.Exists(race => race.Id == race.Id) || race.Id.Contains("/"))
         {
             race.Id = RandomBase64Generator.GenerateBase64String(5);
         }
@@ -203,7 +205,7 @@
         {
             startlist.Id = RandomBase64Generator.GenerateBase64String(5);
 
-            while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) && startlist.Id.Contains("/"))
+            while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) || startlist.Id.Contains("/"))
             {
                 startlist.Id = RandomBase64Generator.GenerateBase64String(5);
             }
@@ -211,8 +213,8 @@
 
         race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
 
-        race.creationDateTime = DateTime.UtcNow;
-        race.lastEditDateTime = DateTime.UtcNow;
+        race.creationDateTime = DateTime.Now;
+        race.lastEditDateTime = DateTime.Now;
 
         race.Name = "";
 
@@ -220,5 +222,28 @@
         await raceService.SaveRacesAsync(races);
 
         NavManager.NavigateTo($"/races/edit/{race.Id}");
+    }
+
+    private string GetTimeSpan(TimeSpan timeSpan)
+    {
+        if (timeSpan.TotalSeconds < 60)
+            return timeSpan.Seconds + " seconds ago";
+
+        if (timeSpan.TotalMinutes < 60)
+            return timeSpan.Minutes + " minutes ago";
+
+        if (timeSpan.TotalHours < 24)
+            return timeSpan.Hours + " hours ago";
+
+        if (timeSpan.TotalDays < 7)
+            return timeSpan.Days + " days ago";
+
+        if (timeSpan.TotalDays < 30)
+            return Math.Floor(timeSpan.TotalDays / 7) + " weeks ago";
+
+        if (timeSpan.TotalDays < 365)
+            return Math.Floor(timeSpan.TotalDays / 30) + " months ago";
+
+        return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
     }
 }
