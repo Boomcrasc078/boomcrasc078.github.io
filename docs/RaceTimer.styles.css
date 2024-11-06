@@ -247,10 +247,14 @@ body[b-b2uavjddp0] {
 
 .startlists-container[b-b2uavjddp0] {
     margin-top: 20px;
-    max-width: 500px;
+    max-width: 600px;
     background-color: var(--bs-secondary-bg);
     border-radius: 20px;
-    min-height: 600px;
+    min-height: 300px;
+}
+
+.race-input[b-b2uavjddp0]{
+    max-width: 600px;
 }
 
 .top-row[b-b2uavjddp0] {
@@ -292,10 +296,14 @@ body[b-b2uavjddp0] {
 /* /Pages/EditStartlist.razor.rz.scp.css */
 .startlist-container[b-i4xh1oatf6] {
     margin-top: 20px;
-    max-width: 500px;
+    max-width: 600px;
     background-color: var(--bs-secondary-bg);
     border-radius: 20px;
-    min-height: 600px;
+    min-height: 300px;
+}
+
+.startlist-input[b-i4xh1oatf6] {
+    max-width: 600px;
 }
 
 .top-row[b-i4xh1oatf6] {
