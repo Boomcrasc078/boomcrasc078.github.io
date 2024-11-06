@@ -3,7 +3,7 @@
     max-width: 600px;
     background-color: var(--bs-secondary-bg);
     border-radius: 20px;
-    min-height: 500px;
+    min-height: 300px;
 }
 
 .startlist-input {

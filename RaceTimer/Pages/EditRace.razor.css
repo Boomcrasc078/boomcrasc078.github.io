@@ -24,10 +24,14 @@
 
 .startlists-container {
     margin-top: 20px;
-    max-width: 500px;
+    max-width: 600px;
     background-color: var(--bs-secondary-bg);
     border-radius: 20px;
-    min-height: 600px;
+    min-height: 300px;
+}
+
+.race-input{
+    max-width: 600px;
 }
 
 .top-row {

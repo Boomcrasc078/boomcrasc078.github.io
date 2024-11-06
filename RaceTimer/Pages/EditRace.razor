@@ -25,7 +25,9 @@
 @if (currentRace != null)
 {
     <PageTitle>Edit @currentRace.Name</PageTitle>
-
+    <div>
+        <a class="btn btn-secondary my-3" href="@($"/races")">Back</a>
+    </div>
     <h1>
         @if (currentRace.Name == "")
         {
@@ -40,7 +42,7 @@
     <div>
         <div>
             <label>Name:</label>
-            <input type="text" @onchange="UpdateName" class="form-control" value="@currentRace.Name" placeholder="Untitled Race"/>
+            <input type="text" @onchange="UpdateName" class="form-control race-input" value="@currentRace.Name" placeholder="Untitled Race"/>
         </div>
         <div class="startlists-container">
             <div class="container">
@@ -86,9 +88,6 @@
                     }
                 </div>
             </div>
-        </div>
-        <div>
-            <a class="btn btn-secondary my-3" href="@($"/races")">Back</a>
         </div>
     </div>
 }
@@ -137,7 +136,7 @@ else
         currentRace.Startlists.Add(addStartlist);
         await SaveRace();
 
-        NavManager.NavigateTo($"races/edit/{currentRace.Id}/{addStartlist.Id}");
+        NavManager.NavigateTo($"/races/edit/{currentRace.Id}/{addStartlist.Id}");
 
     }
 

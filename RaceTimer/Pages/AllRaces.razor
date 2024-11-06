@@ -62,7 +62,7 @@
                                 <p class="card-text">
                                     <div class="container">
                                         <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
-                                        <div>Last edited <span class="text-primary">@(Math.Floor((DateTime.UtcNow - race.lastEditDateTime).TotalDays)) days ago</span></div>
+                                        <div>Last edited <span class="text-primary">@(Math.Floor((DateTime.UtcNow - race.lastEditDateTime).TotalSeconds)) seconds ago</span></div>
                                     </div>
                                     @if (race.Startlists.Count > 0)
                                     {
@@ -131,7 +131,7 @@
         races.Add(addRace);
         await raceService.SaveRacesAsync(races);
 
-        NavManager.NavigateTo($"/races/edit/{addRace.Id}");
+        //NavManager.NavigateTo($"/races/edit/{addRace.Id}");
     }
 
     private async Task DeleteRace(Race deleteRace)

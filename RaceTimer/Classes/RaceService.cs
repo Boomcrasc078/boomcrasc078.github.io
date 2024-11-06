@@ -30,19 +30,6 @@ public class RaceService
         foreach (var race in races)
         {
             Console.WriteLine($"Race: {race.Name}, Created: {race.creationDateTime}, Last Edited: {race.lastEditDateTime}");
-
-            // Om datum är oinitierat (år 1) sätt till ett standardvärde för testning
-            if (race.creationDateTime == DateTime.MinValue)
-            {
-                race.creationDateTime = DateTime.UtcNow; // Sätt ett testvärde
-                Console.WriteLine($"Sätter creationDateTime till: {race.creationDateTime}");
-            }
-
-            if (race.lastEditDateTime == DateTime.MinValue)
-            {
-                race.lastEditDateTime = DateTime.UtcNow; // Sätt ett testvärde
-                Console.WriteLine($"Sätter lastEditDateTime till: {race.lastEditDateTime}");
-            }
         }
 
         return races;
