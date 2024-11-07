@@ -37,59 +37,7 @@
 		</button>
 	</div>
 </div>
-<br />
-<div class="text-center">
-
-	<div>
-
-		@if (!stopwatch.isRunning)
-		{
-			<button class="btn btn-success" @onclick="StartStopwatch">Start Race</button>
-		}
-
-		<RaceTimer.Components.Stopwatch @ref="stopwatch"></RaceTimer.Components.Stopwatch>
-
-	</div>
-	<div>
-		@if (stopwatch.isRunning)
-		{
-			<button class="btn btn-danger" @onclick="ResetStopwatch">Cancel Race</button>
-		}
-	</div>
-</div>
 
 
 @code {
-
-	private RaceTimer.Components.Stopwatch stopwatch = new RaceTimer.Components.Stopwatch();
-
-	private async Task StartStopwatch()
-	{
-		await stopwatch.Start();
-		ChangeButton();
-	}
-
-	private void ResetStopwatch()
-	{
-		stopwatch.Reset();
-		ChangeButton();
-	}
-
-	protected override async Task OnInitializedAsync()
-	{
-		ChangeButton();
-	}
-
-	public void ChangeButton()
-	{
-		if (stopwatch.isRunning)
-		{
-			stopwatch.hidden = false;
-		}
-		else
-		{
-			stopwatch.hidden = true;
-		}
-		InvokeAsync(StateHasChanged);
-	}
 }

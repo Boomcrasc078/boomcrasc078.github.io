@@ -2,10 +2,9 @@
 
 <div>
     <h1>
-        @if (!hidden)
-        {
-            @formattedTime
-        }
+
+        @formattedTime
+
     </h1>
 </div>
 
@@ -15,9 +14,6 @@
 
     // Formaterar tiden till hh:mm:ss.ff för att inkludera millisekunder
     private string formattedTime => TimeSpan.FromSeconds(elapsedTime).ToString(@"hh\:mm\:ss\.ff");
-
-    [Parameter] public bool hidden { get; set; } = true;
-    [Parameter] public EventCallback changeButton { get; set; }
 
     private DateTime? savedTimestamp;
     public float elapsedTime = 0; // Förfluten tid
@@ -36,7 +32,6 @@
             var timeSpan = DateTime.Now - savedTimestamp.Value;
             elapsedTime = (float)timeSpan.TotalSeconds; // Återställ elapsedTime med den förflutna tiden
             isRunning = true;
-            hidden = false;
 
             StartTimer(); // Starta timern om det finns en sparad tid
         }
