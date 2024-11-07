@@ -224,7 +224,7 @@
         NavManager.NavigateTo($"/races/edit/{race.Id}");
     }
 
-    private string GetTimeSpan(TimeSpan timeSpan)
+    public static string GetTimeSpan(TimeSpan timeSpan)
     {
         if (timeSpan.TotalSeconds < 60)
             return timeSpan.Seconds + " seconds ago";

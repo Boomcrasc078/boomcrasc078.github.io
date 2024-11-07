@@ -1,0 +1,65 @@
+﻿@page "/timer"
+@inject RaceService raceService
+@inject NavigationManager navManager
+
+<h1>Time A Race</h1>
+<div class="race-container p-4 my-3">
+    <h2 class="mb-3">Select a race</h2>
+        @if (races != null)
+        {
+            @foreach (Race race in races)
+            {
+                <div class="card mb-3 @race.currentAnimation">
+                    <div class="card-body d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">
+                                @if (race.Name == "")
+                                {
+                                    <span>Untitled Race</span>
+                                }
+                                else
+                                {
+                                    <span>@race.Name</span>
+                                }
+                            </h5>
+                            <p class="card-text">
+                                <div class="container">
+                                    <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
+                                    <div>
+                                        Last edited <span>@AllRaces.GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+                                    </div>
+                                </div>
+                                @if (race.Startlists.Count > 0)
+                                {
+                                    <div class="fw-bold">Startlists:</div>
+                                    <ul>
+                                        @foreach (Startlist startlist in race.Startlists)
+                                        {
+                                            <li>@startlist.Name</li>
+                                        }
+                                    </ul>
+                                }
+                            </p>
+
+                        </div>
+
+                    </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary" href="@($"/timer/{race.Id}")">
+                        Select Race
+                    </a>
+                </div>
+                </div>
+            }
+        }
+</div>
+
+
+@code {
+    private List<Race> races = new List<Race>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        races = await raceService.GetRacesAsync();
+    }
+}
