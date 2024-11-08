@@ -1,9 +1,11 @@
 ﻿@page "/timer/{RaceId}"
 @inject RaceService raceService
+<button class="btn btn-primary time-container">
+    <h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
+    <h2 class="btn-text text-center">Press to set time</h2>
+</button>
 
-<h1>@currentTime.ToString("HH:mm:ss.ff")</h1>
-
-
+<Numpad></Numpad>
 
 @code {
     [Parameter] public string RaceId { get; set; }
@@ -38,5 +40,4 @@
     {
         timer?.Dispose();
     }
-
 }

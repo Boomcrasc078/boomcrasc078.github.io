@@ -1,0 +1,24 @@
+﻿/* Styla tidvisningen */
+.current-time {
+    font-size: 6vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
+}
+
+.btn-text {
+    font-size: 4vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
+}
+
+/* Styla huvudcontainern */
+.time-container {
+    border-radius: 20px;
+    width: 100%;
+    padding: 15px;
+    margin: 20px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Förhindrar att innehåll läcker ut */
+}
+
