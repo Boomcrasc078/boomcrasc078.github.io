@@ -1,6 +1,6 @@
 ﻿/* Styla tidvisningen */
 .current-time {
-    font-size: 6vh;
+    font-size: 5vh;
     white-space: nowrap; /* Förhindrar radbrytning */
 }
 
