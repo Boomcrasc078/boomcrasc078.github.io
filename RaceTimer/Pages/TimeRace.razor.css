@@ -22,3 +22,7 @@
     overflow: hidden; /* Förhindrar att innehåll läcker ut */
 }
 
+.table-container {
+    max-height: 20vh;
+    overflow: auto;
+}

@@ -351,3 +351,64 @@ body[b-b2uavjddp0] {
     background-color: var(--bs-secondary-bg-subtle);
     border-radius: 20px;
 }
+/* /Pages/Numpad.razor.rz.scp.css */
+.numpad-container[b-99npcvbnds] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: auto;
+}
+
+/* Stil för knapparna */
+.numpad-button[b-99npcvbnds] {
+    flex: 1 1 30%;
+    height: 11vh;
+    font-size: 5vh;
+    padding: 0;
+    border-radius: 8px;
+}
+
+/* Anpassa storleken på knappar för mindre skärmar */
+@media (max-width: 641px) {
+    .numpad-button[b-99npcvbnds] {
+        flex: 1 1 28%;
+    }
+}
+
+/* /Pages/SelectTimeRace.razor.rz.scp.css */
+.race-container[b-1os2eb7d6x] {
+    max-width: 500px;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 20px;
+    min-height: 200px;
+}
+/* /Pages/TimeRace.razor.rz.scp.css */
+/* Styla tidvisningen */
+.current-time[b-zr76thhxab] {
+    font-size: 4vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
+}
+
+.btn-text[b-zr76thhxab] {
+    font-size: 4vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
+}
+
+/* Styla huvudcontainern */
+.time-container[b-zr76thhxab] {
+    border-radius: 20px;
+    width: 100%;
+    padding: 15px;
+    margin: 20px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Förhindrar att innehåll läcker ut */
+}
+
+.table-container[b-zr76thhxab] {
+    max-height: 20vh;
+    overflow: auto;
+}
