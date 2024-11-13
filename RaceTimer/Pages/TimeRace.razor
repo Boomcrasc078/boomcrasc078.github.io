@@ -2,78 +2,92 @@
 @inject RaceService raceService
 @using Classes
 <div class="table-container">
-    <table class="table table-sm table-hover table-responsive">
-        <thead class="table-secondary">
-            <tr>
-                <th>Bib</th>
-                <th>Name</th>
-                <th>Time</th>
-                <th>Lap</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            @foreach (Racer racer in lapTimeList)
-            {
-                <tr class="@((activeRacer==racer)?"table-active":"")" @onclick="()=>activeRacer = racer">
-                    <th class="table-secondary">@racer.Bib</th>
-                    <td>@racer.Name @racer.Surname</td>
-                    <td>@racer.LapDateTime.Last().ToString("HH:mm:ss.ff")</td>
-                    <td>@racer.LapDateTime.Count</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+	<table class="table table-sm table-hover table-responsive">
+		<thead class="table-secondary">
+			<tr>
+				<th>Bib</th>
+				<th>Name</th>
+				<th>Time</th>
+				<th>Lap</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			@foreach (Racer racer in lapTimeList)
+			{
+				<tr class="@((activeRacer==racer)?"table-active":"")" @onclick="()=>activeRacer = racer">
+					<th class="table-secondary">@racer.Bib</th>
+					<td>@racer.Name @racer.Surname</td>
+					<td>@racer.LapDateTime.Last().ToString("HH:mm:ss.ff")</td>
+					<td>@racer.LapDateTime.Count</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 
 <button class="btn btn-primary time-container">
-    <h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
-    <h2 class="btn-text text-center" @onclick="()=>AddLapTime(DateTime.Now)">Press to set time</h2>
+	<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
+	<h2 class="btn-text text-center" @onclick="()=>AddLapTime(DateTime.Now)">Press to set time</h2>
 </button>
 <Numpad></Numpad>
 
 @code {
-    [Parameter] public string RaceId { get; set; }
-    private Race currentRace;
-    private System.Timers.Timer timer;
-    private List<Racer> lapTimeList = new List<Racer>();
-    private Racer activeRacer = new Racer();
+	[Parameter] public string RaceId { get; set; }
+	private Race currentRace;
+	private System.Timers.Timer timer;
+	private List<Racer> lapTimeList = new List<Racer>();
+	private Racer activeRacer = new Racer();
 
-    public DateTime currentTime;
+	public DateTime currentTime;
 
-    protected override async Task OnInitializedAsync()
-    {
-        currentRace = await raceService.GetRaceByIdAsync(RaceId);
-        CreateUpdateTimer();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		CreateUpdateTimer();
+	}
 
-    private void CreateUpdateTimer()
-    {
-        // Skapa en timer som tickar var 10:e millisekund (0.01 sekund).
-        timer = new System.Timers.Timer(10);
-        timer.Elapsed += OnTimerElapsed;
-        timer.Start();
-    }
+	private void CreateUpdateTimer()
+	{
+		// Skapa en timer som tickar var 10:e millisekund (0.01 sekund).
+		timer = new System.Timers.Timer(10);
+		timer.Elapsed += OnTimerElapsed;
+		timer.Start();
+	}
 
-    private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
-    {
-        currentTime = DateTime.Now;
+	private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+	{
+		currentTime = DateTime.Now;
 
-        // Uppdaterar UI:t på huvudtråden
-        InvokeAsync(StateHasChanged);
-    }
+		// Uppdaterar UI:t på huvudtråden
+		InvokeAsync(StateHasChanged);
+	}
 
-    public void Dispose()
-    {
-        timer?.Dispose();
-    }
+	public void Dispose()
+	{
+		timer?.Dispose();
+	}
 
-    private async Task AddLapTime(DateTime dateTime)
-    {
-        var racer = new Racer();
-        racer.LapDateTime.Add(dateTime);
-        racer.Bib = "100";
-        racer.Name = "Mose";
-        racer.Surname = "Grafström";
-        lapTimeList.Add(racer);
-    }
+	private void AddLapTime(DateTime dateTime)
+	{
+		var racer = new Racer();
+		racer.LapDateTime.Add(dateTime);
+		lapTimeList.Add(racer);
+	}
+
+	private async Task SetRacer(Racer getRacer)
+	{
+		Racer? foundRacer = null;
+		foreach (Startlist startlist in currentRace.Startlists)
+		{
+			foundRacer = startlist.Racers.Find(thisracer => thisracer.Bib == getRacer.Bib);
+			if (foundRacer != null)
+				break;
+		}
+
+		if(foundRacer != null)
+		{
+			//foundRacer.LapDateTime.Add()
+		}
+	}
+	
 }
