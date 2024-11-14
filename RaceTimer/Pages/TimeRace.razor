@@ -12,12 +12,21 @@
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
-			@foreach (Racer racer in lapTimeList)
+			@foreach (Racer racer in timeList)
 			{
-				<tr class="@((activeRacer==racer)?"table-active":"")" @onclick="()=>activeRacer = racer">
-					<th class="table-secondary">@racer.Bib</th>
+				<tr class="@((activeRacer==racer)?"table-primary":"")" @onclick="@(()=>activeRacer = (racer.Id == string.Empty)? racer:null)">
+					<th>@racer.Bib</th>
 					<td>@racer.Name @racer.Surname</td>
-					<td>@racer.LapDateTime.Last().ToString("HH:mm:ss.ff")</td>
+					<td>
+						@if(racer.Id == string.Empty)
+						{
+							@racer.LapDateTime.Last().ToString("HH:mm:ss.ff")
+						}
+						else
+						{
+							(DateTime.Now - @racer.LapDateTime.Last()).ToString("HH:mm:ss.ff");
+						}
+					</td>
 					<td>@racer.LapDateTime.Count</td>
 				</tr>
 			}
@@ -29,13 +38,13 @@
 	<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
 	<h2 class="btn-text text-center" @onclick="()=>AddLapTime(DateTime.Now)">Press to set time</h2>
 </button>
-<Numpad></Numpad>
+<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
 
 @code {
-	[Parameter] public string RaceId { get; set; }
+		[Parameter] public string RaceId { get; set; }
 	private Race currentRace;
 	private System.Timers.Timer timer;
-	private List<Racer> lapTimeList = new List<Racer>();
+	private List<Racer> timeList = new List<Racer>();
 	private Racer activeRacer = new Racer();
 
 	public DateTime currentTime;
@@ -44,6 +53,24 @@
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
 		CreateUpdateTimer();
+	}
+
+	private void NumberClicked(int number)
+	{
+		if (activeRacer != null)
+		{
+			activeRacer.Bib += number.ToString();
+		}
+	}
+
+	private void BackspaceClicked()
+	{
+		activeRacer.Bib = activeRacer.Bib.Substring(0, activeRacer.Bib.Length - 1);
+	}
+
+	private void EnterClicked()
+	{
+		SetRacer(activeRacer);
 	}
 
 	private void CreateUpdateTimer()
@@ -69,13 +96,15 @@
 
 	private void AddLapTime(DateTime dateTime)
 	{
+		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
 		racer.LapDateTime.Add(dateTime);
-		lapTimeList.Add(racer);
+		timeList.Add(racer);
 	}
 
 	private async Task SetRacer(Racer getRacer)
 	{
+		Console.WriteLine($"Trying to find {getRacer.Bib}");
 		Racer? foundRacer = null;
 		foreach (Startlist startlist in currentRace.Startlists)
 		{
@@ -86,8 +115,14 @@
 
 		if(foundRacer != null)
 		{
-			//foundRacer.LapDateTime.Add()
+			Console.WriteLine($"Found {foundRacer.Bib} named {foundRacer.Name} {foundRacer.Surname}");
+			foundRacer.LapDateTime.Add(getRacer.LapDateTime.Last());
+			timeList.Remove(getRacer);
+				timeList.Add(foundRacer);
+				await raceService.UpdateRaceAsync(currentRace);
+			return;
 		}
+		Console.WriteLine($"Didn't find {getRacer.Bib}");
 	}
 	
 }

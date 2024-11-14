@@ -1,11 +1,40 @@
 ﻿<div class="numpad-container">
     @for (int i = 1; i <= 9; i++)
     {
-        <button class="btn btn-secondary numpad-button">@i</button>
+        int currentNumber = i;
+        <button class="btn btn-secondary numpad-button" @onclick="@(() => OnNumberClick(currentNumber))">@currentNumber</button>
     }
-    <button class="btn btn-secondary numpad-button">0</button>
+    <button class="btn btn-secondary numpad-button" @onclick="OnBackspaceClick"><i class="bi bi-backspace"></i></button>
+    <button class="btn btn-secondary numpad-button" @onclick="() => OnNumberClick(0)">0</button>
+    <button class="btn btn-secondary numpad-button" @onclick="OnEnterClick">Enter</button>
 </div>
 
 @code {
+    [Parameter] public EventCallback<int> NumberClicked { get; set; }
+    [Parameter] public EventCallback BackspaceClicked { get; set; }
+    [Parameter] public EventCallback EnterClicked { get; set; }
 
+    private async Task OnNumberClick(int number)
+    {
+        if (NumberClicked.HasDelegate)
+        {
+            await NumberClicked.InvokeAsync(number);
+        }
+    }
+
+    private async Task OnBackspaceClick()
+    {
+        if (BackspaceClicked.HasDelegate)
+        {
+            await BackspaceClicked.InvokeAsync();
+        }
+    }
+
+    private async Task OnEnterClick()
+    {
+        if (EnterClicked.HasDelegate)
+        {
+            await EnterClicked.InvokeAsync();
+        }
+    }
 }
