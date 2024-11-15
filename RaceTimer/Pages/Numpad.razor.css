@@ -9,17 +9,17 @@
 /* Stil för knapparna */
 .numpad-button {
     flex: 1 1 30%;
-    height: 11vh;
-    font-size: 5vh;
+    font-size: 4vh;
     padding: 0;
     border-radius: 8px;
     text-align: center;
+    height: 7vh;
 }
 
 /* Anpassa storleken på knappar för mindre skärmar */
 @media (max-width: 641px) {
     .numpad-button {
-        flex: 1 1 28%;
+        flex: 1 1 30%;
     }
 }
 

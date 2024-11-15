@@ -83,11 +83,11 @@
 							Automatic Start
 						</h5>
 						<div class="form-floating mb-3">
-							<input type="date" class="form-control" id="floatingInput" placeholder="Start Date">
+							<input type="date" class="form-control" id="floatingInput" placeholder="Start Date" @bind="selectedRacer.StartDateTime">
 							<label for="floatingInput">Start Date</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="time" class="form-control" id="floatingInput" placeholder="Start Time">
+							<input type="time" class="form-control" id="floatingInput" placeholder="Start Time" @bind="selectedRacer.StartDateTime">
 							<label for="floatingInput">Start Time</label>
 						</div>
 					</div>
@@ -184,7 +184,6 @@ else
 			currentRace.lastEditDateTime = DateTime.UtcNow;
 			await raceService.UpdateRaceAsync(currentRace);
 		}
-
 	}
 
 	private async Task UpdateName(ChangeEventArgs e)

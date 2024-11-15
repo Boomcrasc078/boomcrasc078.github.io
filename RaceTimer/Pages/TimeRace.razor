@@ -1,7 +1,12 @@
 ﻿@page "/timer/{RaceId}"
 @inject RaceService raceService
+@inject IJSRuntime JS
 @using Classes
-<div class="table-container">
+
+
+
+
+<div id="timeListContainer" class="table-container">
 	<table class="table table-sm table-hover table-responsive">
 		<thead class="table-secondary">
 			<tr>
@@ -14,17 +19,17 @@
 		<tbody class="table-group-divider">
 			@foreach (Racer racer in timeList)
 			{
-				<tr class="@((activeRacer==racer)?"table-primary":"")" @onclick="@(()=>activeRacer = (racer.Id == string.Empty)? racer:null)">
+				<tr class="@((activeRacer==racer)?"table-primary":"")" @onclick="@(()=>activeRacer = racer)">
 					<th>@racer.Bib</th>
 					<td>@racer.Name @racer.Surname</td>
 					<td>
-						@if(racer.Id == string.Empty)
+						@if (racer.StartDateTime.HasValue)
 						{
-							@racer.LapDateTime.Last().ToString("HH:mm:ss.ff")
+							@((racer.LapDateTime.Last() - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
 						}
 						else
 						{
-							(DateTime.Now - @racer.LapDateTime.Last()).ToString("HH:mm:ss.ff");
+							@(racer.LapDateTime.Last().ToString("HH:mm:ss.ff"))
 						}
 					</td>
 					<td>@racer.LapDateTime.Count</td>
@@ -34,18 +39,39 @@
 	</table>
 </div>
 
-<button class="btn btn-primary time-container">
+<button class="btn btn-primary time-container" @onclick="()=>SetTimeClick(DateTime.Now)">
 	<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
-	<h2 class="btn-text text-center" @onclick="()=>AddLapTime(DateTime.Now)">Press to set time</h2>
+	<h2 class="btn-text text-center">Press to set time</h2>
 </button>
 <Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
 
+<button type="button" class="btn btn-primary" @onclick="@(()=>(CreateToast(new Toast($"ToastTest{toasts.Count}", "Toast", "Toast"))))">Show toast</button>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	@foreach (Toast toast in toasts)
+	{
+		<div id="test" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<img src="..." class="rounded me-2" alt="...">
+				<strong class="me-auto">@toast.title</strong>
+				<small>123 minutes ago</small>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body">
+				Hello, world! This is a toast message.
+			</div>
+		</div>
+	}
+</div>
+
 @code {
-		[Parameter] public string RaceId { get; set; }
+	[Parameter] public string RaceId { get; set; }
 	private Race currentRace;
 	private System.Timers.Timer timer;
 	private List<Racer> timeList = new List<Racer>();
-	private Racer activeRacer = new Racer();
+	private Racer? activeRacer;
+	private List<Racer> nextEdit = new List<Racer>();
+	private List<Toast> toasts = new List<Toast>();
 
 	public DateTime currentTime;
 
@@ -68,9 +94,13 @@
 		activeRacer.Bib = activeRacer.Bib.Substring(0, activeRacer.Bib.Length - 1);
 	}
 
-	private void EnterClicked()
+	private async Task EnterClicked()
 	{
-		SetRacer(activeRacer);
+		if (activeRacer == null)
+		{
+			return;
+		}
+		await SetRacer(activeRacer);
 	}
 
 	private void CreateUpdateTimer()
@@ -94,12 +124,25 @@
 		timer?.Dispose();
 	}
 
-	private void AddLapTime(DateTime dateTime)
+	private async Task SetTimeClick(DateTime dateTime)
 	{
+		if (activeRacer != null && activeRacer.Id != "")
+		{
+			activeRacer.LapDateTime.Add(dateTime);
+			Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
+			activeRacer = nextEdit[0];
+			await raceService.UpdateRaceAsync(currentRace);
+			await ScrollToBottomAsync();
+			return;
+		}
+
 		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
 		racer.LapDateTime.Add(dateTime);
 		timeList.Add(racer);
+		nextEdit.Add(racer);
+		activeRacer = nextEdit[0];
+		await ScrollToBottomAsync();
 	}
 
 	private async Task SetRacer(Racer getRacer)
@@ -113,16 +156,39 @@
 				break;
 		}
 
-		if(foundRacer != null)
+		if (foundRacer == null)
 		{
-			Console.WriteLine($"Found {foundRacer.Bib} named {foundRacer.Name} {foundRacer.Surname}");
-			foundRacer.LapDateTime.Add(getRacer.LapDateTime.Last());
-			timeList.Remove(getRacer);
-				timeList.Add(foundRacer);
-				await raceService.UpdateRaceAsync(currentRace);
+			Console.WriteLine($"Didn't find {getRacer.Bib}");
+			activeRacer.Bib = "";
 			return;
 		}
-		Console.WriteLine($"Didn't find {getRacer.Bib}");
+
+		Console.WriteLine($"Found {foundRacer.Bib} named {foundRacer.Name} {foundRacer.Surname}");
+		foundRacer.LapDateTime.Add(getRacer.LapDateTime.Last());
+		int index = timeList.IndexOf(getRacer);
+		timeList.Remove(foundRacer);
+		timeList.Insert(index, foundRacer);
+		timeList.Remove(getRacer);
+		await raceService.UpdateRaceAsync(currentRace);
+		if (nextEdit.Contains(activeRacer))
+		{
+			nextEdit.Remove(activeRacer);
+		}
+		if (nextEdit.Count > 0)
+		{
+			activeRacer = nextEdit[0];
+		}
 	}
-	
+
+	private async Task ScrollToBottomAsync()
+	{
+		await JS.InvokeVoidAsync("scrollToBottom", "timeListContainer");
+	}
+
+	private async Task CreateToast(Toast toast)
+	{
+		toasts.Add(toast);
+		await InvokeAsync(StateHasChanged); 
+		await JS.InvokeVoidAsync("createToast", "test");
+	}
 }

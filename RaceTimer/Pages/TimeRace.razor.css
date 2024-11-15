@@ -13,6 +13,7 @@
 .time-container {
     border-radius: 20px;
     width: 100%;
+    height: 16vh;
     padding: 15px;
     margin: 20px auto;
     text-align: center;
@@ -23,6 +24,6 @@
 }
 
 .table-container {
-    max-height: 20vh;
+    height: 25vh;
     overflow: auto;
 }
