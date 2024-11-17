@@ -1,249 +1,276 @@
 ﻿@page "/races"
 
-@using Classes
+@using RaceTimer.Classes
 @inject RaceService raceService
 @inject NavigationManager NavManager
 @inject IJSRuntime JS
 @using System.IO
 @using Microsoft.AspNetCore.Components
+@using RaceTimer.Components
 
 <PageTitle>PocketRace | All Races</PageTitle>
 
+<Toasts />
+
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete @modalRace.Name?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteRace(modalRace)">Delete</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Are you sure you want to delete @modalRace.Name?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteRace(modalRace)">Delete</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="all-races-container">
-    <div class="container">
-        <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
-            <h1 class="fw-bold">All Races</h1>
-            <div>
-                <InputFile OnChange="HandleFileSelected" accept=".xlsx" class="d-none" id="fileInput" />
-                <label for="fileInput" class="btn btn-secondary btn-add-race">
-                    <i class="bi bi-box-arrow-in-down"></i>
-                </label>
-                <button class="btn btn-primary btn-add-race" @onclick="()=>AddRace()">
-                    <i class="bi bi-plus-lg"></i>
-                </button>
-            </div>
-        </div>
-        <div class="py-2">
-            @if (races != null)
-            {
-                @foreach (Race race in races)
-                {
-                    <div class="card mb-3 @race.currentAnimation">
-                        <div class="card-body d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">
-                                    @if (race.Name == "")
-                                    {
-                                        <span>Untitled Race</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@race.Name</span>
-                                    }
-                                </h5>
-                                <p class="card-text">
-                                    <div class="container">
-                                        <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
-                                        <div>
-                                            Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
-                                        </div>
-                                    </div>
-                                    @if (race.Startlists.Count > 0)
-                                    {
-                                        <div class="fw-bold">Startlists:</div>
-                                        <ul>
-                                            @foreach (Startlist startlist in race.Startlists)
-                                            {
-                                                <li>@startlist.Name</li>
-                                            }
-                                        </ul>
-                                    }
-                                </p>
-                            </div>
+	<div class="container">
+		<div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
+			<h1 class="fw-bold">All Races</h1>
+			<div>
+				<InputFile OnChange="HandleFileSelected" accept=".xlsx" class="d-none" id="fileInput" />
+				<label for="fileInput" class="btn btn-secondary btn-add-race">
+					<i class="bi bi-box-arrow-in-down"></i>
+				</label>
+				<button class="btn btn-primary btn-add-race" @onclick="()=>AddRace()">
+					<i class="bi bi-plus-lg"></i>
+				</button>
+			</div>
+		</div>
+		<div class="py-2">
+			@if (races != null)
+			{
+				@foreach (Race race in races)
+				{
+					<div class="card mb-3 @race.currentAnimation">
+						<div class="card-body d-flex justify-content-between">
+							<div>
+								<h5 class="card-title">
+									@if (race.Name == "")
+									{
+										<span>Untitled Race</span>
+									}
+									else
+									{
+										<span>@race.Name</span>
+									}
+								</h5>
+								<p class="card-text">
+									<div class="container">
+										<div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
+										<div>
+											Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+										</div>
+									</div>
+									@if (race.Startlists.Count > 0)
+									{
+										<div class="fw-bold">Startlists:</div>
+										<ul>
+											@foreach (Startlist startlist in race.Startlists)
+											{
+												<li>@startlist.Name</li>
+											}
+										</ul>
+									}
+								</p>
+							</div>
 
-                            <div class="d-flex flex-column align-items-end">
-                                <a href="@($"/races/edit/{race.Id}")" class="btn btn-primary mb-2">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                                <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-                                    <i class="bi bi-trash3"></i> Delete
-                                </button>
-                                <button class="btn btn-secondary mb-2">
-                                    <i class="bi bi-copy"></i> Duplicate
-                                </button>
-                                <button class="btn btn-secondary" @onclick="() => ExportAndDownloadRace(race)">
-                                    <i class="bi bi-box-arrow-up"></i> Export
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-        </div>
-    </div>
+							<div class="d-flex flex-column align-items-end">
+								<a href="@($"/races/edit/{race.Id}")" class="btn btn-primary mb-2">
+									<i class="bi bi-pencil-square"></i> Edit
+								</a>
+								<button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
+									<i class="bi bi-trash3"></i> Delete
+								</button>
+								<button class="btn btn-secondary mb-2">
+									<i class="bi bi-copy"></i> Duplicate
+								</button>
+								<button class="btn btn-secondary" @onclick="() => ExportAndDownloadRace(race)">
+									<i class="bi bi-box-arrow-up"></i> Export
+								</button>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
 </div>
 
 @code {
-    private Random random = new Random();
-    private List<Race> races = new List<Race>();
-    private Race modalRace = new Race();
-    private string deleteAnimation = "";
-    private ExcelHandler excelHandler = new ExcelHandler();
+	private Random random = new Random();
+	private List<Race> races = new List<Race>();
+	private Race modalRace = new Race();
+	private string deleteAnimation = "";
+	private ExcelHandler excelHandler = new ExcelHandler();
+	private Toasts toasts = new Toasts();
 
-    protected override async Task OnInitializedAsync()
-    {
-        races = await raceService.GetRacesAsync();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		races = await raceService.GetRacesAsync();
+	}
 
-    private async Task AddRace()
-    {
-        Race addRace = new Race()
-            {
-                Name = "",
-                Startlists = new List<Startlist>(),
-                creationDateTime = DateTime.Now,
-                lastEditDateTime = DateTime.Now
-            };
+	private async Task AddRace()
+	{
+		Race addRace = new Race()
+			{
+				Name = "",
+				Startlists = new List<Startlist>(),
+				creationDateTime = DateTime.Now,
+				lastEditDateTime = DateTime.Now
+			};
 
-        addRace.Id = RandomBase64Generator.GenerateBase64String(5);
+		addRace.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        while (races.Exists(race => race.Id == addRace.Id) || addRace.Id.Contains("/"))
-        {
-            addRace.Id = RandomBase64Generator.GenerateBase64String(5);
-        }
+		while (races.Exists(race => race.Id == addRace.Id) || addRace.Id.Contains("/"))
+		{
+			addRace.Id = RandomBase64Generator.GenerateBase64String(5);
+		}
 
-        races.Add(addRace);
-        await raceService.SaveRacesAsync(races);
+		races.Add(addRace);
+		await raceService.SaveRacesAsync(races);
 
-        NavManager.NavigateTo($"/races/edit/{addRace.Id}");
-    }
+		NavManager.NavigateTo($"/races/edit/{addRace.Id}");
+	}
 
-    private async Task DeleteRace(Race deleteRace)
-    {
-        if (deleteRace == null)
-            return;
-        if (!races.Contains(deleteRace))
-            return;
+	private async Task DeleteRace(Race deleteRace)
+	{
+		if (deleteRace == null)
+			return;
+		if (!races.Contains(deleteRace))
+			return;
 
-        deleteRace.currentAnimation = "fade-out";
+		deleteRace.currentAnimation = "fade-out";
 
-        await Task.Delay(500);
+		await Task.Delay(500);
 
-        deleteRace.currentAnimation = "";
+		deleteRace.currentAnimation = "";
 
-        races.Remove(deleteRace);
-        await raceService.SaveRacesAsync(races);
-    }
+		races.Remove(deleteRace);
+		await raceService.SaveRacesAsync(races);
+	}
 
-    private async Task ExportAndDownloadRace(Race race)
-    {
-        using var memoryStream = excelHandler.ExportRaceToExcel(race);
-        var fileName = $"{race.Name.Replace(" ", "_")}.xlsx";
-        var fileBytes = memoryStream.ToArray();
-        await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    }
+	private async Task ExportAndDownloadRace(Race race)
+	{
+		using var memoryStream = excelHandler.ExportRaceToExcel(race);
+		var fileName = $"{race.Name.Replace(" ", "_")}.xlsx";
+		var fileBytes = memoryStream.ToArray();
+		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	}
 
-    private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
-    {
-        var base64Data = Convert.ToBase64String(fileBytes);
-        await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
-    }
+	private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+	{
+		var base64Data = Convert.ToBase64String(fileBytes);
+		await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
+	}
 
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        try
-        {
-            var file = e.File;
-            var memoryStream = new MemoryStream();
+	private async Task HandleFileSelected(InputFileChangeEventArgs e)
+	{
+		try
+		{
+			Console.WriteLine("Handle File Start...");
+			var file = e.File;
+			var memoryStream = new MemoryStream();
 
-            // Läs filen asynkront
-            await file.OpenReadStream().CopyToAsync(memoryStream);
-            memoryStream.Position = 0; // Sätt positionen till början av streamen
+			Console.WriteLine("Reading File...");
+			// Läs filen asynkront
+			await file.OpenReadStream().CopyToAsync(memoryStream);
+			memoryStream.Position = 0; // Sätt positionen till början av streamen
+			Console.WriteLine("File Read!");
 
-            // Importera racet från minnesströmmen
-            var raceName = "Imported Race"; // Du kan lägga till ett valbart namn här
-            var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, raceName);
+			Console.WriteLine("Importing File...");
+			// Importera racet från minnesströmmen
+			var raceName = "Imported Race"; // Du kan lägga till ett valbart namn här
+			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, raceName);
+			Console.WriteLine("File Imported!");
 
-            ImportRace(importedRace);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error during file import: {ex.Message}");
-        }
-    }
+			Console.WriteLine("Importing Race...");
+			await ImportRace(importedRace);
+			Console.WriteLine("Race Imported!");
+		}
+		catch (Exception ex)
+		{
+			toasts?.CreateToast(new Toast("", $"Error during file import: { ex.Message }", "text-bg-danger"));
+			Console.WriteLine($"Error during file import: {ex.Message}");
+		}
+	}
 
 
 
-    private async Task ImportRace(Race race)
-    {
-        race.Id = RandomBase64Generator.GenerateBase64String(5);
+	private async Task ImportRace(Race race)
+	{
+		Console.WriteLine("Creating Id...");
 
-        while (races.Exists(race => race.Id == race.Id) || race.Id.Contains("/"))
-        {
-            race.Id = RandomBase64Generator.GenerateBase64String(5);
-        }
+		race.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        foreach(Startlist startlist in race.Startlists)
-        {
-            startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+		while (races.Exists(race => race.Id == race.Id) || race.Id.Contains("/"))
+		{
+			race.Id = RandomBase64Generator.GenerateBase64String(5);
+		}
 
-            while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) || startlist.Id.Contains("/"))
-            {
-                startlist.Id = RandomBase64Generator.GenerateBase64String(5);
-            }
-        }
+		Console.WriteLine("Creating Startlist Ids...");
 
-        race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
+		foreach (Startlist startlist in race.Startlists)
+		{
+			startlist.Id = RandomBase64Generator.GenerateBase64String(5);
 
-        race.creationDateTime = DateTime.Now;
-        race.lastEditDateTime = DateTime.Now;
+			while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) || startlist.Id.Contains("/"))
+			{
+				startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+			}
+		}
 
-        race.Name = "";
+		Console.WriteLine("Sorting Startlists...");
 
-        races.Add(race);
-        await raceService.SaveRacesAsync(races);
+		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
 
-        NavManager.NavigateTo($"/races/edit/{race.Id}");
-    }
+		Console.WriteLine("Setting DateTime and Name...");
 
-    public static string GetTimeSpan(TimeSpan timeSpan)
-    {
-        if (timeSpan.TotalSeconds < 60)
-            return timeSpan.Seconds + " seconds ago";
+		race.creationDateTime = DateTime.Now;
+		race.lastEditDateTime = DateTime.Now;
 
-        if (timeSpan.TotalMinutes < 60)
-            return timeSpan.Minutes + " minutes ago";
+		race.Name = "";
 
-        if (timeSpan.TotalHours < 24)
-            return timeSpan.Hours + " hours ago";
+		Console.WriteLine("Adding Race...");
 
-        if (timeSpan.TotalDays < 7)
-            return timeSpan.Days + " days ago";
+		races.Add(race);
 
-        if (timeSpan.TotalDays < 30)
-            return Math.Floor(timeSpan.TotalDays / 7) + " weeks ago";
+		Console.WriteLine("Saving Races...");
 
-        if (timeSpan.TotalDays < 365)
-            return Math.Floor(timeSpan.TotalDays / 30) + " months ago";
+		await raceService.SaveRacesAsync(races);
 
-        return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
-    }
+		Console.WriteLine("Navigating to race...");
+
+		NavManager.NavigateTo($"/races/edit/{race.Id}");
+	}
+
+	public static string GetTimeSpan(TimeSpan timeSpan)
+	{
+		if (timeSpan.TotalSeconds < 60)
+			return timeSpan.Seconds + " seconds ago";
+
+		if (timeSpan.TotalMinutes < 60)
+			return timeSpan.Minutes + " minutes ago";
+
+		if (timeSpan.TotalHours < 24)
+			return timeSpan.Hours + " hours ago";
+
+		if (timeSpan.TotalDays < 7)
+			return timeSpan.Days + " days ago";
+
+		if (timeSpan.TotalDays < 30)
+			return Math.Floor(timeSpan.TotalDays / 7) + " weeks ago";
+
+		if (timeSpan.TotalDays < 365)
+			return Math.Floor(timeSpan.TotalDays / 30) + " months ago";
+
+		return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
+	}
 }

@@ -1,15 +1,36 @@
-﻿using System;
+﻿using RaceTimer.Classes;
+using System;
 
 public class Toast
 {
-	public string id { get; set; }
-	public string title { get; set; }
-	public string text { get; set; }
-
-	public Toast(string id, string title, string text)
+	public string Id { get; set; }
+	public string Title { get; set; }
+	public string Text { get; set; }
+	public DateTime Created { get; set; }
+	public string Class { get; set; }
+	public Toast(string title, string text)
 	{
-		this.id = id;
-		this.title = title;
-		this.text = text;
+		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Title = title;
+		this.Text = text;
+		Created = DateTime.Now;
+		Class = string.Empty;
+	}
+	public Toast(string title, string text, string @class)
+	{
+		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Title = title;
+		this.Text = text;
+		Created = DateTime.Now;
+		Class = @class;
+	}
+
+	public Toast(string title, string text, string @class, DateTime created)
+	{
+		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Title = title;
+		this.Text = text;
+		this.Class = @class;
+		this.Created = created;
 	}
 }

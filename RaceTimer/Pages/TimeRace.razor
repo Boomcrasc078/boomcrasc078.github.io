@@ -1,10 +1,10 @@
 ﻿@page "/timer/{RaceId}"
 @inject RaceService raceService
 @inject IJSRuntime JS
-@using Classes
+@using RaceTimer.Classes
+@using RaceTimer.Components
 
-
-
+<Toasts @ref="toasts" />
 
 <div id="timeListContainer" class="table-container">
 	<table class="table table-sm table-hover table-responsive">
@@ -45,33 +45,14 @@
 </button>
 <Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
 
-<button type="button" class="btn btn-primary" @onclick="@(()=>(CreateToast(new Toast($"ToastTest{toasts.Count}", "Toast", "Toast"))))">Show toast</button>
-
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-	@foreach (Toast toast in toasts)
-	{
-		<div id="test" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-			<div class="toast-header">
-				<img src="..." class="rounded me-2" alt="...">
-				<strong class="me-auto">@toast.title</strong>
-				<small>123 minutes ago</small>
-				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-			</div>
-			<div class="toast-body">
-				Hello, world! This is a toast message.
-			</div>
-		</div>
-	}
-</div>
-
 @code {
 	[Parameter] public string RaceId { get; set; }
-	private Race currentRace;
-	private System.Timers.Timer timer;
+	private Race currentRace = new Race();
+	private System.Timers.Timer timer = new System.Timers.Timer();
 	private List<Racer> timeList = new List<Racer>();
 	private Racer? activeRacer;
 	private List<Racer> nextEdit = new List<Racer>();
-	private List<Toast> toasts = new List<Toast>();
+	public Toasts toasts { get; set; } = new Toasts();
 
 	public DateTime currentTime;
 
@@ -91,6 +72,10 @@
 
 	private void BackspaceClicked()
 	{
+		if (activeRacer == null)
+			return;
+		if (activeRacer.Bib.Length == 0)
+			return;
 		activeRacer.Bib = activeRacer.Bib.Substring(0, activeRacer.Bib.Length - 1);
 	}
 
@@ -159,7 +144,8 @@
 		if (foundRacer == null)
 		{
 			Console.WriteLine($"Didn't find {getRacer.Bib}");
-			activeRacer.Bib = "";
+			toasts?.CreateToast(new Toast("", $"There is no racer with Bib: {getRacer.Bib}", "text-bg-danger"));
+			getRacer.Bib = "";
 			return;
 		}
 
@@ -170,25 +156,18 @@
 		timeList.Insert(index, foundRacer);
 		timeList.Remove(getRacer);
 		await raceService.UpdateRaceAsync(currentRace);
-		if (nextEdit.Contains(activeRacer))
+		if (nextEdit.Contains(getRacer))
 		{
-			nextEdit.Remove(activeRacer);
+			nextEdit.Remove(getRacer);
 		}
 		if (nextEdit.Count > 0)
 		{
-			activeRacer = nextEdit[0];
+			getRacer = nextEdit[0];
 		}
 	}
 
 	private async Task ScrollToBottomAsync()
 	{
 		await JS.InvokeVoidAsync("scrollToBottom", "timeListContainer");
-	}
-
-	private async Task CreateToast(Toast toast)
-	{
-		toasts.Add(toast);
-		await InvokeAsync(StateHasChanged); 
-		await JS.InvokeVoidAsync("createToast", "test");
 	}
 }

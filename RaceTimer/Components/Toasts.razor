@@ -1,0 +1,37 @@
+﻿@inject IJSRuntime JS
+@using Classes
+@using Pages
+
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+	@foreach (Toast toast in toasts)
+	{
+		<div id="@toast.Id" class="toast @toast.Class" role="alert" aria-live="assertive" aria-atomic="true">
+			@if (toast.Title != string.Empty)
+			{
+				<div class="toast-header">
+					<img src="..." class="rounded me-2" alt="...">
+					<strong class="me-auto">@toast.Title</strong>
+					<small>@AllRaces.GetTimeSpan(DateTime.Now - toast.Created)</small>
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+			}
+			<div class="toast-body">
+				@toast.Text
+			</div>
+		</div>
+	}
+</div>
+
+
+@code {
+	private List<Toast> toasts = new List<Toast>();
+
+	public async Task CreateToast(Toast toast)
+	{
+		toasts.Add(toast);
+		await InvokeAsync(StateHasChanged); // Rendera om komponenten
+											// Vänta tills Blazor har uppdaterat DOM innan vi kör JS
+		await Task.Delay(50); // Fördröjning för säkerhets skull
+		await JS.InvokeVoidAsync("createToast", toast.Id);
+	}
+}

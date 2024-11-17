@@ -1,29 +1,33 @@
 ﻿/* Styla tidvisningen */
 .current-time {
-    font-size: 4vh;
-    white-space: nowrap; /* Förhindrar radbrytning */
+	font-size: 3vh;
+	white-space: nowrap; /* Förhindrar radbrytning */
 }
 
 .btn-text {
-    font-size: 4vh;
-    white-space: nowrap; /* Förhindrar radbrytning */
+	font-size: 3vh;
+	white-space: nowrap; /* Förhindrar radbrytning */
 }
 
 /* Styla huvudcontainern */
 .time-container {
-    border-radius: 20px;
-    width: 100%;
-    height: 16vh;
-    padding: 15px;
-    margin: 20px auto;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden; /* Förhindrar att innehåll läcker ut */
+	width: 100%;
+	border-radius: 20px;
+	padding: 15px;
+	margin: 20px auto;
+	text-align: center;
+	flex: 1 1 content;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden; /* Förhindrar att innehåll läcker ut */
 }
 
 .table-container {
-    height: 25vh;
-    overflow: auto;
+	min-height: 20vh;
+	height: 25vh;
+	overflow: auto;
+	resize: vertical;
+	background-color: var(--bs-secondary-bg-subtle);
+	border-radius: 20px;
+	padding: 15px;
 }

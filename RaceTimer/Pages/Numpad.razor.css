@@ -1,25 +1,19 @@
 ﻿.numpad-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: auto;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: stretch;
+	gap: 10px;
+	margin: auto;
+	height: 35vh;
+	margin-bottom: 20px;
 }
 
 /* Stil för knapparna */
 .numpad-button {
-    flex: 1 1 30%;
-    font-size: 4vh;
-    padding: 0;
-    border-radius: 8px;
-    text-align: center;
-    height: 7vh;
+	flex: 1 1 30%;
+	font-size: 3vh;
+	padding: 0;
+	border-radius: 8px;
+	text-align: center;
 }
-
-/* Anpassa storleken på knappar för mindre skärmar */
-@media (max-width: 641px) {
-    .numpad-button {
-        flex: 1 1 30%;
-    }
-}
-
