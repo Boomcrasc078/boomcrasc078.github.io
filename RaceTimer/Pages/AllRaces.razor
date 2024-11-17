@@ -190,15 +190,15 @@
 			var raceName = "Imported Race"; // Du kan lägga till ett valbart namn här
 			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, raceName);
 			Console.WriteLine("File Imported!");
-
+			//Här stannar den
 			Console.WriteLine("Importing Race...");
 			await ImportRace(importedRace);
 			Console.WriteLine("Race Imported!");
 		}
 		catch (Exception ex)
 		{
-			toasts?.CreateToast(new Toast("", $"Error during file import: { ex.Message }", "text-bg-danger"));
 			Console.WriteLine($"Error during file import: {ex.Message}");
+			//toasts?.CreateToast(new Toast("", $"Error during file import: { ex.Message }", "text-bg-danger"));
 		}
 	}
 
@@ -221,7 +221,7 @@
 		{
 			startlist.Id = RandomBase64Generator.GenerateBase64String(5);
 
-			while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) || startlist.Id.Contains("/"))
+			while (race.Startlists.Exists(thisStartlist => thisStartlist.Id == startlist.Id) || startlist.Id.Contains("/"))
 			{
 				startlist.Id = RandomBase64Generator.GenerateBase64String(5);
 			}
@@ -229,7 +229,12 @@
 
 		Console.WriteLine("Sorting Startlists...");
 
-		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
+		await Task.Run(() =>
+		{
+			race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
+		});
+
+		Console.WriteLine($"Startlists sorted at {DateTime.Now}");
 
 		Console.WriteLine("Setting DateTime and Name...");
 
@@ -245,6 +250,8 @@
 		Console.WriteLine("Saving Races...");
 
 		await raceService.SaveRacesAsync(races);
+
+		StateHasChanged();
 
 		Console.WriteLine("Navigating to race...");
 

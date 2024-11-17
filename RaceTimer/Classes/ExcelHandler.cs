@@ -64,13 +64,14 @@ public class ExcelHandler
     // Import race data from an Excel file
     public Race ImportRaceFromExcel(Stream fileStream, string raceName)
     {
-        var race = new Race { Name = raceName, creationDateTime = DateTime.UtcNow, lastEditDateTime = DateTime.UtcNow };
+        var race = new Race { Name = raceName, creationDateTime = DateTime.Now, lastEditDateTime = DateTime.Now };
 
         using (var workbook = new XLWorkbook(fileStream))
         {
             var worksheet = workbook.Worksheet(1);
+            var rowsUsed = worksheet.RowsUsed().Skip(1);
 
-            foreach (var row in worksheet.RowsUsed().Skip(1))
+			foreach (var row in rowsUsed)
             {
                 string startlistName = row.Cell(6).GetString();
                 var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
@@ -93,7 +94,7 @@ public class ExcelHandler
                     var customFieldData = row.Cell(i).GetString();
                     if (!string.IsNullOrEmpty(customFieldData))
                     {
-                        racer.CustomFields.Add(new Racer.CustomField(worksheet.FirstRowUsed().Cell(i).GetString(), customFieldData));
+                        racer.CustomFields.Add(new Racer.CustomField(worksheet.RowsUsed().First().Cell(i).GetString(), customFieldData));
                     }
                 }
 
