@@ -62,21 +62,33 @@ public class ExcelHandler
     }
 
     // Import race data from an Excel file
-    public Race ImportRaceFromExcel(Stream fileStream, string raceName)
+    public Race ImportRaceFromExcel(Stream fileStream, List<Race> allRaces, string raceName)
     {
-        var race = new Race { Name = raceName, creationDateTime = DateTime.UtcNow, lastEditDateTime = DateTime.UtcNow };
+        var race = new Race();
 
-        using (var workbook = new XLWorkbook(fileStream))
+		using (var workbook = new XLWorkbook(fileStream))
         {
             var worksheet = workbook.Worksheet(1);
+            var rowsUsed = worksheet.RowsUsed().Skip(1);
 
-            foreach (var row in worksheet.RowsUsed().Skip(1))
+			foreach (var row in rowsUsed)
             {
                 string startlistName = row.Cell(6).GetString();
-                var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
-
-                if (!race.Startlists.Contains(startlist))
-                    race.Startlists.Add(startlist);
+                Startlist startlist = new Startlist();
+                if(race.Startlists.Exists(sl => sl.Name == startlistName) && )
+                {
+					startlist = race.Startlists.Find(sl => sl.Name == startlistName);
+                }
+                else
+                {
+                    startlist.Name = startlistName;
+					startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+					while (race.Startlists.Exists(sl => sl.Id == startlist.Id) || startlist.Id.Contains("/"))
+					{
+						startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+					}
+				}
+				race.Startlists.Add(startlist);
 
                 var racer = new Racer
                 {
@@ -85,7 +97,6 @@ public class ExcelHandler
                     Bib = row.Cell(3).GetValue<string>(),
                     StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
                                     ? startDateTime : (DateTime?)null,
-                    Id = Guid.NewGuid().ToString()
                 };
 
                 for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
@@ -93,7 +104,7 @@ public class ExcelHandler
                     var customFieldData = row.Cell(i).GetString();
                     if (!string.IsNullOrEmpty(customFieldData))
                     {
-                        racer.CustomFields.Add(new Racer.CustomField(worksheet.FirstRowUsed().Cell(i).GetString(), customFieldData));
+                        racer.CustomFields.Add(new Racer.CustomField(worksheet.RowsUsed().First().Cell(i).GetString(), customFieldData));
                     }
                 }
 
@@ -101,6 +112,18 @@ public class ExcelHandler
             }
         }
 
-        return race;
+		race.Id = RandomBase64Generator.GenerateBase64String(5);
+		while (allRaces.Exists(thisRace => thisRace.Id == race.Id) || race.Id.Contains("/"))
+		{
+			race.Id = RandomBase64Generator.GenerateBase64String(5);
+		}
+
+		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
+		race.creationDateTime = DateTime.Now;
+		race.lastEditDateTime = DateTime.Now;
+
+        race.Name = raceName;
+
+		return race;
     }
 }

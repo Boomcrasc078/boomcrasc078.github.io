@@ -35,7 +35,7 @@
 		<div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
 			<h1 class="fw-bold">All Races</h1>
 			<div>
-				<InputFile OnChange="HandleFileSelected" accept=".xlsx" class="d-none" id="fileInput" />
+				<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
 				<label for="fileInput" class="btn btn-secondary btn-add-race">
 					<i class="bi bi-box-arrow-in-down"></i>
 				</label>
@@ -171,84 +171,26 @@
 		await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
 	}
 
-	private async Task HandleFileSelected(InputFileChangeEventArgs e)
+	private async Task ImportRace(InputFileChangeEventArgs e)
 	{
 		try
 		{
-			Console.WriteLine("Handle File Start...");
 			var file = e.File;
+
 			var memoryStream = new MemoryStream();
-
-			Console.WriteLine("Reading File...");
-			// Läs filen asynkront
 			await file.OpenReadStream().CopyToAsync(memoryStream);
-			memoryStream.Position = 0; // Sätt positionen till början av streamen
-			Console.WriteLine("File Read!");
-
-			Console.WriteLine("Importing File...");
-			// Importera racet från minnesströmmen
-			var raceName = "Imported Race"; // Du kan lägga till ett valbart namn här
-			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, raceName);
-			Console.WriteLine("File Imported!");
-
-			Console.WriteLine("Importing Race...");
-			await ImportRace(importedRace);
-			Console.WriteLine("Race Imported!");
+			memoryStream.Position = 0;
+			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, races, file.Name);
+			races.Add(importedRace);
+			await raceService.SaveRacesAsync(races);
+			await InvokeAsync(StateHasChanged);
+			NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
 		}
 		catch (Exception ex)
 		{
-			toasts?.CreateToast(new Toast("", $"Error during file import: { ex.Message }", "text-bg-danger"));
 			Console.WriteLine($"Error during file import: {ex.Message}");
+			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
 		}
-	}
-
-
-
-	private async Task ImportRace(Race race)
-	{
-		Console.WriteLine("Creating Id...");
-
-		race.Id = RandomBase64Generator.GenerateBase64String(5);
-
-		while (races.Exists(race => race.Id == race.Id) || race.Id.Contains("/"))
-		{
-			race.Id = RandomBase64Generator.GenerateBase64String(5);
-		}
-
-		Console.WriteLine("Creating Startlist Ids...");
-
-		foreach (Startlist startlist in race.Startlists)
-		{
-			startlist.Id = RandomBase64Generator.GenerateBase64String(5);
-
-			while (race.Startlists.Exists(startlist => startlist.Id == startlist.Id) || startlist.Id.Contains("/"))
-			{
-				startlist.Id = RandomBase64Generator.GenerateBase64String(5);
-			}
-		}
-
-		Console.WriteLine("Sorting Startlists...");
-
-		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
-
-		Console.WriteLine("Setting DateTime and Name...");
-
-		race.creationDateTime = DateTime.Now;
-		race.lastEditDateTime = DateTime.Now;
-
-		race.Name = "";
-
-		Console.WriteLine("Adding Race...");
-
-		races.Add(race);
-
-		Console.WriteLine("Saving Races...");
-
-		await raceService.SaveRacesAsync(races);
-
-		Console.WriteLine("Navigating to race...");
-
-		NavManager.NavigateTo($"/races/edit/{race.Id}");
 	}
 
 	public static string GetTimeSpan(TimeSpan timeSpan)
