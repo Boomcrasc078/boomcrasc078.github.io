@@ -1,62 +1,68 @@
 ﻿body {
 }
 
-.btn-edit {
-    font-size: 16px;
+.btn{
+	font-size: 16px;
 }
 
-.btn-export {
-    font-size: 16px;
-}
-
-.btn-delete {
-    font-size: 16px;
-}
-
-.btn-add-race {
-    font-size: 20px;
+.btn-top-row {
+	font-size: 20px;
 }
 
 .all-races-container {
-    max-width: 500px;
-    background-color: var(--bs-secondary-bg);
-    border-radius: 20px;
-    min-height: 600px;
+	max-width: 500px;
+	background-color: var(--bs-secondary-bg);
+	border-radius: 20px;
+	min-height: 600px;
+	padding: 12px;
 }
 
 .top-row {
-    background-color: var(--bs-primary-bg);
-    border-block-end: solid;
-    border-block-color: var(--bs-border-color)
+	padding: 12px;
+	background-color: var(--bs-primary-bg);
+	border-block-end: solid;
+	border-block-color: var(--bs-border-color);
+	display: flex;
+	justify-content: space-between;
+}
+
+.top-row-title {
+	font-weight: bold;
+}
+
+.all-races-cards{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 12px;
 }
 
 .fade-in {
-    opacity: 0;
-    animation: fadeIn 1s forwards;
+	opacity: 0;
+	animation: fadeIn 1s forwards;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+	from {
+		opacity: 0;
+	}
 
-    to {
-        opacity: 1;
-    }
+	to {
+		opacity: 1;
+	}
 }
 
 .fade-out {
-    opacity: 1;
-    animation: fadeOut 0.5s forwards;
+	opacity: 1;
+	animation: fadeOut 0.5s forwards;
 }
 
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
+	from {
+		opacity: 1;
+	}
 
-    to{
-        opacity: 0;
-    }
-    
+	to {
+		opacity: 0;
+	}
 }

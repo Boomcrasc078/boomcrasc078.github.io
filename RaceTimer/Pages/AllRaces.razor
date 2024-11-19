@@ -31,76 +31,73 @@
 </div>
 
 <div class="all-races-container">
-	<div class="container">
-		<div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
-			<h1 class="fw-bold">All Races</h1>
-			<div>
-				<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
-				<label for="fileInput" class="btn btn-secondary btn-add-race">
-					<i class="bi bi-box-arrow-in-down"></i>
-				</label>
-				<button class="btn btn-primary btn-add-race" @onclick="()=>AddRace()">
-					<i class="bi bi-plus-lg"></i>
-				</button>
-			</div>
+	<div class="top-row">
+		<h1 class="top-row-title">All Races</h1>
+		<div>
+			<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
+			<label for="fileInput" class="btn btn-secondary btn-top-row">
+				<i class="bi bi-box-arrow-in-down"></i>
+			</label>
+			<button class="btn btn-primary btn-top-row" @onclick="()=>AddRace()">
+				<i class="bi bi-plus-lg"></i>
+			</button>
 		</div>
-		<div class="py-2">
-			@if (races != null)
+	</div>
+	<div class="all-races-cards">
+		@if (races != null)
+		{
+			@foreach (Race race in races)
 			{
-				@foreach (Race race in races)
-				{
-					<div class="card mb-3 @race.currentAnimation">
-						<div class="card-body d-flex justify-content-between">
-							<div>
-								<h5 class="card-title">
-									@if (race.Name == "")
-									{
-										<span>Untitled Race</span>
-									}
-									else
-									{
-										<span>@race.Name</span>
-									}
-								</h5>
-								<p class="card-text">
-									<div class="container">
-										<div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
-										<div>
-											Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
-										</div>
-									</div>
-									@if (race.Startlists.Count > 0)
-									{
-										<div class="fw-bold">Startlists:</div>
-										<ul>
-											@foreach (Startlist startlist in race.Startlists)
-											{
-												<li>@startlist.Name</li>
-											}
-										</ul>
-									}
-								</p>
-							</div>
-
-							<div class="d-flex flex-column align-items-end">
-								<a href="@($"/races/edit/{race.Id}")" class="btn btn-primary mb-2">
-									<i class="bi bi-pencil-square"></i> Edit
-								</a>
-								<button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-									<i class="bi bi-trash3"></i> Delete
-								</button>
-								<button class="btn btn-secondary mb-2">
-									<i class="bi bi-copy"></i> Duplicate
-								</button>
-								<button class="btn btn-secondary" @onclick="() => ExportAndDownloadRace(race)">
-									<i class="bi bi-box-arrow-up"></i> Export
-								</button>
-							</div>
-						</div>
+				<div class="card @race.currentAnimation">
+					<div class="card-header">
+						<h5 class="card-title">
+							@if (race.Name == "")
+							{
+								<span>Untitled Race</span>
+							}
+							else
+							{
+								<span>@race.Name</span>
+							}
+						</h5>
 					</div>
-				}
+					<div class="card-body">
+						<p class="card-text">
+							<div>
+								<div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
+								<div>
+									Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+								</div>
+							</div>
+							@if (race.Startlists.Count > 0)
+							{
+								<div>Startlists:</div>
+								<ul>
+									@foreach (Startlist startlist in race.Startlists)
+									{
+										<li>@startlist.Name</li>
+									}
+								</ul>
+							}
+						</p>
+					</div>
+					<div class="card-footer">
+						<a href="@($"/races/edit/{race.Id}")" class="btn btn-primary">
+							<i class="bi bi-pencil-square"></i> Edit
+						</a>
+						<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
+							<i class="bi bi-trash3"></i> Delete
+						</button>
+						<button class="btn btn-secondary">
+							<i class="bi bi-copy"></i> Duplicate
+						</button>
+						<button class="btn btn-secondary" @onclick="() => ExportAndDownloadRace(race)">
+							<i class="bi bi-box-arrow-up"></i> Export
+						</button>
+					</div>
+				</div>
 			}
-		</div>
+		}
 	</div>
 </div>
 
@@ -176,7 +173,6 @@
 		try
 		{
 			var file = e.File;
-
 			var memoryStream = new MemoryStream();
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
