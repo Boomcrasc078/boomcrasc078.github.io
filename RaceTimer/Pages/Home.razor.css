@@ -1,5 +1,15 @@
 ﻿
-.text-box {
-    background-color: var(--bs-secondary-bg-subtle);
+body{
+
+}
+
+h1{
+    font-weight: bold;
+    text-align: center;
+    margin: 30px;
+}
+
+img{
+    width: 100%;
     border-radius: 20px;
 }

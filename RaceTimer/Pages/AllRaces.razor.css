@@ -1,8 +1,9 @@
-﻿body {
+﻿.btn{
+	font-size: 16px;
 }
 
-.btn{
-	font-size: 16px;
+.btn-race{
+	flex-wrap: nowrap;
 }
 
 .btn-top-row {
@@ -35,6 +36,30 @@
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 12px;
+	overflow: hidden;
+}
+
+.card-title{
+	padding-block-start: 6px;
+}
+
+.card-header{
+	display: flex;
+	align-content: center;
+}
+
+.card-body{
+	display: flex;
+	justify-content: space-between;
+}
+
+.race-buttons{
+	display:flex;
+	flex-direction: column;
+	gap: 4px;
+	flex-grow: 1;
+	flex-shrink: 1;
+	max-width: 150px;
 }
 
 .fade-in {
