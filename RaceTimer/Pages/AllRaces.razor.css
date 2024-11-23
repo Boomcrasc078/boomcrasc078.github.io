@@ -1,4 +1,11 @@
-﻿.btn{
+﻿.page{
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	min-height: 90vh;
+}
+
+.btn{
 	font-size: 16px;
 }
 
@@ -6,25 +13,34 @@
 	flex-wrap: nowrap;
 }
 
-.btn-top-row {
-	font-size: 20px;
-}
-
 .all-races-container {
-	max-width: 500px;
-	background-color: var(--bs-secondary-bg);
+	display: flex;
+	margin: 12px;
+	flex-basis: 90%;
+	flex-direction: column;
+	background-color: rgba(var(--bs-body-bg-rgb), .3);
 	border-radius: 20px;
-	min-height: 600px;
 	padding: 12px;
+/*	border: solid;
+	border-color: var(--bs-border-color);
+	border-width: 1px;
+*/	backdrop-filter: blur(10px);
+	overflow: hidden;
+	max-width: 800px;
 }
 
 .top-row {
 	padding: 12px;
-	background-color: var(--bs-primary-bg);
-	border-block-end: solid;
-	border-block-color: var(--bs-border-color);
 	display: flex;
 	justify-content: space-between;
+	gap: 12px;
+}
+
+.top-row-buttons{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: end;
+	gap: 12px;
 }
 
 .top-row-title {
@@ -39,6 +55,10 @@
 	overflow: hidden;
 }
 
+.card{
+	background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
 .card-title{
 	padding-block-start: 6px;
 }
@@ -51,15 +71,22 @@
 .card-body{
 	display: flex;
 	justify-content: space-between;
+	gap: 10px;
+	flex-wrap: wrap;
 }
 
 .race-buttons{
+	background-color: rgba(var(--bs-body-bg-rgb), .5);
+	border: solid 1px;
+	border-radius: 20px;
 	display:flex;
+	padding: 10px;
 	flex-direction: column;
 	gap: 4px;
 	flex-grow: 1;
 	flex-shrink: 1;
-	max-width: 150px;
+	max-width: 200px;
+	min-width: 170px;
 }
 
 .fade-in {

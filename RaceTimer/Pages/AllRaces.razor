@@ -23,83 +23,95 @@
 				Are you sure you want to delete @modalRace.Name?
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteRace(modalRace)">Delete</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRace(modalRace)">
+					<span>Delete</span>
+					<i class="bi bi-trash3"></i>
+				</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="all-races-container">
-	<div class="top-row">
-		<h1 class="top-row-title">All Races</h1>
-		<div>
-			<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
-			<label for="fileInput" class="btn btn-secondary btn-top-row">
-				<i class="bi bi-box-arrow-in-down"></i>
-			</label>
-			<button class="btn btn-primary btn-top-row" @onclick="()=>AddRace()">
-				<i class="bi bi-plus-lg"></i>
-			</button>
-		</div>
-	</div>
-	<div class="all-races-cards">
-		@if (races != null)
-		{
-			@foreach (Race race in races)
-			{
-				<div class="card @race.currentAnimation">
-					<div class="card-header">
-						<h5 class="card-title">
-							@if (race.Name == "")
-							{
-								<span>Untitled Race</span>
-							}
-							else
-							{
-								@race.Name
-							}
-						</h5>
-					</div>
-					<div class="card-body">
-						<div class="card-text">
-							<div>
-								<div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
-								<div>
-									Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
-								</div>
-							</div>
-							@if (race.Startlists.Count > 0)
-							{
-								<div>Startlists:</div>
-								<ul>
-									@foreach (Startlist startlist in race.Startlists)
-									{
-										<li>@startlist.Name</li>
-									}
-								</ul>
-							}
-						</div>
-						<div class="race-buttons">
-							<a href="@($"/races/edit/{race.Id}")" class="btn btn-primary">
-								<i class="bi bi-pencil-square"></i> Edit
-							</a>
-							<button type="button" class="btn btn-danger btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-								<i class="bi bi-trash3"></i> Delete
-							</button>
-							<button class="btn btn-secondary btn-race">
-								<i class="bi bi-copy"></i> Duplicate
-							</button>
-							<button class="btn btn-secondary btn-race" @onclick="() => ExportAndDownloadRace(race)">
-								<i class="bi bi-box-arrow-up"></i> Export
-							</button>
-						</div>
-					</div>
-					<div class="card-footer">
-					</div>
+<div class="page">
+	<div class="all-races-container">
+		<div class="top-row">
+			<h1 class="top-row-title">All Races</h1>
+			<div class="top-row-buttons">
+				<div>
+					<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
+					<label for="fileInput" class="btn btn-normal">
+						<span>Import</span>
+						<i class="bi btn-bi bi-box-arrow-in-down"></i>
+					</label>
 				</div>
+				<button class="btn btn-normal" @onclick="()=>AddRace()">
+					<span>Add Race</span>
+					<i class="bi btn-bi bi-plus-lg"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="all-races-cards">
+			@if (races != null)
+			{
+				@foreach (Race race in races)
+				{
+					<div class="card @race.currentAnimation">
+						<div class="card-header">
+							<h5 class="card-title">
+								@if (race.Name == "")
+								{
+									<span>Untitled Race</span>
+								}
+								else
+								{
+									@race.Name
+								}
+							</h5>
+						</div>
+						<div class="card-body">
+							<div class="card-text">
+								<div>
+									<div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
+									<div>
+										Last edited <span>@GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+									</div>
+								</div>
+								@if (race.Startlists.Count > 0)
+								{
+									<div>Startlists:</div>
+									<ul>
+										@foreach (Startlist startlist in race.Startlists)
+										{
+											<li>@startlist.Name</li>
+										}
+									</ul>
+								}
+							</div>
+							<div class="race-buttons">
+								<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
+									<span>Edit</span>
+									<i class="bi btn-bi bi-pencil-square"></i>
+								</a>
+								<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
+									<span>Delete</span>
+									<i class="bi btn-bi bi-trash3"></i>
+								</button>
+								<button class="btn btn-normal btn-race">
+									<span>Duplicate</span>
+									<i class="bi btn-bi bi-copy"></i>
+								</button>
+								<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
+									<span>Export</span>
+									<i class="bi btn-bi bi-box-arrow-up"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				}
 			}
-		}
+		</div>
 	</div>
 </div>
 

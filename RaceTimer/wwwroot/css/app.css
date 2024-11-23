@@ -105,6 +105,10 @@ code {
 }
 
 .content-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
     background-color: rgba(var(--bs-body-bg-rgb), .3);
     border: solid;
     border-color: var(--bs-border-color);
@@ -113,3 +117,55 @@ code {
     padding: 24px;
     max-width: 500px;
 }
+
+/* Grundläggande knappstil */
+.btn-normal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between; /* Ikonen börjar i mitten */
+    background-color: #0000002f;
+    padding: 24px;
+    font-weight: bold;
+    border-radius: 30px;
+    border: solid 1px white;
+    color: white;
+    overflow: hidden; /* Döljer allt som går utanför knappen */
+    position: relative; /* För att placera ikonen absolut */
+    transition: padding 0.3s ease; /* Gör övergången smidig */
+    height: 50px;
+    min-width: 150px;
+}
+
+    /* Textens stil */
+    .btn-normal span {
+        position: absolute; /* Absolut position för smooth rörelse */
+        opacity: 1;
+        white-space: nowrap; /* Förhindrar radbrytning */
+        transition: all 0.3s ease; /* Smidig animation för texten */
+    }
+
+/* Ikonens stil */
+.btn-bi {
+    position: absolute; /* Absolut position för smooth rörelse */
+    left: calc(100% - 40px); /* Startar nära högerkanten av knappen */
+    transform: translateX(0); /* Ingen förskjutning initialt */
+    font-size: 24px;
+    transition: all 0.3s ease; /* Smidig animation för storlek och position */
+}
+
+/* Vid hover */
+.btn-normal:hover {
+    background-color: #0000005f;
+    border: solid 1px white;
+}
+
+    .btn-normal:hover span {
+        opacity: 0; /* Dölj texten */
+        transform: translateX(-100%); /* Flytta texten helt utanför knappen */
+    }
+
+    .btn-normal:hover .btn-bi {
+        left: 50%; /* Flytta ikonen till mitten */
+        transform: translateX(-50%); /* Centrerar ikonen horisontellt */
+        font-size: 30px; /* Gör ikonen större */
+    }
