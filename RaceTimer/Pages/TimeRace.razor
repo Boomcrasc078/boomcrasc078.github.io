@@ -7,8 +7,8 @@
 <Toasts @ref="toasts" />
 
 <div id="timeListContainer" class="table-container">
-	<table class="table table-sm table-hover table-responsive">
-		<thead class="table-secondary">
+	<table class="table table-sm table-responsive">
+		<thead>
 			<tr>
 				<th>Bib</th>
 				<th>Name</th>
@@ -19,7 +19,7 @@
 		<tbody class="table-group-divider">
 			@foreach (Racer racer in timeList)
 			{
-				<tr class="@((activeRacer==racer)?"table-primary":"")" @onclick="@(()=>activeRacer = racer)">
+				<tr class="@((activeRacer==racer)?"active":"")" @onclick="@(()=>activeRacer = racer)">
 					<th>@racer.Bib</th>
 					<td>@racer.Name @racer.Surname</td>
 					<td>
@@ -39,7 +39,7 @@
 	</table>
 </div>
 
-<button class="btn btn-primary time-container" @onclick="()=>SetTimeClick(DateTime.Now)">
+<button class="btn time-container btn-normal" @onclick="()=>SetTimeClick(DateTime.Now)">
 	<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
 	<h2 class="btn-text text-center">Press to set time</h2>
 </button>

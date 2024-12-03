@@ -20,6 +20,8 @@
 	display: flex;
 	flex-direction: column;
 	overflow: hidden; /* Förhindrar att innehåll läcker ut */
+	height: auto;
+	backdrop-filter: blur(10px);
 }
 
 .table-container {
@@ -27,7 +29,20 @@
 	height: 25vh;
 	overflow: auto;
 	resize: vertical;
-	background-color: var(--bs-secondary-bg-subtle);
+	background-color: rgb(var(--bs-body-bg-rgb), .1);
+	backdrop-filter: blur(10px);
 	border-radius: 20px;
 	padding: 15px;
+}
+
+th, td{
+	background-color: rgb(var(--bs-body-bg-rgb), .1);
+}
+
+tr:hover {
+	background-color: rgb(var(--bs-body-bg-rgb), .3);
+}
+
+table .active {
+	background-color: rgb(var(--bs-body-bg-rgb), .5);
 }

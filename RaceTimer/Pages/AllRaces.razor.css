@@ -21,10 +21,7 @@
 	background-color: rgba(var(--bs-body-bg-rgb), .3);
 	border-radius: 20px;
 	padding: 12px;
-/*	border: solid;
-	border-color: var(--bs-border-color);
-	border-width: 1px;
-*/	backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	overflow: hidden;
 	max-width: 800px;
 }
@@ -82,10 +79,7 @@
 	display:flex;
 	padding: 10px;
 	flex-direction: column;
-	gap: 4px;
-	flex-grow: 1;
-	flex-shrink: 1;
-	max-width: 200px;
+	gap: 12px;
 	min-width: 170px;
 }
 

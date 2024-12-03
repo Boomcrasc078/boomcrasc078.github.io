@@ -2,11 +2,11 @@
     @for (int i = 1; i <= 9; i++)
     {
         int currentNumber = i;
-        <button class="btn btn-secondary numpad-button" @onclick="@(() => OnNumberClick(currentNumber))">@currentNumber</button>
+        <button class="btn numpad-button btn-normal" @onclick="@(() => OnNumberClick(currentNumber))">@currentNumber</button>
     }
-    <button class="btn btn-secondary numpad-button" @onclick="OnBackspaceClick"><i class="bi bi-backspace"></i></button>
-    <button class="btn btn-secondary numpad-button" @onclick="() => OnNumberClick(0)">0</button>
-    <button class="btn btn-secondary numpad-button" @onclick="OnEnterClick">Enter</button>
+    <button class="btn numpad-button btn-normal" @onclick="OnBackspaceClick"><i class="bi bi-backspace"></i></button>
+    <button class="btn numpad-button btn-normal" @onclick="() => OnNumberClick(0)">0</button>
+    <button class="btn numpad-button btn-normal" @onclick="OnEnterClick">Enter</button>
 </div>
 
 @code {

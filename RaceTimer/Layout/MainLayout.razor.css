@@ -1,5 +1,5 @@
 .page {
-    position: relative;
+    position: sticky;
     display: flex;
     flex-direction: column;
     background-color: #0D012B;

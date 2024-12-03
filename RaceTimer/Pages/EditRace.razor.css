@@ -1,9 +1,5 @@
-﻿body {
-}
-
-.btn {
+﻿.btn {
     color: var(--bs-light);
-    
 }
 
 .btn-edit {
@@ -37,7 +33,7 @@
 .top-row {
     background-color: var(--bs-primary-bg);
     border-block-end: solid;
-    border-block-color: var(--bs-border-color)
+    border-block-color: var(--bs-border-color);
 }
 
 .fade-in {
