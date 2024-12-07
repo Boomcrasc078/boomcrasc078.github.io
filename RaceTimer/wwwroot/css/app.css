@@ -92,7 +92,7 @@ code {
     color: #c02d76;
 }
 
-.box-container {
+.content-box-section {
     display: flex;
     justify-self: center;
     flex-wrap: wrap;
@@ -110,8 +110,7 @@ code {
     justify-content: space-between;
     gap: 24px;
     background-color: rgba(var(--bs-body-bg-rgb), .3);
-    border: solid;
-    border-color: var(--bs-border-color);
+    border: none;
     border-radius: 20px;
     backdrop-filter: blur(10px);
     padding: 24px;
