@@ -1,39 +1,29 @@
-﻿.btn {
-    color: var(--bs-light);
-}
-
-.btn-edit {
-    font-size: 16px;
-}
-
-.btn-export {
-    font-size: 16px;
-}
-
-.btn-delete {
-    font-size: 16px;
-}
-
-.btn-add {
-    font-size: 20px;
+﻿.page {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    min-height: 90vh;
 }
 
 .startlists-container {
-    margin-top: 20px;
-    max-width: 600px;
-    background-color: var(--bs-secondary-bg);
+    display: flex;
+    margin: 12px;
+    flex-basis: 90%;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
     border-radius: 20px;
-    min-height: 300px;
-}
-
-.race-input{
-    max-width: 600px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    max-width: 800px;
+    gap: 12px;
 }
 
 .top-row {
-    background-color: var(--bs-primary-bg);
-    border-block-end: solid;
-    border-block-color: var(--bs-border-color);
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .fade-in {

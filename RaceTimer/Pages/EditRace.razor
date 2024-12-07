@@ -5,156 +5,162 @@
 @inject NavigationManager NavManager
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete @modalStartlist.Name?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteStartlist(modalStartlist)">Delete</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Are you sure you want to delete @modalStartlist.Name?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteStartlist(modalStartlist)">Delete</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>
+
 
 @if (currentRace != null)
 {
-    <PageTitle>Edit @currentRace.Name</PageTitle>
-    <div>
-        <a class="btn btn-secondary my-3" href="@($"/races")">Back</a>
-    </div>
-    <h1>
-        @if (currentRace.Name == "")
-        {
-            <span>Untitled Race</span>
-        }
-        else
-        {
-            <span>@currentRace.Name</span>
-        }
-    </h1>
+	<PageTitle>Edit @currentRace.Name</PageTitle>
 
-    <div>
-        <div>
-            <label>Name:</label>
-            <input type="text" @onchange="UpdateName" class="form-control race-input" value="@currentRace.Name" placeholder="Untitled Race"/>
-        </div>
-        <div class="startlists-container">
-            <div class="container">
-                <div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
-                    <h1>Startlists</h1>
-                    <button class="btn btn-primary btn-add" @onclick="()=>AddStartlist()">
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
-                </div>
-                <div class="py-2">
-                    @if (currentRace.Startlists != null)
-                    {
-                        @foreach (Startlist startlist in currentRace.Startlists)
-                        {
-                            <div class="card mb-3 @startlist.currentAnimation">
-                                <div class="card-body d-flex justify-content-between">
-                                    <div>
-                                        <h5 class="card-title">@startlist.Name</h5>
-                                        <p class="card-text">
-                                            <div class="container">
+	<div class="page">
+		<div class="startlists-container">
+			<div>
+				<div class="top-row">
+					<h1 class="fw-bold">
+						@if (currentRace.Name == "")
+						{
+							<span>Untitled Race</span>
+						}
+						else
+						{
+							<span>@currentRace.Name</span>
+						}
+					</h1>
 
-                                            </div>
-                                        </p>
-                                    </div>
+					<div>
+						<a class="btn btn-normal" href="@($"/races")">
+							<span>Back</span>
+							<i class="bi btn-bi bi-chevron-double-left"></i>
+						</a>
+					</div>
+				</div>
+				<div>
+					<label>Name:</label>
+					<input type="text" @onchange="UpdateName" class="form-control race-input" value="@currentRace.Name" placeholder="Untitled Race" />
+				</div>
+			</div>
+			<div>
+				<div class="top-row">
+					<h1>Startlists</h1>
+					<button class="btn btn-normal" @onclick="()=>AddStartlist()">
+						<span>Add</span>
+						<i class="bi btn-bi bi-plus-lg"></i>
+					</button>
+				</div>
+				<div class="">
+					@if (currentRace.Startlists != null)
+					{
+						@foreach (Startlist startlist in currentRace.Startlists)
+						{
+							<div class="card mb-3 @startlist.currentAnimation">
+								<div class="card-body d-flex justify-content-between">
+									<div>
+										<h5 class="card-title">@startlist.Name</h5>
+										<p class="card-text">
+											<div class="container">
+											</div>
+										</p>
+									</div>
 
-                                    <div class="d-flex flex-column align-items-end">
-                                        <a href="@($"/races/edit/{currentRace.Id}/{startlist.Id}")" class="btn btn-primary mb-2">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </a>
-                                        <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalStartlist = startlist">
-                                            <i class="bi bi-trash3"></i> Delete
-                                        </button>
-                                        <button class="btn btn-secondary mb-2">
-                                            <i class="bi bi-copy"></i> Duplicate
-                                        </button>
-                                        <button class="btn btn-secondary">
-                                            <i class="bi bi-box-arrow-up"></i> Export
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <PageTitle>Loading...</PageTitle>
-    <p>Loading...</p>
+									<div class="d-flex flex-column align-items-end">
+										<a href="@($"/races/edit/{currentRace.Id}/{startlist.Id}")" class="btn btn-primary mb-2">
+											<i class="bi bi-pencil-square"></i> Edit
+										</a>
+										<button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalStartlist = startlist">
+											<i class="bi bi-trash3"></i> Delete
+										</button>
+										<button class="btn btn-secondary mb-2">
+											<i class="bi bi-copy"></i> Duplicate
+										</button>
+										<button class="btn btn-secondary">
+											<i class="bi bi-box-arrow-up"></i> Export
+										</button>
+									</div>
+								</div>
+							</div>
+						}
+					}
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 }
 
 @code {
-    [Parameter] public string RaceId { get; set; }
-    private Race currentRace;
-    private Startlist modalStartlist = new Startlist();
+	[Parameter] public string RaceId { get; set; }
+	private Race currentRace;
+	private Startlist modalStartlist = new Startlist();
 
-    protected override async Task OnInitializedAsync()
-    {
-        currentRace = await raceService.GetRaceByIdAsync(RaceId);
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+	}
 
-    private async Task UpdateName(ChangeEventArgs e)
-    {
-        currentRace.Name = e.Value.ToString();
-        await SaveRace();
-    }
+	private async Task UpdateName(ChangeEventArgs e)
+	{
+		currentRace.Name = e.Value.ToString();
+		await SaveRace();
+	}
 
-    private async Task SaveRace()
-    {
-        currentRace.lastEditDateTime = DateTime.Now;
-        await raceService.UpdateRaceAsync(currentRace);
-    }
+	private async Task SaveRace()
+	{
+		currentRace.lastEditDateTime = DateTime.Now;
+		await raceService.UpdateRaceAsync(currentRace);
+	}
 
-    private async Task AddStartlist()
-    {
-        Startlist addStartlist = new Startlist()
-            {
-                Name = "Untitled Startlist",
-                Id = RandomBase64Generator.GenerateBase64String(5),
-                Racers = new List<Racer>()
-            };
+	private async Task AddStartlist()
+	{
+		Startlist addStartlist = new Startlist()
+			{
+				Name = "Untitled Startlist",
+				Id = RandomBase64Generator.GenerateBase64String(5),
+				Racers = new List<Racer>()
+			};
 
-        while (currentRace.Startlists.Exists(startlist => startlist.Id == addStartlist.Id) || addStartlist.Id.Contains("/"))
-        {
-            addStartlist.Id = RandomBase64Generator.GenerateBase64String(5);
-        }
+		while (currentRace.Startlists.Exists(startlist => startlist.Id == addStartlist.Id) || addStartlist.Id.Contains("/"))
+		{
+			addStartlist.Id = RandomBase64Generator.GenerateBase64String(5);
+		}
 
-        currentRace.Startlists.Add(addStartlist);
-        await SaveRace();
+		currentRace.Startlists.Add(addStartlist);
+		await SaveRace();
 
-        NavManager.NavigateTo($"/races/edit/{currentRace.Id}/{addStartlist.Id}");
+		NavManager.NavigateTo($"/races/edit/{currentRace.Id}/{addStartlist.Id}");
 
-    }
+	}
 
-    private async Task DeleteStartlist(Startlist deleteStartlist)
-    {
-        if (deleteStartlist == null)
-            return;
-        if (!currentRace.Startlists.Contains(deleteStartlist))
-            return;
+	private async Task DeleteStartlist(Startlist deleteStartlist)
+	{
+		if (deleteStartlist == null)
+			return;
+		if (!currentRace.Startlists.Contains(deleteStartlist))
+			return;
 
-        deleteStartlist.currentAnimation = "fade-out";
+		deleteStartlist.currentAnimation = "fade-out";
 
-        await Task.Delay(500);
+		await Task.Delay(500);
 
-        deleteStartlist.currentAnimation = "";
+		deleteStartlist.currentAnimation = "";
 
-        currentRace.Startlists.Remove(deleteStartlist);
-        await raceService.UpdateRaceAsync(currentRace);
-    }
+		currentRace.Startlists.Remove(deleteStartlist);
+		await raceService.UpdateRaceAsync(currentRace);
+	}
 
 }
