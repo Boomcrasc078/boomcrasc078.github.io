@@ -1,39 +1,86 @@
-﻿.btn {
-    color: var(--bs-light);
+﻿.page {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    min-height: 90vh;
 }
 
-.btn-edit {
+.btn {
     font-size: 16px;
 }
 
-.btn-export {
-    font-size: 16px;
+.btn-race {
+    flex-wrap: nowrap;
 }
 
-.btn-delete {
-    font-size: 16px;
-}
-
-.btn-add {
-    font-size: 20px;
-}
-
-.startlists-container {
-    margin-top: 20px;
-    max-width: 600px;
-    background-color: var(--bs-secondary-bg);
+.box-body {
+    display: flex;
+    margin: 12px;
+    flex-basis: 90%;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
     border-radius: 20px;
-    min-height: 300px;
-}
-
-.race-input{
-    max-width: 600px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    max-width: 800px;
 }
 
 .top-row {
-    background-color: var(--bs-primary-bg);
-    border-block-end: solid;
-    border-block-color: var(--bs-border-color);
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.top-row-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 12px;
+}
+
+.top-row-title {
+    font-weight: bold;
+}
+
+.all-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title {
+    padding-block-start: 6px;
+}
+
+.card-header {
+    display: flex;
+    align-content: center;
+}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-buttons {
+    background-color: rgba(var(--bs-body-bg-rgb), .5);
+    border: solid 1px;
+    border-radius: 20px;
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 170px;
 }
 
 .fade-in {
