@@ -29,9 +29,13 @@ main {
     display: none;
 }
 
+.top-row {
+    display: none;
+}
+
 @media (max-width: 641px) {
     .page {
-
+        flex-direction: column;
     }
 
     .sidebar {
@@ -46,12 +50,6 @@ main {
 
     .sidebar-toggle {
         display: block;
-        background-color: rgba(var(--bs-secondary-bg-rgb), .1);
-        backdrop-filter: blur(10px);
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 99;
         font-size: 40px;
         border: none;
         border-radius: 20px;
@@ -66,10 +64,19 @@ main {
     .sidebar:not(.sidebar-open) {
         animation: hide-sidebar 0.5s forwards;
     }
+
+    .top-row {
+        display: block;
+        position: sticky;
+        top: 0px;
+        z-index: 100;
+        background-color: rgba(var(--bs-secondary-bg-rgb), .1);
+        backdrop-filter: blur(10px);
+    }
 }
 
 @keyframes hide-sidebar {
-    from{
+    from {
         transform: translateX(0%);
         display: block;
     }
@@ -91,4 +98,3 @@ main {
         display: block;
     }
 }
-

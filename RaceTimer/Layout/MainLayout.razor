@@ -3,9 +3,12 @@
 @using RaceTimer.Components
 
 <div class="page">
-	<button class="sidebar-toggle" @onclick="@(()=>sidebarToggle = "sidebar-open")">
-		<i class="bi-list"></i>
-	</button>
+
+	<div class="top-row">
+		<button class="btn sidebar-toggle" @onclick="@(()=>sidebarToggle = "sidebar-open")">
+			<i class="bi-list"></i>
+		</button>
+	</div>
 	<div class="sidebar @sidebarToggle">
 		<NavMenu SidebarToggle="SideBarToggleCallback" />
 	</div>
