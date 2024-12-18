@@ -7,11 +7,21 @@
     border: none;
 }
 
+    .navbar-toggle i {
+        font-size: 24px;
+        display: inline-block;
+        position: relative;
+        margin-right: 0.75rem;
+        top: -1px;
+        background-size: cover;
+        color: var(--bs-emphasis)
+    }
+
 .navbar-brand {
     font-size: 1.3rem;
 }
 
-.bi {
+.nav-item i {
     display: inline-block;
     position: relative;
     margin-right: 0.75rem;
@@ -57,11 +67,6 @@
 @media (min-width: 641px) {
     .navbar-toggle {
         display: none;
-    }
-
-    .collapse {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
     }
 
     .nav-scrollable {
