@@ -68,7 +68,7 @@ main {
     .top-row {
         display: block;
         position: sticky;
-        top: 0px;
+        top: 0;
         z-index: 100;
         background-color: rgba(var(--bs-secondary-bg-rgb), .1);
         backdrop-filter: blur(10px);

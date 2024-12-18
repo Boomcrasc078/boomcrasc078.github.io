@@ -23,7 +23,7 @@
 	</div>
 </div>
 
-<div>
+<div class="page">
 	@if (currentRace != null)
 	{
 		<PageTitle>Edit @currentRace.Name</PageTitle>
@@ -53,7 +53,7 @@
 				<input type="text" @onchange="UpdateName" class="form-control race-input" value="@currentRace.Name" placeholder="Untitled Race" />
 			</div>
 		</div>
-		<div class="box-body">
+		<div class="box-body box-body-stretch">
 			<div class="top-row">
 				<h1 class="top-row-title">Startlists</h1>
 				<div class="top-row-buttons">

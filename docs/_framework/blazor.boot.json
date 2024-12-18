@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "RaceTimer",
   "resources": {
-    "hash": "sha256-pIYDgQ5xzuE+K7qB4UAOBZYDCrEcIiLFm66+snHSM3g=",
+    "hash": "sha256-bqhgl7IFOZmRE3GgYJYausR5GzgkFyHsBqtEeoXM6qw=",
     "jsModuleNative": {
       "dotnet.native.8.0.10.u43fxteehp.js": "sha256-QVxMlY7ohmjgde/bZMA0dlWDAeuUP+tEfkiSdg4DFcE="
     },
@@ -38,7 +38,7 @@
       "Microsoft.JSInterop.wasm": "sha256-IK6WQ4VIe0Y97k4EUUc4h2/vpDChF0wH4FkPy4ibLCw=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-r/+bWAAxKn2+Wu3MRYDXvKEbHjLNuptflgNuNhQdK6w=",
       "netstandard.wasm": "sha256-aC53gcXVYl6Mbds/2sc1gVbjSlvfio4GrGEpT0Wwois=",
-      "RaceTimer.wasm": "sha256-Ip2/dibsnwcKEcQbLie2ooSZJYQGZ3Nx8nGQAfMhVI8=",
+      "RaceTimer.wasm": "sha256-E8pLT+lW4Tfk0hj15+NPG4N5Xu8sqXTZW7bJGjDCKJs=",
       "RBush.wasm": "sha256-Rm4AKHr19ZksQfXFnW4NxsE5g+aYG8gRp+BnQ25zGes=",
       "SixLabors.Fonts.wasm": "sha256-TYAwAMga8iYHgcD5+CMUwDAmCjtNUbzJJP6/e+Xtl5w=",
       "System.Buffers.wasm": "sha256-SGGnGUijyqoLUWllAVHycAN7ojP1b3zZ0Y2VSy6IQPc=",

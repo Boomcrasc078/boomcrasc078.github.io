@@ -1,19 +1,92 @@
-﻿.startlist-container {
-    margin-top: 20px;
-    max-width: 600px;
-    background-color: var(--bs-secondary-bg);
-    border-radius: 20px;
-    min-height: 300px;
+﻿.page {
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
 
-.startlist-input {
-    max-width: 600px;
+.box-body {
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 90%;
+    max-width: 800px;
+    gap: 24px;
 }
+
+    .box-body:is(.box-body-stretch) {
+        flex-grow: 1;
+    }
 
 .top-row {
-    background-color: var(--bs-primary-bg);
-    border-block-end: solid;
-    border-block-color: var(--bs-border-color)
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title {
+    font-weight: bold;
+}
+
+.all-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title {
+    padding-block-start: 6px;
+}
+
+.card-header {
+    display: flex;
+    align-content: center;
+}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.race-buttons {
+    background-color: rgba(var(--bs-body-bg-rgb), .5);
+    border: solid 1px;
+    border-radius: 20px;
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 170px;
 }
 
 .fade-in {
@@ -44,8 +117,4 @@
     to {
         opacity: 0;
     }
-}
-
-.btn-add {
-    font-size: 20px;
 }

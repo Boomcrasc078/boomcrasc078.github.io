@@ -1,52 +1,50 @@
-﻿article{
+﻿.page {
+    min-height: 95vh;
     display: flex;
-    flex-direction: column;
     align-content: center;
+    flex-direction: column;
     flex-wrap: wrap;
-}
-
-.btn {
-    font-size: 16px;
-}
-
-.btn-race {
-    flex-wrap: nowrap;
 }
 
 .box-body {
     display: flex;
     margin: 12px;
-    flex-basis: 90%;
     flex-direction: column;
     background-color: rgba(var(--bs-body-bg-rgb), .3);
     border-radius: 20px;
-    padding: 24px;
+    padding: 12px;
     backdrop-filter: blur(10px);
     overflow: hidden;
+    width: 90%;
     max-width: 800px;
     gap: 24px;
 }
 
-.box-section{
-    border-radius: 20px;
-    border: 1px dashed var(--bs-border-color);
-    padding: 12px;
-}
+    .box-body:is(.box-body-stretch) {
+        flex-grow: 1;
+    }
 
 .top-row {
     padding: 12px;
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    column-gap: 15%;
+    row-gap: 12px;
     flex-wrap: wrap;
 }
 
 .top-row-buttons {
     display: flex;
     flex-wrap: wrap;
-    justify-content: end;
     gap: 12px;
+    flex-grow: 1;
 }
+
+    .top-row-buttons > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
 
 .top-row-title {
     font-weight: bold;
@@ -80,18 +78,7 @@
     flex-wrap: wrap;
 }
 
-.card-text div{
-    margin-block: 4px;
-}
-
-.card-footer {
-    display: flex;
-    overflow: hidden;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.card-buttons {
+.race-buttons {
     background-color: rgba(var(--bs-body-bg-rgb), .5);
     border: solid 1px;
     border-radius: 20px;
@@ -127,8 +114,7 @@
         opacity: 1;
     }
 
-    to{
+    to {
         opacity: 0;
     }
-    
 }

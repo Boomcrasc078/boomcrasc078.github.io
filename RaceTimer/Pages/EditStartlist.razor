@@ -99,60 +99,72 @@
 		</div>
 	</div>
 </div>
-<div>
-	<a class="btn btn-secondary my-3" href="@($"/races/edit/{currentRace.Id}")">Back</a>
-</div>
-@if(currentRace != null && currentStartlist != null)
-{
-	<h1 class="col">@currentStartlist.Name</h1>
 
-	<div>
-		<div >
-			<label>Name:</label>
-			<input type="text" @onchange="UpdateName" class="form-control startlist-input" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
-		</div>
+<div class="page">
 
-		<div class="">
-			<div class="startlist-container">
-				<div class="container">
-					<div class="container top-row d-flex justify-content-between align-items-center mb-3 pt-3 pb-2">
-						<h1>Racers</h1>
-						<button class="btn btn-primary btn-add" @onclick="()=>AddRacer()">
-							<i class="bi bi-plus-lg"></i>
-						</button>
-					</div>
-					<table class="table align-middle">
-						<thead class="table-primary">
-							<tr>
-								<th>Name</th>
-								<th>Bib Number</th>
-								<th>Edit</th>
-								<th>Delete</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach (Racer racer in currentStartlist.Racers)
-							{
-								<tr class="@racer.currentAnimation">
-									<td>@racer.Name @racer.Surname</td>
-									<td>@racer.Bib</td>
-									<td><button class="btn btn-primary" @onclick="()=>selectedRacer=racer" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button></td>
-									<td><button class="btn btn-danger" @onclick="@(()=>DeleteRacer(racer))"><i class="bi bi-trash3"></i></button></td>
+	@if (currentRace != null && currentStartlist != null)
+	{
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">@currentStartlist.Name</h1>
 
-								</tr>
-							}
-						</tbody>
-					</table>
+				<div class="top-row-buttons">
+					<a class="btn btn-normal" href="@($"/races/edit/{currentRace.Id}")">
+						<span>Back</span>
+						<i class="bi btn-bi bi-chevron-double-left"></i>
+					</a>
 				</div>
 			</div>
+
+			<div>
+				<label>Name:</label>
+				<input type="text" @onchange="UpdateName" class="form-control startlist-input" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
+			</div>
+
 		</div>
-	</div>
-}
-else
-{
-	<PageTitle>Loading...</PageTitle>
-	<p>Loading...</p>
-}
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">Racers</h1>
+				<div class="top-row-buttons">
+					<button class="btn btn-normal" @onclick="()=>AddRacer()">
+						<span>Add</span>
+						<i class="bi btn-bi bi-plus-lg"></i>
+					</button>
+				</div>
+
+			</div>
+			<table class="table align-middle">
+				<thead class="table-primary">
+					<tr>
+						<th>Name</th>
+						<th>Bib Number</th>
+						<th>Edit</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (Racer racer in currentStartlist.Racers)
+					{
+						<tr class="@racer.currentAnimation">
+							<td>@racer.Name @racer.Surname</td>
+							<td>@racer.Bib</td>
+							<td><button class="btn btn-primary" @onclick="()=>selectedRacer=racer" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></button></td>
+							<td><button class="btn btn-danger" @onclick="@(()=>DeleteRacer(racer))"><i class="bi bi-trash3"></i></button></td>
+
+						</tr>
+					}
+				</tbody>
+			</table>
+
+		</div>
+
+	}
+	else
+	{
+		<PageTitle>Loading...</PageTitle>
+		<p>Loading...</p>
+	}
+</div>
 
 
 

@@ -1,23 +1,28 @@
-﻿.page{
+﻿.page {
+	min-height: 95vh;
 	display: flex;
-	justify-content: center;
 	align-content: center;
-	min-height: 90vh;
+	flex-direction: column;
+	flex-wrap: wrap;
 }
 
-.all-races-container {
+.box-body {
 	display: flex;
 	margin: 12px;
-	flex-basis: 90%;
 	flex-direction: column;
 	background-color: rgba(var(--bs-body-bg-rgb), .3);
 	border-radius: 20px;
 	padding: 12px;
 	backdrop-filter: blur(10px);
 	overflow: hidden;
+	width: 90%;
 	max-width: 800px;
 	gap: 24px;
 }
+
+	.box-body:is(.box-body-stretch) {
+		flex-grow: 1;
+	}
 
 .top-row {
 	padding: 12px;
@@ -45,7 +50,7 @@
 	font-weight: bold;
 }
 
-.all-races-cards{
+.all-cards{
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
