@@ -5,14 +5,6 @@
 	min-height: 90vh;
 }
 
-.btn{
-	font-size: 16px;
-}
-
-.btn-race{
-	flex-wrap: nowrap;
-}
-
 .all-races-container {
 	display: flex;
 	margin: 12px;
@@ -24,21 +16,30 @@
 	backdrop-filter: blur(10px);
 	overflow: hidden;
 	max-width: 800px;
+	gap: 24px;
 }
 
 .top-row {
 	padding: 12px;
 	display: flex;
 	justify-content: space-between;
-	gap: 12px;
+	column-gap: 15%;
+	row-gap: 12px;
+	flex-wrap: wrap;
 }
 
 .top-row-buttons{
-	display: flex;
+	display: flex;	
 	flex-wrap: wrap;
-	justify-content: end;
 	gap: 12px;
+	flex-grow: 1;
 }
+
+	.top-row-buttons > * {
+		display: flex;
+		flex-grow: 1;
+		flex-basis: 40%;
+	}
 
 .top-row-title {
 	font-weight: bold;
@@ -112,3 +113,4 @@
 		opacity: 0;
 	}
 }
+

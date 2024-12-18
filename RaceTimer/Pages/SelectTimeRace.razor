@@ -26,7 +26,7 @@
                             <div class="container">
                                 <div>Created <span class="text-primary">@race.creationDateTime.ToShortDateString()</span></div>
                                 <div>
-                                    Last edited <span>@AllRaces.GetTimeSpan(DateTime.Now - race.lastEditDateTime)</span>
+                                    Last edited <span>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</span>
                                 </div>
                             </div>
                             @if (race.Startlists.Count > 0)

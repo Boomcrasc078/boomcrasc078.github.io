@@ -133,6 +133,7 @@ code {
     transition: padding 0.3s ease; /* Gör övergången smidig */
     height: 50px;
     min-width: 150px;
+    flex: 1 1 auto;
 }
 
     /* Textens stil */
@@ -168,3 +169,7 @@ code {
         transform: translateX(-50%); /* Centrerar ikonen horisontellt */
         font-size: 30px; /* Gör ikonen större */
     }
+
+.modal-backdrop {
+    display: none;
+}
