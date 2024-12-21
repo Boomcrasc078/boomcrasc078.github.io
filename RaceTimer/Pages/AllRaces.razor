@@ -93,24 +93,25 @@
 									</ul>
 								}
 							</div>
-							<div class="race-buttons">
-								<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
-									<span>Edit</span>
-									<i class="bi btn-bi bi-pencil-square"></i>
-								</a>
-								<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-									<span>Delete</span>
-									<i class="bi btn-bi bi-trash3"></i>
-								</button>
-								<button class="btn btn-normal btn-race">
-									<span>Duplicate</span>
-									<i class="bi btn-bi bi-copy"></i>
-								</button>
-								<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
-									<span>Export</span>
-									<i class="bi btn-bi bi-box-arrow-up"></i>
-								</button>
-							</div>
+
+						</div>
+						<div class="card-footer">
+							<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
+								<span>Edit</span>
+								<i class="bi btn-bi bi-pencil-square"></i>
+							</a>
+							<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
+								<span>Delete</span>
+								<i class="bi btn-bi bi-trash3"></i>
+							</button>
+							<button class="btn btn-normal btn-race">
+								<span>Duplicate</span>
+								<i class="bi btn-bi bi-copy"></i>
+							</button>
+							<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
+								<span>Export</span>
+								<i class="bi btn-bi bi-box-arrow-up"></i>
+							</button>
 						</div>
 					</div>
 				}
@@ -205,5 +206,10 @@
 			Console.WriteLine($"Error during file import: {ex.Message}");
 			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
 		}
+	}
+
+	void DuplicateRace(Race race)
+	{
+		Race duplicatedRace = new Race();
 	}
 }

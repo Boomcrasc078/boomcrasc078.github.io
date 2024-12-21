@@ -33,4 +33,13 @@ public class Race
 
 		return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
 	}
+
+	Race DuplicateRace()
+	{
+		Race duplicatedRace = new Race();
+
+		duplicatedRace.Name = $"Copy of {this.Name}";
+
+		return duplicatedRace;
+	}
 }

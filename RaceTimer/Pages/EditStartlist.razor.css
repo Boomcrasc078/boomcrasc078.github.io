@@ -78,17 +78,6 @@
     flex-wrap: wrap;
 }
 
-.race-buttons {
-    background-color: rgba(var(--bs-body-bg-rgb), .5);
-    border: solid 1px;
-    border-radius: 20px;
-    display: flex;
-    padding: 10px;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 170px;
-}
-
 .fade-in {
     opacity: 0;
     animation: fadeIn 1s forwards;
@@ -117,4 +106,12 @@
     to {
         opacity: 0;
     }
+}
+
+th, td {
+    background-color: rgb(var(--bs-body-bg-rgb), .1);
+}
+
+tr:hover {
+    background-color: rgb(var(--bs-body-bg-rgb), .3);
 }

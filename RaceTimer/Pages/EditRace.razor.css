@@ -78,15 +78,10 @@
     flex-wrap: wrap;
 }
 
-.race-buttons {
-    background-color: rgba(var(--bs-body-bg-rgb), .5);
-    border: solid 1px;
-    border-radius: 20px;
+.card-footer {
     display: flex;
-    padding: 10px;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
-    min-width: 170px;
 }
 
 .fade-in {
