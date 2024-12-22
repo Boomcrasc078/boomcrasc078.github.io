@@ -215,13 +215,13 @@
 		Racer addRacer = new Racer()
 			{
 				Name = "",
-				Id = RandomBase64Generator.GenerateBase64String(5),
+				Id = IdGenerator.GenerateBase64String(5),
 				Bib = "1"
 			};
 
 		while (currentStartlist.Racers.Exists(racer => racer.Id == addRacer.Id) || addRacer.Id.Contains("/"))
 		{
-			addRacer.Id = RandomBase64Generator.GenerateBase64String(5);
+			addRacer.Id = IdGenerator.GenerateBase64String(5);
 		}
 
 		while (currentStartlist.Racers.Exists(racer => racer.Bib == addRacer.Bib))

@@ -10,7 +10,7 @@ public class Toast
 	public string Class { get; set; }
 	public Toast(string title, string text)
 	{
-		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Id = IdGenerator.GenerateBase64String(5);
 		this.Title = title;
 		this.Text = text;
 		Created = DateTime.Now;
@@ -18,7 +18,7 @@ public class Toast
 	}
 	public Toast(string title, string text, string @class)
 	{
-		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Id = IdGenerator.GenerateBase64String(5);
 		this.Title = title;
 		this.Text = text;
 		Created = DateTime.Now;
@@ -27,7 +27,7 @@ public class Toast
 
 	public Toast(string title, string text, string @class, DateTime created)
 	{
-		this.Id = RandomBase64Generator.GenerateBase64String(5);
+		this.Id = IdGenerator.GenerateBase64String(5);
 		this.Title = title;
 		this.Text = text;
 		this.Class = @class;

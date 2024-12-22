@@ -3,9 +3,12 @@ using System.Globalization;
 using RaceTimer.Classes;
 using System.IO;
 using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 public class ExcelHandler
 {
+
+
 	// Export race data to an Excel file and return it as a MemoryStream
 	public MemoryStream ExportRaceToExcel(Race race)
 	{
@@ -79,10 +82,10 @@ public class ExcelHandler
 				if (!race.Startlists.Contains(startlist))
 				{
 					Console.WriteLine($"Giving startlist {startlist.Name} a new Id...");
-					startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+					startlist.Id = IdGenerator.GenerateBase64String(5);
 					while (race.Startlists.Exists(sl => sl.Id == startlist.Id) || startlist.Id.Contains("/"))
 					{
-						startlist.Id = RandomBase64Generator.GenerateBase64String(5);
+						startlist.Id = IdGenerator.GenerateBase64String(5);
 					}
 
 					race.Startlists.Add(startlist);
@@ -110,10 +113,10 @@ public class ExcelHandler
 			}
 		}
 
-		race.Id = RandomBase64Generator.GenerateBase64String(5);
+		race.Id = IdGenerator.GenerateBase64String(5);
 		while (allRaces.Exists(r => r.Id == race.Id) || race.Id.Contains("/"))
 		{
-			race.Id = RandomBase64Generator.GenerateBase64String(5);
+			race.Id = IdGenerator.GenerateBase64String(5);
 		}
 
 		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
@@ -123,5 +126,38 @@ public class ExcelHandler
 		race.Name = raceName;
 
 		return race;
+	}
+
+	public MemoryStream ExportStartlistToExcel(Startlist startlist)
+	{
+		var memoryStream = new MemoryStream();
+
+		using (var workbook = new XLWorkbook())
+		{
+			var worksheet = workbook.Worksheets.Add("Startlist Data");
+			worksheet.Cell(1, 1).Value = "Name";
+			worksheet.Cell(1, 2).Value = "Surname";
+			worksheet.Cell(1, 3).Value = "Bib";
+			worksheet.Cell(1, 4).Value = "StartDate";
+			worksheet.Cell(1, 5).Value = "StartTime";
+
+			int row = 2;
+
+			foreach (var racer in startlist.Racers)
+			{
+				worksheet.Cell(row, 1).Value = racer.Name;
+				worksheet.Cell(row, 2).Value = racer.Surname;
+				worksheet.Cell(row, 3).Value = racer.Bib;
+				worksheet.Cell(row, 4).Value = racer.StartDateTime?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+				worksheet.Cell(row, 5).Value = racer.StartDateTime?.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+
+				row++;
+			}
+
+			workbook.SaveAs(memoryStream);
+		}
+
+		memoryStream.Position = 0; // Reset the stream position to the beginning
+		return memoryStream;
 	}
 }

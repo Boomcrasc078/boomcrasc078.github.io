@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class Race
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public List<Startlist> Startlists { get; set; } = new List<Startlist>();
-    public DateTime creationDateTime { get; set; } = new DateTime();
-    public DateTime lastEditDateTime { get; set; } = new DateTime();
-    public string currentAnimation { get; set; } = "";
+	public string Id { get; set; }
+	public string Name { get; set; }
+	public List<Startlist> Startlists { get; set; } = new List<Startlist>();
+	public DateTime creationDateTime { get; set; } = new DateTime();
+	public DateTime lastEditDateTime { get; set; } = new DateTime();
+	public string currentAnimation { get; set; } = "";
 
 	public static string TimeSpanToString(TimeSpan timeSpan)
 	{
@@ -34,12 +34,15 @@ public class Race
 		return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
 	}
 
-	Race DuplicateRace()
+	public Race DuplicateRace()
 	{
-		Race duplicatedRace = new Race();
-
-		duplicatedRace.Name = $"Copy of {this.Name}";
-
+		Race duplicatedRace = new Race()
+		{
+			Name = $"Copy of {this.Name}",
+			Startlists = this.Startlists,
+			creationDateTime = DateTime.Now,
+			lastEditDateTime = DateTime.Now
+		};
 		return duplicatedRace;
 	}
 }

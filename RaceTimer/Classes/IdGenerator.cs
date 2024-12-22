@@ -3,7 +3,7 @@
     using System.Security.Cryptography;
 
 
-    public class RandomBase64Generator
+    public class IdGenerator
     {
         public static string GenerateBase64String(int length)
         {

@@ -143,13 +143,13 @@
 		Startlist addStartlist = new Startlist()
 			{
 				Name = "Untitled Startlist",
-				Id = RandomBase64Generator.GenerateBase64String(5),
+				Id = IdGenerator.GenerateBase64String(5),
 				Racers = new List<Racer>()
 			};
 
 		while (currentRace.Startlists.Exists(startlist => startlist.Id == addStartlist.Id) || addStartlist.Id.Contains("/"))
 		{
-			addStartlist.Id = RandomBase64Generator.GenerateBase64String(5);
+			addStartlist.Id = IdGenerator.GenerateBase64String(5);
 		}
 
 		currentRace.Startlists.Add(addStartlist);
