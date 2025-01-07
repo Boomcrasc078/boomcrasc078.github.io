@@ -3,26 +3,33 @@ main[b-9rqfbddzmr] {
     flex: 1;
 }
 
+.background[b-9rqfbddzmr] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400'%3E%3Cdefs%3E%3CradialGradient id='a' cx='396' cy='281' r='514' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230C0316'/%3E%3Cstop offset='1' stop-color='%230D012B'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='400' y1='148' x2='400' y2='333'%3E%3Cstop offset='0' stop-color='%238618A6' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%238618A6' stop-opacity='0.5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='800' height='400'/%3E%3Cg fill-opacity='0.4'%3E%3Ccircle fill='url(%23b)' cx='267.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='532.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='400' cy='30' r='300'/%3E%3C/g%3E%3C/svg%3E");
+
+    
+
+    background-position: center;
+    background-size: cover;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+}
 
 .page[b-9rqfbddzmr] {
     display: flex;
-    background-color: #0D012B;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400'%3E%3Cdefs%3E%3CradialGradient id='a' cx='396' cy='281' r='514' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230C0316'/%3E%3Cstop offset='1' stop-color='%230D012B'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='400' y1='148' x2='400' y2='333'%3E%3Cstop offset='0' stop-color='%238618A6' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%238618A6' stop-opacity='0.5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='800' height='400'/%3E%3Cg fill-opacity='0.4'%3E%3Ccircle fill='url(%23b)' cx='267.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='532.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='400' cy='30' r='300'/%3E%3C/g%3E%3C/svg%3E");
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
 }
 
 .sidebar[b-9rqfbddzmr] {
     display: block;
     background-color: rgba(var(--bs-secondary-bg-rgb), .1);
     backdrop-filter: blur(10px);
-    width: 250px;
+    min-width: 250px;
     height: 100%;
     position: sticky;
     top: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     transform: translateX(0%);
 }
 
@@ -32,6 +39,9 @@ main[b-9rqfbddzmr] {
 
 .top-row[b-9rqfbddzmr] {
     display: none;
+}
+.content[b-9rqfbddzmr]{
+    padding-inline: 12px;
 }
 
 @media (max-width: 641px) {
@@ -175,130 +185,125 @@ main[b-9rqfbddzmr] {
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+        overflow-x: hidden;
     }
 }
 /* /Pages/AllRaces.razor.rz.scp.css */
 .page[b-a4x7s374tm] {
-	min-height: 95vh;
-	display: flex;
-	align-content: center;
-	flex-direction: column;
-	flex-wrap: wrap;
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .box-body[b-a4x7s374tm] {
-	display: flex;
-	margin: 12px;
-	flex-direction: column;
-	background-color: rgba(var(--bs-body-bg-rgb), .3);
-	border-radius: 20px;
-	padding: 12px;
-	backdrop-filter: blur(10px);
-	overflow: hidden;
-	width: 90%;
-	max-width: 800px;
-	gap: 24px;
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 90%;
+    max-width: 800px;
+    gap: 24px;
 }
 
-	.box-body:is(.box-body-stretch)[b-a4x7s374tm] {
-		flex-grow: 1;
-	}
+    .box-body:is(.box-body-stretch)[b-a4x7s374tm] {
+        flex-grow: 1;
+    }
 
 .top-row[b-a4x7s374tm] {
-	padding: 12px;
-	display: flex;
-	justify-content: space-between;
-	column-gap: 15%;
-	row-gap: 12px;
-	flex-wrap: wrap;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
 }
 
-.top-row-buttons[b-a4x7s374tm]{
-	display: flex;	
-	flex-wrap: wrap;
-	gap: 12px;
-	flex-grow: 1;
+.top-row-buttons[b-a4x7s374tm] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
 }
 
-	.top-row-buttons > *[b-a4x7s374tm] {
-		display: flex;
-		flex-grow: 1;
-		flex-basis: 40%;
-	}
+    .top-row-buttons > *[b-a4x7s374tm] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
 
 .top-row-title[b-a4x7s374tm] {
-	font-weight: bold;
+    font-weight: bold;
 }
 
-.all-cards[b-a4x7s374tm]{
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	gap: 12px;
-	overflow: hidden;
+.all-cards[b-a4x7s374tm] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
 }
 
-.card[b-a4x7s374tm]{
-	background-color: rgba(var(--bs-body-bg-rgb), 0);
+.card[b-a4x7s374tm] {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
 }
 
-.card-title[b-a4x7s374tm]{
-	padding-block-start: 6px;
+.card-title[b-a4x7s374tm] {
+    padding-block-start: 6px;
 }
 
-.card-header[b-a4x7s374tm]{
-	display: flex;
-	align-content: center;
+.card-header[b-a4x7s374tm] {
+    display: flex;
+    align-content: center;
 }
 
-.card-body[b-a4x7s374tm]{
-	display: flex;
-	justify-content: space-between;
-	gap: 10px;
-	flex-wrap: wrap;
+.card-body[b-a4x7s374tm] {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.race-buttons[b-a4x7s374tm]{
-	background-color: rgba(var(--bs-body-bg-rgb), .5);
-	border: solid 1px;
-	border-radius: 20px;
-	display:flex;
-	padding: 10px;
-	flex-direction: column;
-	gap: 12px;
-	min-width: 170px;
+.card-footer[b-a4x7s374tm] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .fade-in[b-a4x7s374tm] {
-	opacity: 0;
-	animation: fadeIn-b-a4x7s374tm 1s forwards;
+    opacity: 0;
+    animation: fadeIn-b-a4x7s374tm 1s forwards;
 }
 
 @keyframes fadeIn-b-a4x7s374tm {
-	from {
-		opacity: 0;
-	}
+    from {
+        opacity: 0;
+    }
 
-	to {
-		opacity: 1;
-	}
+    to {
+        opacity: 1;
+    }
 }
 
 .fade-out[b-a4x7s374tm] {
-	opacity: 1;
-	animation: fadeOut-b-a4x7s374tm 0.5s forwards;
+    opacity: 1;
+    animation: fadeOut-b-a4x7s374tm 0.5s forwards;
 }
 
 @keyframes fadeOut-b-a4x7s374tm {
-	from {
-		opacity: 1;
-	}
+    from {
+        opacity: 1;
+    }
 
-	to {
-		opacity: 0;
-	}
+    to {
+        opacity: 0;
+    }
 }
-
 /* /Pages/EditRace.razor.rz.scp.css */
 .page[b-b2uavjddp0] {
     min-height: 95vh;
@@ -380,15 +385,10 @@ main[b-9rqfbddzmr] {
     flex-wrap: wrap;
 }
 
-.race-buttons[b-b2uavjddp0] {
-    background-color: rgba(var(--bs-body-bg-rgb), .5);
-    border: solid 1px;
-    border-radius: 20px;
+.card-footer[b-b2uavjddp0] {
     display: flex;
-    padding: 10px;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
-    min-width: 170px;
 }
 
 .fade-in[b-b2uavjddp0] {
@@ -501,17 +501,6 @@ main[b-9rqfbddzmr] {
     flex-wrap: wrap;
 }
 
-.race-buttons[b-i4xh1oatf6] {
-    background-color: rgba(var(--bs-body-bg-rgb), .5);
-    border: solid 1px;
-    border-radius: 20px;
-    display: flex;
-    padding: 10px;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 170px;
-}
-
 .fade-in[b-i4xh1oatf6] {
     opacity: 0;
     animation: fadeIn-b-i4xh1oatf6 1s forwards;
@@ -541,6 +530,18 @@ main[b-9rqfbddzmr] {
         opacity: 0;
     }
 }
+
+th[b-i4xh1oatf6], td[b-i4xh1oatf6] {
+    background-color: rgb(var(--bs-body-bg-rgb), .1);
+}
+
+tr:hover[b-i4xh1oatf6] {
+    background-color: rgb(var(--bs-body-bg-rgb), .3);
+}
+
+.flex-custom-field-button[b-i4xh1oatf6]{
+    display: flex;
+}
 /* /Pages/Home.razor.rz.scp.css */
 
 body[b-wqumhrza7b]{
@@ -551,6 +552,10 @@ h1[b-wqumhrza7b]{
     font-weight: bold;
     text-align: center;
     margin: 30px;
+}
+
+h2[b-wqumhrza7b]{
+    font-weight: bold;
 }
 
 img[b-wqumhrza7b]{
@@ -583,6 +588,91 @@ img[b-wqumhrza7b]{
 	min-width: auto;
 	min-height: auto;
 	backdrop-filter: blur(10px);
+}
+/* /Pages/RaceView.razor.rz.scp.css */
+h1[b-rpl8m6haxi] {
+    font-weight: bold;
+    margin: 30px;
+}
+
+h2[b-rpl8m6haxi] {
+    font-weight: bold;
+}
+
+label[b-rpl8m6haxi] {
+    margin-top: 24px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.content-box-section[b-rpl8m6haxi] {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    align-content: stretch;
+    justify-content: stretch;
+    height: calc(100dvh - 250px);
+}
+
+.content-box-contains-list[b-rpl8m6haxi] {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-box-list[b-rpl8m6haxi] {
+    height: calc(100dvh - 250px - 24px - 24px);
+    overflow: auto;
+    padding: 24px;
+}
+
+.content-box-section > .content-box:nth-child(3)[b-rpl8m6haxi] {
+    grid-row-start: 1;
+    grid-column-start: 3;
+    grid-row-end: 3;
+}
+
+.content-box-section > .content-box:nth-child(4)[b-rpl8m6haxi] {
+    grid-row-start: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    max-width: none;
+}
+
+@media(max-width: 1000px) {
+    .content-box-section[b-rpl8m6haxi] {
+        grid-template-columns: 1fr 1fr;
+        height: auto;
+    }
+
+        .content-box-section > .content-box:nth-child(3)[b-rpl8m6haxi] {
+            grid-row-start: unset;
+            grid-column-start: unset;
+            grid-row-end: unset;
+        }
+
+
+        .content-box-section > .content-box:nth-child(4)[b-rpl8m6haxi] {
+            grid-column-start: unset;
+            grid-column-end: unset;
+            max-width: none;
+        }
+
+    .content-box-list[b-rpl8m6haxi] {
+        height: 300px;
+    }
+}
+
+@media(max-width: 700px) {
+    .content-box-section[b-rpl8m6haxi] {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+        .content-box-section > .content-box[b-rpl8m6haxi] {
+            max-width: none;
+            grid-row-start: unset;
+            grid-column-start: unset;
+        }
 }
 /* /Pages/SelectTimeRace.razor.rz.scp.css */
 .race-container[b-1os2eb7d6x] {

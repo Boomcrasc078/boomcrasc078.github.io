@@ -115,3 +115,7 @@ th, td {
 tr:hover {
     background-color: rgb(var(--bs-body-bg-rgb), .3);
 }
+
+.flex-custom-field-button{
+    display: flex;
+}

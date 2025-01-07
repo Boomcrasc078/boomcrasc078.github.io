@@ -1,0 +1,102 @@
+﻿@page "/race-view/{RaceId}"
+@using Classes
+@inject RaceService raceService
+
+<h1>@currentRace.Name</h1>
+
+<div class="content-box-section">
+	<div class="content-box">
+		<div>
+			<h2>Start</h2>
+			<div>
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+			</div>
+		</div>
+		<button class="btn btn-normal">
+			<span>Start Manually</span>
+			<i class="bi btn-bi bi-chevron-double-right" />
+		</button>
+	</div>
+	<div class="content-box">
+		<div>
+			<h2>@currentTime.ToString("HH:mm:ss.ff")</h2>
+		</div>
+		<div>
+			<label for="#time-at-select">Time at</label>
+			<select class="form-select" id="time-at-select" aria-label="Default select example">
+				<option value="1">5k Mark</option>
+				<option value="2">10k Mark</option>
+				<option selected value="3">Finish Line</option>
+			</select>
+
+		</div>
+		<button class="btn btn-normal">
+			<span>Time</span>
+			<i class="bi btn-bi bi-stopwatch" />
+		</button>
+	</div>
+	<div class="content-box content-box-contains-list">
+		<div>
+			<h2>Recent Events</h2>
+			<div class="content-box-list">
+				@foreach (RaceEvent raceEvent in raceEvents)
+				{
+					<div class="my-2">@raceEvent.Message</div>
+
+				}
+			</div>
+
+		</div>
+	</div>
+	<div class="content-box">
+		<div>
+			<h2>Racers</h2>
+			<div>
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+				Lorem Ipsum<br />
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public string RaceId { get; set; }
+	public Race currentRace;
+	public List<RaceEvent> raceEvents = new List<RaceEvent>();
+	private System.Timers.Timer timer = new System.Timers.Timer();
+
+	public DateTime currentTime = DateTime.Now;
+
+	protected override async Task OnInitializedAsync()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		CreateUpdateTimer();
+	}
+
+	private void CreateUpdateTimer()
+	{
+		// Skapa en timer som tickar var 10:e millisekund (0.01 sekund).
+		timer = new System.Timers.Timer(10);
+		timer.Elapsed += OnTimerElapsed;
+		timer.Start();
+	}
+
+	private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+	{
+		currentTime = DateTime.Now;
+
+		// Uppdaterar UI:t på huvudtråden
+		InvokeAsync(StateHasChanged);
+	}
+
+	public void Dispose()
+	{
+		timer?.Dispose();
+	}
+}

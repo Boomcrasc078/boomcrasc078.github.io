@@ -114,7 +114,7 @@ code {
     border-radius: 20px;
     backdrop-filter: blur(10px);
     padding: 24px;
-    max-width: 500px;
+    flex-basis: 40%;
 }
 
 /* Grundläggande knappstil */
@@ -131,9 +131,11 @@ code {
     overflow: hidden; /* Döljer allt som går utanför knappen */
     position: relative; /* För att placera ikonen absolut */
     transition: padding 0.3s ease; /* Gör övergången smidig */
-    height: 50px;
+
     min-width: 150px;
     flex: 1 1 auto;
+    height: 50px;
+    max-height: 50px;
 }
 
     /* Textens stil */
@@ -172,4 +174,22 @@ code {
 
 .modal-backdrop {
     display: none;
+}
+
+.form-control {
+    background-color: rgba(var(--bs-body-bg-rgb), .1);
+    border-width: 1px;
+}
+
+    .form-control:focus {
+        background-color: rgba(var(--bs-body-bg-rgb), .5);
+    }
+
+
+.modal {
+    backdrop-filter: blur(10px);
+}
+
+.modal-content {
+    background-color: rgba(var(--bs-body-bg-rgb), .8);
 }

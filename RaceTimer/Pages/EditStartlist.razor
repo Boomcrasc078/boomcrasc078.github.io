@@ -15,8 +15,14 @@
 				Are you sure you want to delete @selectedRacer.Name?
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="()=>DeleteRacer(selectedRacer)">Delete</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRacer(selectedRacer)">
+					<span>Delete</span>
+					<i class="bi btn-bi bi-trash3"></i>
+				</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal">
+					<span>Cancel</span>
+					<i class="bi btn-bi bi-x-lg"></i>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -46,16 +52,26 @@
 						</div>
 					</div>
 					<div class="border-3 border-bottom py-4">
-						<button class="btn btn-primary" @onclick="AddCustomField">
-							<i class="bi bi-plus-lg"></i> Add Custom Field
-						</button>
+						<div class="flex-custom-field-button">
+							<button class="btn btn-normal" @onclick="AddCustomField">
+								<span>Add Custom Field</span>
+								<i class="bi btn-bi bi-plus-lg"></i>
+							</button>
+						</div>
 						<div class="my-3">
 							@foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
 							{
 								<div class="input-group mb-3">
 									<div class="form-floating">
 										<input type="text" class="form-control" placeholder="Custom Field Name"
-											   @bind="selectedRacer.CustomFields[customField.index].Name" />
+											   @bind="selectedRacer.CustomFields[customField.index].Name"
+											   list="customFields" />
+										<datalist id="customFields">
+											<option value="E-Mail" />
+											<option value="Phone" />
+											<option value="Age" />
+											<option value="Sponsors" />
+										</datalist>
 										<label>Custom Field Name</label>
 									</div>
 									<div class="form-floating">
@@ -94,7 +110,14 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-bs-dismiss="modal" @onclick="()=>SaveRace()">Save</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#deleteModal">
+					<span>Delete</span>
+					<i class="bi btn-bi bi-trash3"></i>
+				</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>SaveRace()">
+					<span>Save</span>
+					<i class="bi btn-bi bi-floppy"></i>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -126,42 +149,30 @@
 			<div class="top-row">
 				<h1 class="top-row-title">Racers</h1>
 				<div class="top-row-buttons">
-					<button class="btn btn-normal" @onclick="()=>AddRacer()">
+					<button class="btn btn-normal" @onclick="()=>AddRacer()" data-bs-toggle="modal" data-bs-target="#editModal">
 						<span>Add</span>
 						<i class="bi btn-bi bi-plus-lg"></i>
 					</button>
 				</div>
 
 			</div>
-			<table class="table align-middle">
+			<table class="table align-middle table-responsive table-hover">
 				<thead>
 					<tr>
 						<th>Name</th>
 						<th>Bib Number</th>
-						<th>Edit</th>
-						<th>Delete</th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach (Racer racer in currentStartlist.Racers)
 					{
-						<tr class="@racer.currentAnimation">
+						<tr class="@racer.currentAnimation" @onclick="()=>selectedRacer=racer" data-bs-toggle="modal" data-bs-target="#editModal">
 							<td>@racer.Name @racer.Surname</td>
 							<td>@racer.Bib</td>
-							<td><button class="btn btn-normal" @onclick="()=>selectedRacer=racer" data-bs-toggle="modal" data-bs-target="#editModal">
-								<span>Edit</span>
-								<i class="bi btn-bi bi-pencil-square"></i>
-								</button></td>
-							<td><button class="btn btn-normal" @onclick="@(()=>DeleteRacer(racer))">
-								<span>Delete</span>
-								<i class="bi btn-bi bi-trash3"></i
-								></button></td>
-
 						</tr>
 					}
 				</tbody>
 			</table>
-
 		</div>
 
 	}
@@ -231,6 +242,8 @@
 
 		currentStartlist.Racers.Add(addRacer);
 		await SaveRace();
+
+		selectedRacer = addRacer;
 	}
 
 	private async Task DeleteRacer(Racer DeleteRacer)
