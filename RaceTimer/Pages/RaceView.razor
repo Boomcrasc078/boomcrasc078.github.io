@@ -2,67 +2,72 @@
 @using Classes
 @inject RaceService raceService
 
-<h1>@currentRace.Name</h1>
 
-<div class="content-box-section">
-	<div class="content-box">
-		<div>
-			<h2>Start</h2>
+@if (currentRace != null)
+{
+	<h1>@currentRace.Name</h1>
+
+	<div class="content-box-section">
+		<div class="content-box">
 			<div>
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
+				<h2>Start</h2>
+				<div>
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+				</div>
 			</div>
+			<a class="btn btn-normal" href="/race-view/@RaceId/manual-start">
+				<span>Start Manually</span>
+				<i class="bi btn-bi bi-chevron-double-right" />
+			</a>
 		</div>
-		<button class="btn btn-normal">
-			<span>Start Manually</span>
-			<i class="bi btn-bi bi-chevron-double-right" />
-		</button>
-	</div>
-	<div class="content-box">
-		<div>
-			<h2>@currentTime.ToString("HH:mm:ss.ff")</h2>
-		</div>
-		<div>
-			<label for="#time-at-select">Time at</label>
-			<select class="form-select" id="time-at-select" aria-label="Default select example">
-				<option value="1">5k Mark</option>
-				<option value="2">10k Mark</option>
-				<option selected value="3">Finish Line</option>
-			</select>
-
-		</div>
-		<button class="btn btn-normal">
-			<span>Time</span>
-			<i class="bi btn-bi bi-stopwatch" />
-		</button>
-	</div>
-	<div class="content-box content-box-contains-list">
-		<div>
-			<h2>Recent Events</h2>
-			<div class="content-box-list">
-				@foreach (RaceEvent raceEvent in raceEvents)
-				{
-					<div class="my-2">@raceEvent.Message</div>
-
-				}
-			</div>
-
-		</div>
-	</div>
-	<div class="content-box">
-		<div>
-			<h2>Racers</h2>
+		<div class="content-box">
 			<div>
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
-				Lorem Ipsum<br />
+				<h2 class="current-time">@currentTime.ToString("HH:mm:ss.ff")</h2>
+			</div>
+			<div>
+				<label for="#time-at-select">Time at</label>
+				<select class="form-select" id="time-at-select" aria-label="Default select example">
+					<option value="1">5k Mark</option>
+					<option value="2">10k Mark</option>
+					<option selected value="3">Finish Line</option>
+				</select>
+
+			</div>
+			<button class="btn btn-normal">
+				<span>Time</span>
+				<i class="bi btn-bi bi-stopwatch" />
+			</button>
+		</div>
+		<div class="content-box content-box-contains-list">
+			<div>
+				<h2>Recent Events</h2>
+				<div class="content-box-list">
+					@foreach (RaceEvent raceEvent in raceEvents)
+					{
+						<div class="my-2">@raceEvent.Message</div>
+
+					}
+				</div>
+
+			</div>
+		</div>
+		<div class="content-box">
+			<div>
+				<h2>Racers</h2>
+				<div>
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+					Lorem Ipsum<br />
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+
+}
 
 
 @code {
