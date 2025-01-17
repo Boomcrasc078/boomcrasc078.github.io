@@ -22,6 +22,7 @@
 	overflow: hidden; /* Förhindrar att innehåll läcker ut */
 	height: auto;
 	backdrop-filter: blur(10px);
+	max-height: none;
 }
 
 .table-container {

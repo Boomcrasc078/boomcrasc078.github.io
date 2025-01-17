@@ -1,0 +1,69 @@
+﻿@page "/race-view/{RaceId}/manual-start"
+@inject RaceService raceService
+@inject NavigationManager NavManager
+
+@if (currentRace != null)
+{
+	<div class="page">
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">@DateTime.Now.ToString("HH:mm:ss.ff")</h1>
+				<div class="top-row-buttons">
+					<a class="btn btn-normal" href="@($"/race-view/{RaceId}")">
+						<span>Back</span>
+						<i class="bi btn-bi bi-chevron-double-left"></i>
+					</a>
+				</div>
+			</div>
+			<div class="d-flex">
+				<button class="btn btn-normal">
+					<span>Start x startlists</span>
+					<i class="bi btn-bi bi-play"/>
+				</button>
+			</div>
+		</div>
+		<div class="box-body box-body-stretch">
+
+			<div class="top-row">
+				<h1 class="top-row-title">Select Startlists</h1>
+			</div>
+			<div class="all-cards">
+				@foreach (Startlist startlist in currentRace.Startlists)
+				{
+					<div class="card">
+						<div class="card-header">
+							<span>@startlist.Name</span>
+						</div>
+						<div class="card-body">
+							Contains @startlist.Racers.Count racers
+						</div>
+						<div class="card-footer">
+							<input type="checkbox" class="btn-check" id="selectInput-@startlist.Id">
+							<label class="btn btn-normal" for="selectInput-@startlist.Id">
+								<span>Select</span>
+								<i class="bi btn-bi bi-play" />
+							</label>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter] public string RaceId { get; set; }
+	public Race currentRace;
+
+	protected override async Task OnInitializedAsync()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+	}
+
+	private void StartStartlist(Startlist startlist)
+	{
+		DateTime startDateTime = DateTime.Now;
+		startlist.Racers.ForEach(racer => { racer.StartDateTime = startDateTime; });
+		NavManager.NavigateTo($"/race-view/{RaceId}");
+	}
+}
