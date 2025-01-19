@@ -15,10 +15,10 @@
 					</a>
 				</div>
 			</div>
-			<div class="d-flex">
-				<button class="btn btn-normal">
-					<span>Start x startlists</span>
-					<i class="bi btn-bi bi-play"/>
+			<div class="top-row">
+				<button class="btn btn-normal" @onclick="()=>StartMultipleStartlists()">
+					<span>Start @startlistSelected.Count(s => s == true) startlists</span>
+					<i class="bi btn-bi bi-play" />
 				</button>
 			</div>
 		</div>
@@ -38,10 +38,10 @@
 							Contains @startlist.Racers.Count racers
 						</div>
 						<div class="card-footer">
-							<input type="checkbox" class="btn-check" id="selectInput-@startlist.Id">
+							<input type="checkbox" class="btn-normal-check" id="selectInput-@startlist.Id" @bind="startlistSelected[currentRace.Startlists.IndexOf(startlist)]">
 							<label class="btn btn-normal" for="selectInput-@startlist.Id">
-								<span>Select</span>
-								<i class="bi btn-bi bi-play" />
+								<span>Press to Select</span>
+								<i class="bi btn-bi bi-check" />
 							</label>
 						</div>
 					</div>
@@ -54,16 +54,46 @@
 @code {
 	[Parameter] public string RaceId { get; set; }
 	public Race currentRace;
+	private List<bool> startlistSelected = new List<bool>();
 
 	protected override async Task OnInitializedAsync()
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		foreach (Startlist startlist in currentRace.Startlists)
+		{
+			startlistSelected.Add(false);
+		}
 	}
 
-	private void StartStartlist(Startlist startlist)
+	private async Task StartStartlist(Startlist startlist)
 	{
 		DateTime startDateTime = DateTime.Now;
 		startlist.Racers.ForEach(racer => { racer.StartDateTime = startDateTime; });
+
+		await raceService.UpdateRaceAsync(currentRace);
+	}
+
+	private async Task TryStartStartlist(bool selected, int index)
+	{
+		if (!selected) return;
+
+		Startlist selectedStartlist = currentRace.Startlists[index];
+
+		Console.WriteLine($"Starting startlist: {selectedStartlist.Name}, Index: {index}");
+
+
+		await StartStartlist(selectedStartlist);
+	}
+
+	private async Task StartMultipleStartlists()
+	{
+		int startlistIndex = 0;
+		foreach (bool selected in startlistSelected)
+		{
+			await TryStartStartlist(selected, startlistIndex);
+			startlistIndex++;
+		}
+
 		NavManager.NavigateTo($"/race-view/{RaceId}");
 	}
 }
