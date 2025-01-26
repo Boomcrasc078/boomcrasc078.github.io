@@ -173,7 +173,7 @@ code {
     }
 
 .btn-normal-check:checked + .btn-normal {
-    background-color: #0000005f;
+    background-color: #00000077;
     border: solid 1px white;
 }
 

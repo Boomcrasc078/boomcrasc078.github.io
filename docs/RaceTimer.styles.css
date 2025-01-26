@@ -548,6 +548,7 @@ body[b-wqumhrza7b]{
 
 }
 
+
 h1[b-wqumhrza7b]{
     font-weight: bold;
     text-align: center;
@@ -561,6 +562,130 @@ h2[b-wqumhrza7b]{
 img[b-wqumhrza7b]{
     width: 100%;
     border-radius: 20px;
+}
+
+
+/* /Pages/ManualStart.razor.rz.scp.css */
+.page[b-jxngacnqfe] {
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.box-body[b-jxngacnqfe] {
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 90%;
+    max-width: 800px;
+    gap: 24px;
+}
+
+    .box-body:is(.box-body-stretch)[b-jxngacnqfe] {
+        flex-grow: 1;
+    }
+
+.top-row[b-jxngacnqfe] {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons[b-jxngacnqfe] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > *[b-jxngacnqfe] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title[b-jxngacnqfe] {
+    font-weight: bold;
+}
+
+.all-cards[b-jxngacnqfe] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card[b-jxngacnqfe] {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title[b-jxngacnqfe] {
+    padding-block-start: 6px;
+}
+
+.card-header[b-jxngacnqfe] {
+    display: flex;
+    align-content: center;
+}
+
+.card-body[b-jxngacnqfe] {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-footer[b-jxngacnqfe] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.fade-in[b-jxngacnqfe] {
+    opacity: 0;
+    animation: fadeIn-b-jxngacnqfe 1s forwards;
+}
+
+@keyframes fadeIn-b-jxngacnqfe {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-out[b-jxngacnqfe] {
+    opacity: 1;
+    animation: fadeOut-b-jxngacnqfe 0.5s forwards;
+}
+
+@keyframes fadeOut-b-jxngacnqfe {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+input[b-jxngacnqfe] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    pointer-events: none;
 }
 /* /Pages/Numpad.razor.rz.scp.css */
 .numpad-container[b-99npcvbnds] {
@@ -605,13 +730,18 @@ label[b-rpl8m6haxi] {
     font-weight: bold;
 }
 
+.current-time[b-rpl8m6haxi]{
+    text-align: center;
+}
+
 .content-box-section[b-rpl8m6haxi] {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: 100%;
     align-content: stretch;
     justify-content: stretch;
-    height: calc(100dvh - 250px);
+    height: calc(100dvh - 180px);
+    margin-block: 24px;
 }
 
 .content-box-contains-list[b-rpl8m6haxi] {
@@ -706,6 +836,7 @@ label[b-rpl8m6haxi] {
 	overflow: hidden; /* Förhindrar att innehåll läcker ut */
 	height: auto;
 	backdrop-filter: blur(10px);
+	max-height: none;
 }
 
 .table-container[b-zr76thhxab] {

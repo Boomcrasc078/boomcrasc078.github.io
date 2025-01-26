@@ -23,7 +23,8 @@ label {
     width: 100%;
     align-content: stretch;
     justify-content: stretch;
-    height: calc(100dvh - 250px);
+    height: calc(100dvh - 180px);
+    margin-block: 24px;
 }
 
 .content-box-contains-list {
