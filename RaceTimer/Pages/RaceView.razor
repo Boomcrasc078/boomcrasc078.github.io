@@ -2,7 +2,6 @@
 @using Classes
 @inject RaceService raceService
 
-
 @if (currentRace != null)
 {
 	<div class="d-flex justify-content-between align-items-center gap-5 flex-wrap">
@@ -13,8 +12,6 @@
 			<i class="bi btn-bi bi-chevron-double-right" />
 		</a>
 	</div>
-
-	
 
 	<div class="content-box-section">
 		<div class="content-box">
@@ -51,16 +48,40 @@
 					<i class="bi btn-bi bi-stopwatch" />
 				</button>
 			</div>
-
 		</div>
 		<div class="content-box content-box-contains-list">
 			<div>
 				<h2>Racers</h2>
 				<div>
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
+					<!-- Sökfält -->
+					<div class="pt-2">
+						<input type="search" @bind="SearchQuery" placeholder="Search racers..." class="form-control" />
+					</div>
+
+					<br />
+
+					<!-- Sökresultat -->
+					<div class="content-box-list">
+						@if (filteredRacers != null && filteredRacers.Any())
+						{
+							<div class="all-cards p-3">
+								@foreach (var racer in filteredRacers)
+								{
+									<div class="card card-hover">
+										<div class="card-header d-flex justify-content-between">
+											<div>@racer.Bib</div>
+											<div>@racer.Name @racer.Surname </div>
+										</div>
+									</div>
+								}
+							</div>
+
+						}
+						else if (!string.IsNullOrWhiteSpace(searchQuery))
+						{
+							<p>No racers found.</p>
+						}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -76,9 +97,7 @@
 			</div>
 		</div>
 	</div>
-
 }
-
 
 @code {
 	[Parameter] public string RaceId { get; set; }
@@ -88,9 +107,27 @@
 
 	public DateTime currentTime = DateTime.Now;
 
+	private string searchQuery = string.Empty; // Söksträng från användaren
+	private List<Racer> filteredRacers = new(); // Resultaten som ska visas
+
 	protected override async Task OnInitializedAsync()
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+
+		// Visa alla racers när sidan laddas
+		filteredRacers = currentRace.Startlists
+			.SelectMany(sl => sl.Racers)
+			.OrderBy(r =>
+			{
+				if (int.TryParse(r.Bib, out int parsedBib))
+				{
+					return parsedBib;
+				}
+				return int.MaxValue; // Om Bib inte är ett tal, placera dessa sist eller använd en lämplig strategi.
+			})
+			.ThenBy(r => r.Bib) // För att säkerställa att icke-numeriska Bib sorteras alfabetiskt.
+			.ToList();
+
 		CreateUpdateTimer();
 	}
 
@@ -114,4 +151,57 @@
 	{
 		timer?.Dispose();
 	}
+
+	// Uppdatera sökresultaten dynamiskt
+	private void SearchRacers()
+	{
+		if (string.IsNullOrWhiteSpace(searchQuery))
+		{
+			filteredRacers = currentRace.Startlists
+				.SelectMany(s => s.Racers)
+				.OrderBy(r =>
+				{
+					if (int.TryParse(r.Bib, out int parsedBib))
+						return parsedBib;
+					return int.MaxValue;
+				})
+				.ThenBy(r => r.Bib)
+				.ToList();
+		}
+		else
+		{
+			filteredRacers = currentRace.Startlists
+				.SelectMany(s => s.Racers)
+				.Where(r =>
+						(r.Name?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+						(r.Surname?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+						(r.Bib?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+						(r.CustomFields?.Any(cf => cf.Data?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ?? false))
+				.OrderBy(r =>
+				{
+					if (int.TryParse(r.Bib, out int parsedBib))
+						return parsedBib;
+					return int.MaxValue;
+				})
+				.ThenBy(r => r.Bib)
+				.ToList();
+		}
+	}
+
+
+	// Använd egenskap med bindning för att aktivera sökning
+	public string SearchQuery
+	{
+		get => searchQuery;
+		set
+		{
+			if (searchQuery != value)
+			{
+				searchQuery = value;
+				Console.WriteLine($"SearchQuery: {value}");
+				SearchRacers();
+			}
+		}
+	}
+
 }
