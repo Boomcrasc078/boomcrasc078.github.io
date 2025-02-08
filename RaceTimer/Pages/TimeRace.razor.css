@@ -41,8 +41,8 @@
 
 .table-container {
     flex: 1;
-    min-height: 20%;
-    max-height: 25%;
+    min-height: 30%;
+    max-height: 45%;
     overflow: auto;
     backdrop-filter: blur(10px);
     border-radius: 20px;
