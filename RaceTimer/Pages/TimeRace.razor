@@ -1,4 +1,4 @@
-﻿@page "/timer/{RaceId}"
+﻿@page "/timer/{RaceId}/finish-line"
 @inject RaceService raceService
 @inject IJSRuntime JS
 @using RaceTimer.Classes
@@ -6,44 +6,54 @@
 
 <Toasts @ref="toasts" />
 
-<div id="timeListContainer" class="table-container">
-	<table class="table table-sm table-responsive">
-		<thead>
-			<tr>
-				<th>Bib</th>
-				<th>Name</th>
-				<th>Time</th>
-				<th>Lap</th>
-			</tr>
-		</thead>
-		<tbody class="table-group-divider">
-			@foreach (Racer racer in timeList)
-			{
-				<tr class="@((activeRacer==racer)?"active":"")" @onclick="@(()=>activeRacer = racer)">
-					<th>@racer.Bib</th>
-					<td>@racer.Name @racer.Surname</td>
-					<td>
-						@if (racer.StartDateTime.HasValue)
-						{
-							@((racer.LapDateTime.Last() - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
-						}
-						else
-						{
-							@(racer.LapDateTime.Last().ToString("HH:mm:ss.ff"))
-						}
-					</td>
-					<td>@racer.LapDateTime.Count</td>
+<div class="layout">
+	<div id="timeListContainer" class="table-container">
+		<table class="table table-sm table-responsive">
+			<thead>
+				<tr>
+					<th>Bib</th>
+					<th>Name</th>
+					<th>Time</th>
+					<th>Laps</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody class="table-group-divider">
+				@foreach (Racer racer in timeList)
+				{
+					<tr class="@((activeRacer==racer)?"active":"")" @onclick="@(()=>activeRacer = racer)">
+						<th>@racer.Bib</th>
+						<td>@racer.Name @racer.Surname</td>
+						<td>
+							@if (racer.StartDateTime.HasValue)
+							{
+								@((racer.LapDateTime.Last() - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
+							}
+							else
+							{
+								@(racer.LapDateTime.Last().ToString("HH:mm:ss.ff"))
+							}
+						</td>
+						<td>@racer.LapDateTime.Count</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 
-<button class="btn time-container btn-normal" @onclick="()=>SetTimeClick(DateTime.Now)">
-	<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
-	<h2 class="btn-text text-center">Press to set time</h2>
-</button>
-<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
+	<button class="btn time-container btn-normal" @onclick="()=>SetTimeClick(DateTime.Now)">
+		<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
+		<h2 class="btn-text text-center">Press to set time</h2>
+	</button>
+	<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
+	<div class="top-row">
+		<div class="top-row-buttons">
+			<button class="btn btn-normal">
+				<span>Back to RaceView</span>
+				<i class="bi btn-bi bi-chevron-double-left" />
+			</button>
+		</div>
+	</div>
+</div>
 
 @code {
 	[Parameter] public string RaceId { get; set; }
@@ -64,10 +74,15 @@
 
 	private void NumberClicked(int number)
 	{
-		if (activeRacer != null)
+		if (activeRacer == null)
 		{
-			activeRacer.Bib += number.ToString();
+			return;
 		}
+		if(activeRacer.Id != "")
+		{
+			return;
+		}
+		activeRacer.Bib += number.ToString();
 	}
 
 	private void BackspaceClicked()
@@ -115,7 +130,7 @@
 		{
 			activeRacer.LapDateTime.Add(dateTime);
 			Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
-			activeRacer = nextEdit[0];
+			activeRacer = null;
 			await raceService.UpdateRaceAsync(currentRace);
 			await ScrollToBottomAsync();
 			return;
