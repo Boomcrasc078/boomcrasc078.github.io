@@ -6,6 +6,14 @@
 
 <Toasts @ref="toasts" />
 
+ActiveRacer: 
+@if(activeRacer != null)
+{
+	@activeRacer.Name<span> : </span>@activeRacer.Bib
+}else{
+	<span>null</span>
+}
+
 <div class="layout">
 	<div id="timeListContainer" class="table-container">
 		<table class="table table-sm table-responsive">
@@ -24,13 +32,13 @@
 						<th>@racer.Bib</th>
 						<td>@racer.Name @racer.Surname</td>
 						<td>
-							@if (racer.StartDateTime.HasValue)
+							@if (racer.LapDateTime.Count > 0 && racer.StartDateTime.HasValue)
 							{
 								@((racer.LapDateTime.Last() - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
 							}
-							else
+							@if (racer.StartDateTime.HasValue)
 							{
-								@(racer.LapDateTime.Last().ToString("HH:mm:ss.ff"))
+								<span> (@((currentTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff")))</span>
 							}
 						</td>
 						<td>@racer.LapDateTime.Count</td>
@@ -70,6 +78,30 @@
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
 		CreateUpdateTimer();
+		AddAllRacersToTimeList();
+	}
+
+	private void AddAllRacersToTimeList()
+	{
+		foreach (Racer racer in currentRace.Startlists.SelectMany(s => s.Racers))
+		{
+			AddRacerToTimeList(racer);
+		}
+	}
+
+	private void AddRacerToTimeList(Racer racer)
+	{
+		if (timeList.Contains(racer))
+			return;
+
+		if (!racer.StartDateTime.HasValue)
+			return;
+
+		if (racer.StartDateTime > currentTime)
+			return;
+
+		timeList.Add(racer);
+
 	}
 
 	private void NumberClicked(int number)
@@ -78,7 +110,7 @@
 		{
 			return;
 		}
-		if(activeRacer.Id != "")
+		if (activeRacer.Id != "")
 		{
 			return;
 		}
@@ -117,6 +149,8 @@
 
 		// Uppdaterar UI:t på huvudtråden
 		InvokeAsync(StateHasChanged);
+		AddAllRacersToTimeList();
+
 	}
 
 	public void Dispose()

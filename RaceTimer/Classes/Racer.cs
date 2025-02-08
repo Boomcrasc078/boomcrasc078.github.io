@@ -3,8 +3,6 @@
 
 	public class Racer
 	{
-
-
 		public string Name { get; set; } = string.Empty;
 		public string Surname { get; set; } = string.Empty;
 		public string Bib { get; set; } = string.Empty;

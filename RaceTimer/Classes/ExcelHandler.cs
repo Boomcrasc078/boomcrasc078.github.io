@@ -143,7 +143,13 @@ public class ExcelHandler
 					Bib = row.Cell(3).GetValue<string>(),
 					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
 									? startDateTime : (DateTime?)null,
+					Id = IdGenerator.GenerateBase64String(5),
 				};
+
+				while (race.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Id).Contains(racer.Id) || racer.Id.Contains("/"))
+				{
+					racer.Id = IdGenerator.GenerateBase64String(5);
+				}
 
 				for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
 				{
@@ -227,7 +233,14 @@ public class ExcelHandler
 					Bib = row.Cell(3).GetValue<string>(),
 					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
 									? startDateTime : (DateTime?)null,
+					Id = IdGenerator.GenerateBase64String(5),
 				};
+
+				while (startlist.Racers.Select(racer => racer.Id).Contains(racer.Id) || racer.Id.Contains("/"))
+				{
+					racer.Id = IdGenerator.GenerateBase64String(5);
+				}
+
 				for (int i = 6; i <= row.LastCellUsed().Address.ColumnNumber; i++)
 				{
 					var customFieldData = row.Cell(i).GetString();

@@ -230,12 +230,12 @@
 				Bib = "1"
 			};
 
-		while (currentStartlist.Racers.Exists(racer => racer.Id == addRacer.Id) || addRacer.Id.Contains("/"))
+		while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Id).Contains(addRacer.Id) || addRacer.Id.Contains("/"))
 		{
 			addRacer.Id = IdGenerator.GenerateBase64String(5);
 		}
 
-		while (currentStartlist.Racers.Exists(racer => racer.Bib == addRacer.Bib))
+		while (currentRace.Startlists.SelectMany(s=>s.Racers).Select(racer => racer.Bib).Contains(addRacer.Bib))
 		{
 			addRacer.Bib = (int.Parse(addRacer.Bib) + 1).ToString();
 		}
