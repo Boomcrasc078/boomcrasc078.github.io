@@ -941,7 +941,11 @@ label[b-rpl8m6haxi] {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+<<<<<<< HEAD
     height: calc(100dvh - 100px);
+=======
+    height: calc(100vh - 100px);
+>>>>>>> 2dc3a0879e7d5489336353be67431b9c1408b650
     margin: 0;
 }
 
