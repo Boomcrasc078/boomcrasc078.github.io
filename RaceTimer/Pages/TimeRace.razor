@@ -1,4 +1,4 @@
-﻿@page "/timer/{RaceId}"
+﻿@page "/timer/{RaceId}/finish-line"
 @inject RaceService raceService
 @inject IJSRuntime JS
 @using RaceTimer.Classes
@@ -7,14 +7,6 @@
 <Toasts @ref="toasts" />
 
 <div class="layout">
-	<div class="top-row">
-		<div class="top-row-buttons">
-			<button class="btn btn-normal">
-				<span>Back</span>
-				<i class="bi btn-bi bi-chevron-left" />
-			</button>
-		</div>
-	</div>
 	<div id="timeListContainer" class="table-container">
 		<table class="table table-sm table-responsive">
 			<thead>
@@ -53,6 +45,14 @@
 		<h2 class="btn-text text-center">Press to set time</h2>
 	</button>
 	<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
+	<div class="top-row">
+		<div class="top-row-buttons">
+			<button class="btn btn-normal">
+				<span>Back to RaceView</span>
+				<i class="bi btn-bi bi-chevron-double-left" />
+			</button>
+		</div>
+	</div>
 </div>
 
 @code {
@@ -74,10 +74,15 @@
 
 	private void NumberClicked(int number)
 	{
-		if (activeRacer != null)
+		if (activeRacer == null)
 		{
-			activeRacer.Bib += number.ToString();
+			return;
 		}
+		if(activeRacer.Id != "")
+		{
+			return;
+		}
+		activeRacer.Bib += number.ToString();
 	}
 
 	private void BackspaceClicked()
@@ -125,7 +130,7 @@
 		{
 			activeRacer.LapDateTime.Add(dateTime);
 			Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
-			activeRacer = nextEdit[0];
+			activeRacer = null;
 			await raceService.UpdateRaceAsync(currentRace);
 			await ScrollToBottomAsync();
 			return;

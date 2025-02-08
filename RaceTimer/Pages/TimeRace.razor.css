@@ -60,3 +60,29 @@ tr:hover {
 table .active {
     background-color: rgb(var(--bs-body-bg-rgb), .5);
 }
+
+.top-row {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title {
+    font-weight: bold;
+}
