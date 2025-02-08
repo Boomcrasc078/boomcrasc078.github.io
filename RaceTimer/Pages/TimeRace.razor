@@ -40,9 +40,9 @@
 		</table>
 	</div>
 
-	<button class="btn time-container btn-normal" @onclick="()=>SetTimeClick(DateTime.Now)">
-		<h1 class="current-time text-center">@currentTime.ToString("HH:mm:ss.ff")</h1>
-		<h2 class="btn-text text-center">Press to set time</h2>
+	<button class="btn time-container" @onclick="()=>SetTimeClick(DateTime.Now)">
+		<h5 class="text-center">@currentTime.ToString("HH:mm:ss.ff")</h5>
+		<h6 class="text-center">Press to set time</h6>
 	</button>
 	<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
 	<div class="top-row">

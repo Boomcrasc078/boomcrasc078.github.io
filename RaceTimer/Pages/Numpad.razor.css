@@ -2,9 +2,6 @@
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
-	flex: 1;
-	height: auto;
-	max-height: 50%; /* Begränsa storleken */
 	padding: 10px;
 }
 
@@ -22,4 +19,6 @@
 	max-height: none;
 	min-width: auto;
 	backdrop-filter: blur(10px);
+	overflow: hidden;
+	min-height: none;
 }
