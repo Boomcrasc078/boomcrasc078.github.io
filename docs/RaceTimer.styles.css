@@ -929,7 +929,7 @@ label[b-rpl8m6haxi] {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	height: calc(100vh - 100px);
+	height: calc(100dvh - 100px);
 	margin: 0;
 }
 
