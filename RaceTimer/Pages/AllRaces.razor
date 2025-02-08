@@ -196,9 +196,12 @@
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
 			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, races, file.Name);
+
 			races.Add(importedRace);
+
 			await raceService.SaveRacesAsync(races);
 			await InvokeAsync(StateHasChanged);
+
 			NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
 		}
 		catch (Exception ex)
