@@ -12,10 +12,10 @@
 	align-content: center;
 	justify-content: center;
 	font-size: 3vh;
-	padding: 0;
+	padding: 1vh;
 	border-radius: 8px;
 	text-align: center;
-	height: auto;
+	height: 100%;
 	max-height: none;
 	min-width: auto;
 	backdrop-filter: blur(10px);

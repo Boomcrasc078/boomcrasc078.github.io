@@ -702,10 +702,10 @@ input[b-jxngacnqfe] {
 	align-content: center;
 	justify-content: center;
 	font-size: 3vh;
-	padding: 0;
+	padding: 1vh;
 	border-radius: 8px;
 	text-align: center;
-	height: auto;
+	height: 100%;
 	max-height: none;
 	min-width: auto;
 	backdrop-filter: blur(10px);
@@ -929,7 +929,7 @@ label[b-rpl8m6haxi] {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	height: calc(100dvh - 100px);
+	height: calc(100lvh - 100px);
 	margin: 0;
 }
 
@@ -938,6 +938,8 @@ label[b-rpl8m6haxi] {
 		height: 95vh;
 	}
 }
+
+
 /* Styla huvudcontainern */
 .time-container[b-zr76thhxab] {
 	display: flex;
@@ -947,7 +949,11 @@ label[b-rpl8m6haxi] {
 	text-align: center;
 	border-radius: 20px;
 	backdrop-filter: blur(10px);
+	background-color: #0000002f;
+	border: solid 1px white;
+	color: white;
 	overflow: hidden;
+	padding: 2vh;
 }
 
 	.time-container > h5[b-zr76thhxab] {
@@ -956,6 +962,7 @@ label[b-rpl8m6haxi] {
 
 	.time-container > h6[b-zr76thhxab] {
 		font-size: 1.5vh;
+		margin: 0;
 	}
 
 .table-container[b-zr76thhxab] {
@@ -964,7 +971,7 @@ label[b-rpl8m6haxi] {
 	backdrop-filter: blur(10px);
 	border-radius: 20px;
 	padding: 15px;
-	font-size: 1.5vh;
+	font-size: 0.8rem;
 }
 
 th[b-zr76thhxab], td[b-zr76thhxab] {
