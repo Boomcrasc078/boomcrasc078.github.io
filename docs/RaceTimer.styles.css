@@ -689,19 +689,19 @@ input[b-jxngacnqfe] {
 }
 /* /Pages/Numpad.razor.rz.scp.css */
 .numpad-container[b-99npcvbnds] {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: stretch;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
-	margin: auto;
-	height: 35vh;
-	margin-bottom: 20px;
+	flex: 1;
+	height: auto;
+	max-height: 50%; /* Begränsa storleken */
+	padding: 10px;
 }
 
 /* Stil för knapparna */
 .numpad-button[b-99npcvbnds] {
-	flex: 1 1 30%;
+	flex-basis: 30%;
+	flex-shrink: 1;
 	align-content: center;
 	justify-content: center;
 	font-size: 3vh;
@@ -709,9 +709,8 @@ input[b-jxngacnqfe] {
 	border-radius: 8px;
 	text-align: center;
 	height: auto;
-	width: auto;
+	max-height: none;
 	min-width: auto;
-	min-height: auto;
 	backdrop-filter: blur(10px);
 }
 /* /Pages/RaceView.razor.rz.scp.css */
@@ -929,50 +928,89 @@ label[b-rpl8m6haxi] {
 /* /Pages/TimeRace.razor.rz.scp.css */
 /* Styla tidvisningen */
 .current-time[b-zr76thhxab] {
-	font-size: 3vh;
-	white-space: nowrap; /* Förhindrar radbrytning */
+    font-size: 3vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
 }
 
 .btn-text[b-zr76thhxab] {
-	font-size: 3vh;
-	white-space: nowrap; /* Förhindrar radbrytning */
+    font-size: 3vh;
+    white-space: nowrap; /* Förhindrar radbrytning */
 }
 
+.layout[b-zr76thhxab] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100dvh - 100px);
+    margin: 0;
+}
+
+@media(min-width:641px) {
+    .layout[b-zr76thhxab] {
+        height: 95vh;
+    }
+}
 /* Styla huvudcontainern */
 .time-container[b-zr76thhxab] {
-	width: 100%;
-	border-radius: 20px;
-	padding: 15px;
-	margin: 20px auto;
-	text-align: center;
-	flex: 1 1 content;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden; /* Förhindrar att innehåll läcker ut */
-	height: auto;
-	backdrop-filter: blur(10px);
-	max-height: none;
+    flex: 1 1 auto;
+    text-align: center;
+    border-radius: 20px;
+    padding: 15px;
+    margin: 10px 0;
+    height: 15%; /* Fixad höjd i procent */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    max-height: 15%;
+    min-height: none;
 }
 
 .table-container[b-zr76thhxab] {
-	min-height: 20vh;
-	height: 25vh;
-	overflow: auto;
-	resize: vertical;
-	background-color: rgb(var(--bs-body-bg-rgb), .1);
-	backdrop-filter: blur(10px);
-	border-radius: 20px;
-	padding: 15px;
+    flex: 1;
+    min-height: 30%;
+    max-height: 45%;
+    overflow: auto;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px;
 }
 
-th[b-zr76thhxab], td[b-zr76thhxab]{
-	background-color: rgb(var(--bs-body-bg-rgb), .1);
+th[b-zr76thhxab], td[b-zr76thhxab] {
+    background-color: rgb(var(--bs-body-bg-rgb), .1);
 }
 
 tr:hover[b-zr76thhxab] {
-	background-color: rgb(var(--bs-body-bg-rgb), .3);
+    background-color: rgb(var(--bs-body-bg-rgb), .3);
 }
 
 table .active[b-zr76thhxab] {
-	background-color: rgb(var(--bs-body-bg-rgb), .5);
+    background-color: rgb(var(--bs-body-bg-rgb), .5);
+}
+
+.top-row[b-zr76thhxab] {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons[b-zr76thhxab] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > *[b-zr76thhxab] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title[b-zr76thhxab] {
+    font-weight: bold;
 }
