@@ -103,7 +103,7 @@
 									<span>Delete</span>
 									<i class="bi btn-bi bi-trash3"></i>
 								</button>
-								<button class="btn btn-normal">
+								<button class="btn btn-normal" @onclick="()=>DuplicateStartlist(startlist)">
 									<span>Duplicate</span>
 									<i class="bi btn-bi bi-copy"></i>
 								</button>
@@ -191,7 +191,7 @@
 	private async Task ExportAndDownloadStartlist(Startlist startlist)
 	{
 		using var memoryStream = excelHandler.ExportStartlistToExcel(startlist);
-		var fileName = $"{startlist.Name.Replace(" ", "_")}.xlsx";
+		var fileName = $"{startlist.Name}.xlsx";
 		var fileBytes = memoryStream.ToArray();
 		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	}
@@ -212,7 +212,7 @@
 			memoryStream.Position = 0;
 			var importedStartlist = excelHandler.ImportStartlistFromExcel(memoryStream, currentRace.Startlists, file.Name);
 			currentRace.Startlists.Add(importedStartlist);
-			await raceService.UpdateRaceAsync(currentRace);
+			await SaveRace();
 			await InvokeAsync(StateHasChanged);
 			NavManager.NavigateTo($"/races/edit/{currentRace.Id}/{importedStartlist.Id}");
 		}
@@ -221,5 +221,19 @@
 			Console.WriteLine($"Error during file import: {ex.Message}");
 			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
 		}
+	}
+
+	private async Task DuplicateStartlist(Startlist startlist)
+	{
+		Console.WriteLine("Duplicating " + startlist.Name);
+		Startlist duplicatedStartlist = startlist.DuplicateStartlist();
+
+		duplicatedStartlist.Id = IdGenerator.GenerateUniqueId(currentRace.Startlists.Select(r => r.Id));
+
+		currentRace.Startlists.Add(duplicatedStartlist);
+		await SaveRace();
+
+		NavManager.NavigateTo($"/races/edit/{currentRace.Id}/{duplicatedStartlist.Id}");
+
 	}
 }

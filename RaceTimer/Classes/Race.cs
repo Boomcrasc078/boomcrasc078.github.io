@@ -13,6 +13,7 @@ public class Race
 
 	public static string TimeSpanToString(TimeSpan timeSpan)
 	{
+		//return timeSpan.TotalSeconds.ToString();
 		if (timeSpan.TotalSeconds < 60)
 			return timeSpan.Seconds + " seconds ago";
 

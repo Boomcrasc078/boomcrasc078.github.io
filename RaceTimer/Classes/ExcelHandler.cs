@@ -126,16 +126,12 @@ public class ExcelHandler
 
 				if (!race.Startlists.Contains(startlist))
 				{
-					Console.WriteLine($"Giving startlist {startlist.Name} a new Id...");
-					startlist.Id = IdGenerator.GenerateBase64String(5);
-					while (race.Startlists.Exists(sl => sl.Id == startlist.Id) || startlist.Id.Contains("/"))
-					{
-						startlist.Id = IdGenerator.GenerateBase64String(5);
-					}
+					Console.WriteLine($"Giving startlist \"{startlist.Name}\n a new Id...");
+					startlist.Id = IdGenerator.GenerateUniqueId(race.Startlists.Select(sl => sl.Id));
 
 					race.Startlists.Add(startlist);
+					Console.WriteLine($"Startlist {startlist.Name} got {startlist.Id} as Id");
 				}
-				Console.WriteLine($"Startlist {startlist.Name} got {startlist.Id} as Id");
 				var racer = new Racer
 				{
 					Name = row.Cell(1).GetString(),
@@ -143,13 +139,9 @@ public class ExcelHandler
 					Bib = row.Cell(3).GetValue<string>(),
 					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
 									? startDateTime : (DateTime?)null,
-					Id = IdGenerator.GenerateBase64String(5),
-				};
+					Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(r => r.Id))
 
-				while (race.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Id).Contains(racer.Id) || racer.Id.Contains("/"))
-				{
-					racer.Id = IdGenerator.GenerateBase64String(5);
-				}
+				};
 
 				for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
 				{
@@ -163,16 +155,10 @@ public class ExcelHandler
 				startlist.Racers.Add(racer);
 			}
 		}
-
-		race.Id = IdGenerator.GenerateBase64String(5);
-		while (allRaces.Exists(r => r.Id == race.Id) || race.Id.Contains("/"))
-		{
-			race.Id = IdGenerator.GenerateBase64String(5);
-		}
-
-		race.Startlists = race.Startlists.OrderBy(startlist => startlist.Name).ToList();
+		race.Startlists = race.Startlists.OrderBy(s => s.Name).ToList();
 		race.creationDateTime = DateTime.Now;
 		race.lastEditDateTime = DateTime.Now;
+		race.Id = IdGenerator.GenerateUniqueId(allRaces.Select(r => r.Id));
 
 		race.Name = raceName;
 
@@ -218,11 +204,7 @@ public class ExcelHandler
 			var rowsUsed = worksheet.RowsUsed().Skip(1);
 
 			startlist.Name = startlistName;
-			startlist.Id = IdGenerator.GenerateBase64String(5);
-			while (allStartlists.Exists(r => r.Id == startlist.Id) || startlist.Id.Contains("/"))
-			{
-				startlist.Id = IdGenerator.GenerateBase64String(5);
-			}
+			startlist.Id = IdGenerator.GenerateUniqueId(allStartlists.Select(s => s.Id));
 
 			foreach (var row in rowsUsed)
 			{
@@ -233,13 +215,8 @@ public class ExcelHandler
 					Bib = row.Cell(3).GetValue<string>(),
 					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
 									? startDateTime : (DateTime?)null,
-					Id = IdGenerator.GenerateBase64String(5),
+					Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(racer => racer.Id))
 				};
-
-				while (startlist.Racers.Select(racer => racer.Id).Contains(racer.Id) || racer.Id.Contains("/"))
-				{
-					racer.Id = IdGenerator.GenerateBase64String(5);
-				}
 
 				for (int i = 6; i <= row.LastCellUsed().Address.ColumnNumber; i++)
 				{

@@ -176,7 +176,7 @@
 	private async Task ExportAndDownloadRace(Race race)
 	{
 		using var memoryStream = excelHandler.ExportRaceToExcel(race);
-		var fileName = $"{race.Name.Replace(" ", "_")}.xlsx";
+		var fileName = $"{race.Name}.xlsx";
 		var fileBytes = memoryStream.ToArray();
 		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	}

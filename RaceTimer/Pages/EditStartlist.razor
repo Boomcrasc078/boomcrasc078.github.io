@@ -200,12 +200,12 @@
 	private async Task GetStartlist()
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
-		currentStartlist = currentRace.Startlists.Find(startlist => startlist.Id == StartlistId);
+		currentStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
 	}
 
 	private async Task SaveRace()
 	{
-		var index = currentRace.Startlists.FindIndex(startlist => startlist.Id == currentStartlist.Id);
+		var index = currentRace.Startlists.FindIndex(s => s.Id == currentStartlist.Id);
 
 		if (index != -1)
 		{
