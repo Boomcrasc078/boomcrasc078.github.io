@@ -132,7 +132,7 @@
 	{
 		races = await raceService.GetRacesAsync();
 	}
-	
+
 	private async Task AddRace()
 	{
 		Race addRace = new Race()
@@ -206,7 +206,7 @@
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"Error during file import: {ex.Message}");
+			Console.WriteLine($"Error during file import: {ex.Message}\n" + ex.StackTrace);
 			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
 		}
 	}
@@ -214,16 +214,7 @@
 	async Task DuplicateRace(Race race)
 	{
 		Console.WriteLine("Duplicating " + race.Name);
-		Race duplicatedRace = race.DuplicateRace();
-		duplicatedRace.creationDateTime = DateTime.Now;
-		duplicatedRace.lastEditDateTime = DateTime.Now;
-
-		duplicatedRace.Id = IdGenerator.GenerateBase64String(5);
-
-		while (races.Exists(race => race.Id == duplicatedRace.Id) || duplicatedRace.Id.Contains("/"))
-		{
-			duplicatedRace.Id = IdGenerator.GenerateBase64String(5);
-		}
+		Race duplicatedRace = race.DuplicateRace(races.Select(r => r.Id));
 
 		races.Add(duplicatedRace);
 		await raceService.SaveRacesAsync(races);

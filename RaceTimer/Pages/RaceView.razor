@@ -6,11 +6,6 @@
 {
 	<div class="d-flex justify-content-between align-items-center gap-5 flex-wrap">
 		<h1 class="top-row-title">@currentRace.Name</h1>
-
-		<a class="btn btn-normal">
-			<span>End Race</span>
-			<i class="bi btn-bi bi-chevron-double-right" />
-		</a>
 	</div>
 
 	<div class="content-box-section">
@@ -26,7 +21,7 @@
 			</div>
 			<a class="btn btn-normal" href="/race-view/@RaceId/manual-start">
 				<span>Start Manually</span>
-				<i class="bi btn-bi bi-chevron-double-right" />
+				<i class="bi btn-bi bi-play-circle" />
 			</a>
 		</div>
 		<div class="content-box">
@@ -37,16 +32,14 @@
 				<div>
 					<label for="#time-at-select">Time at</label>
 					<select class="form-select" id="time-at-select" aria-label="Default select example">
-						<option value="1">5k Mark</option>
-						<option value="2">10k Mark</option>
 						<option selected value="3">Finish Line</option>
 					</select>
 				</div>
 				<br />
-				<button class="btn btn-normal">
+				<a class="btn btn-normal" href="/timer/@RaceId/finish-line">
 					<span>Time</span>
 					<i class="bi btn-bi bi-stopwatch" />
-				</button>
+				</a>
 			</div>
 		</div>
 		<div class="content-box content-box-contains-list">
@@ -87,14 +80,12 @@
 		</div>
 		<div class="content-box">
 			<div>
-				<h2>?????</h2>
-				<div>
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-				</div>
+				<h2>Results</h2>
 			</div>
+			<a class="btn btn-normal">
+				<span>Finish Race</span>
+				<i class="bi btn-bi bi-check-circle"></i>
+			</a>
 		</div>
 	</div>
 }

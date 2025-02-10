@@ -6,14 +6,6 @@
 
 <Toasts @ref="toasts" />
 
-ActiveRacer: 
-@if(activeRacer != null)
-{
-	@activeRacer.Name<span> : </span>@activeRacer.Bib
-}else{
-	<span>null</span>
-}
-
 <div class="layout">
 	<div id="timeListContainer" class="table-container">
 		<table class="table table-sm table-responsive">
@@ -33,7 +25,7 @@ ActiveRacer:
 						<td>
 							@if(racer != null && racer.Id != "")
 							{
-								<span>@racer.Name @racer.Surname</span>
+								<span>@racer.Name</span> <span>@racer.Surname</span>
 							}
 							else
 							{
@@ -73,10 +65,10 @@ ActiveRacer:
 	<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
 	<div class="top-row">
 		<div class="top-row-buttons">
-			<button class="btn btn-normal">
+			<a class="btn btn-normal" href="/race-view/@RaceId">
 				<span>Back to RaceView</span>
 				<i class="bi btn-bi bi-chevron-double-left" />
-			</button>
+			</a>
 		</div>
 	</div>
 </div>
@@ -174,11 +166,10 @@ ActiveRacer:
 	private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 	{
 		currentTime = DateTime.Now;
+		AddAllRacersToTimeList();
 
 		// Uppdaterar UI:t på huvudtråden
 		InvokeAsync(StateHasChanged);
-		AddAllRacersToTimeList();
-
 	}
 
 	public void Dispose()
@@ -194,7 +185,7 @@ ActiveRacer:
 			Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
 			timeList.Remove(activeRacer);
 			timeList.Add(activeRacer);
-			toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", "text-bg-success"));
+			toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", ""));
 			activeRacer = null;
 			await raceService.UpdateRaceAsync(currentRace);
 			await ScrollToBottomAsync();

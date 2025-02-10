@@ -35,15 +35,42 @@ public class Race
 		return Math.Floor(timeSpan.TotalDays / 365) + " years ago";
 	}
 
-	public Race DuplicateRace()
+	public Race DuplicateRace(IEnumerable<string> existingIds)
 	{
 		Race duplicatedRace = new Race()
 		{
 			Name = $"Copy of {this.Name}",
 			Startlists = this.Startlists,
 			creationDateTime = DateTime.Now,
-			lastEditDateTime = DateTime.Now
+			lastEditDateTime = DateTime.Now,
+			Id = IdGenerator.GenerateUniqueId(existingIds)
 		};
 		return duplicatedRace;
+	}
+
+	public class TimingEvent
+	{
+		public Racer Racer { get; set; } = new Racer();
+		public DateTime DateTime { get; set; }
+		public TimingSpot TimingSpot { get; set; }
+
+		public TimingEvent(Racer racer, DateTime dateTime, TimingSpot timingSpot)
+		{
+			this.Racer = racer;
+			this.DateTime = dateTime;
+			TimingSpot = timingSpot;
+		}
+	}
+
+	public class TimingSpot
+	{
+		public string Id { get; set; }
+		public string Name { get; set; }
+
+		public TimingSpot(string name, IEnumerable<string> existingIds)
+		{
+			this.Name = name;
+			Id = IdGenerator.GenerateUniqueId(existingIds);
+		}
 	}
 }

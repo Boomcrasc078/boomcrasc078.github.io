@@ -226,10 +226,7 @@
 	private async Task DuplicateStartlist(Startlist startlist)
 	{
 		Console.WriteLine("Duplicating " + startlist.Name);
-		Startlist duplicatedStartlist = startlist.DuplicateStartlist();
-
-		duplicatedStartlist.Id = IdGenerator.GenerateUniqueId(currentRace.Startlists.Select(r => r.Id));
-
+		Startlist duplicatedStartlist = startlist.DuplicateStartlist(currentRace.Startlists.Select(r => r.Id));
 		currentRace.Startlists.Add(duplicatedStartlist);
 		await SaveRace();
 

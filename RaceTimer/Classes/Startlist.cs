@@ -8,12 +8,13 @@ public class Startlist
 	public string currentAnimation { get; set; } = "";
 
 
-	public Startlist DuplicateStartlist()
+	public Startlist DuplicateStartlist(IEnumerable<string> existingIds)
 	{
 		Startlist duplicatedStartlist = new Startlist()
 		{
 			Name = $"Copy of {this.Name}",
 			Racers = this.Racers,
+			Id = IdGenerator.GenerateUniqueId(existingIds)
 		};
 
 		return duplicatedStartlist;

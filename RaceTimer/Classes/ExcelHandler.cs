@@ -1,82 +1,13 @@
 ﻿using ClosedXML.Excel;
-using System.Globalization;
-using RaceTimer.Classes;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using RaceTimer.Pages;
+using RaceTimer.Classes;
 
 public class ExcelHandler
 {
-
-	void RaceExportData(Race race, IXLWorksheet worksheet, int startRow)
-	{
-		int row = startRow;
-		foreach (var startlist in race.Startlists)
-		{
-			foreach (var racer in startlist.Racers)
-			{
-				worksheet.Cell(row, 1).Value = racer.Name;
-				worksheet.Cell(row, 2).Value = racer.Surname;
-				worksheet.Cell(row, 3).Value = racer.Bib;
-				worksheet.Cell(row, 4).Value = racer.StartDateTime?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-				worksheet.Cell(row, 5).Value = racer.StartDateTime?.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
-				worksheet.Cell(row, 6).Value = startlist.Name;
-
-				int col = 7;
-				foreach (var customField in racer.CustomFields)
-				{
-					worksheet.Cell(row, col++).Value = customField.Data;
-				}
-				row++;
-			}
-		}
-	}
-
-	void StartlistExportData(Startlist startlist, IXLWorksheet worksheet, int startRow, int customFieldStartColumn)
-	{
-		int row = startRow;
-
-		foreach (var racer in startlist.Racers)
-		{
-			worksheet.Cell(row, 1).Value = racer.Name;
-			worksheet.Cell(row, 2).Value = racer.Surname;
-			worksheet.Cell(row, 3).Value = racer.Bib;
-			worksheet.Cell(row, 4).Value = racer.StartDateTime?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-			worksheet.Cell(row, 5).Value = racer.StartDateTime?.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
-
-			// Custom fields dynamically added
-			int col = customFieldStartColumn;
-			foreach (var customField in racer.CustomFields)
-			{
-				worksheet.Cell(row, col++).Value = customField.Data;
-			}
-			row++;
-		}
-	}
-
-	void SetTitleCells(IXLWorksheet worksheet, int row)
-	{
-		worksheet.Cell(row, 1).Value = "Name";
-		worksheet.Cell(row, 2).Value = "Surname";
-		worksheet.Cell(row, 3).Value = "Bib";
-		worksheet.Cell(row, 4).Value = "StartDate";
-		worksheet.Cell(row, 5).Value = "StartTime";
-	}
-
-	void AddCustomFieldsTitle(Startlist startlist, IXLWorksheet worksheet, int startColumn)
-	{
-		int col = startColumn;
-		foreach (var field in startlist.Racers
-			.SelectMany(r => r.CustomFields)
-			.Select(cf => cf.Name)
-			.Distinct())
-		{
-			worksheet.Cell(1, col++).Value = field;
-		}
-	}
-
-	// Export race data to an Excel file and return it as a MemoryStream
+	// Exporterar racedata till en Excel-fil och returnerar den som en MemoryStream
 	public MemoryStream ExportRaceToExcel(Race race)
 	{
 		var memoryStream = new MemoryStream();
@@ -84,32 +15,24 @@ public class ExcelHandler
 		using (var workbook = new XLWorkbook())
 		{
 			var worksheet = workbook.Worksheets.Add("Race Data");
-
 			int titleRow = 1;
 			int dataStartRow = titleRow + 1;
 
 			SetTitleCells(worksheet, titleRow);
-
-			worksheet.Cell(titleRow, 6).Value = "Startlist";
-
+			worksheet.Cell(titleRow, 5).Value = "Startlist";
 
 			int startColumn = 7;
-			// Custom fields dynamically added
-			foreach (var startlist in race.Startlists)
-			{
-				AddCustomFieldsTitle(startlist, worksheet, startColumn);
-			}
-
-			RaceExportData(race, worksheet, dataStartRow);
+			AddCustomFieldsTitles(race.Startlists, worksheet, startColumn);
+			ExportRaceData(race, worksheet, dataStartRow);
 
 			workbook.SaveAs(memoryStream);
 		}
 
-		memoryStream.Position = 0; // Reset the stream position to the beginning
+		memoryStream.Position = 0; // Återställ strömpositionen till början
 		return memoryStream;
 	}
 
-	// Import race data from an Excel file
+	// Importerar racedata från en Excel-fil
 	public Race ImportRaceFromExcel(Stream fileStream, List<Race> allRaces, string raceName)
 	{
 		var race = new Race();
@@ -121,54 +44,19 @@ public class ExcelHandler
 
 			foreach (var row in rowsUsed)
 			{
-				string startlistName = row.Cell(6).GetString();
-				var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
+				string startlistName = row.Cell(5).GetString();
+				var startlist = GetOrCreateStartlist(race, startlistName);
 
-				if (!race.Startlists.Contains(startlist))
-				{
-					Console.WriteLine($"Giving startlist \"{startlist.Name}\n a new Id...");
-					startlist.Id = IdGenerator.GenerateUniqueId(race.Startlists.Select(sl => sl.Id));
-
-					race.Startlists.Add(startlist);
-					Console.WriteLine($"Startlist {startlist.Name} got {startlist.Id} as Id");
-				}
-				var racer = new Racer
-				{
-					Name = row.Cell(1).GetString(),
-					Surname = row.Cell(2).GetString(),
-					Bib = row.Cell(3).GetValue<string>(),
-					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
-									? startDateTime : (DateTime?)null,
-					Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(r => r.Id))
-
-				};
-
-				for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
-				{
-					var customFieldData = row.Cell(i).GetString();
-					if (!string.IsNullOrEmpty(customFieldData))
-					{
-						racer.CustomFields.Add(new Racer.CustomField(worksheet.RowsUsed().First().Cell(i).GetString(), customFieldData));
-					}
-				}
-
+				var racer = CreateRacerFromRow(row, worksheet, startlist);
 				startlist.Racers.Add(racer);
 			}
 		}
-		race.Startlists = race.Startlists.OrderBy(s => s.Name).ToList();
-		race.creationDateTime = DateTime.Now;
-		race.lastEditDateTime = DateTime.Now;
-		race.Id = IdGenerator.GenerateUniqueId(allRaces.Select(r => r.Id));
 
-		race.Name = raceName;
-
+		FinalizeRace(race, allRaces, raceName);
 		return race;
 	}
 
-
-
-
-
+	// Exporterar startlistdata till en Excel-fil och returnerar den som en MemoryStream
 	public MemoryStream ExportStartlistToExcel(Startlist startlist)
 	{
 		var memoryStream = new MemoryStream();
@@ -179,57 +67,181 @@ public class ExcelHandler
 
 			int titleRow = 1;
 			int dataStartRow = titleRow + 1;
-
 			int customFieldStartColumn = 6;
 
 			SetTitleCells(worksheet, titleRow);
-
-			AddCustomFieldsTitle(startlist, worksheet, customFieldStartColumn);
-
-			StartlistExportData(startlist, worksheet, dataStartRow, customFieldStartColumn);
+			AddCustomFieldsTitles(new List<Startlist> { startlist }, worksheet, customFieldStartColumn);
+			ExportStartlistData(startlist, worksheet, dataStartRow, customFieldStartColumn);
 
 			workbook.SaveAs(memoryStream);
 		}
-		memoryStream.Position = 0; // Reset the stream position to the beginning
+
+		memoryStream.Position = 0; // Återställ strömpositionen till början
 		return memoryStream;
 	}
 
+	// Importerar startlistdata från en Excel-fil
 	public Startlist ImportStartlistFromExcel(Stream fileStream, List<Startlist> allStartlists, string startlistName)
 	{
-		var startlist = new Startlist();
+		var startlist = new Startlist
+		{
+			Name = startlistName,
+			Id = IdGenerator.GenerateUniqueId(allStartlists.Select(s => s.Id))
+		};
 
 		using (var workbook = new XLWorkbook(fileStream))
 		{
 			var worksheet = workbook.Worksheet(1);
 			var rowsUsed = worksheet.RowsUsed().Skip(1);
 
-			startlist.Name = startlistName;
-			startlist.Id = IdGenerator.GenerateUniqueId(allStartlists.Select(s => s.Id));
-
 			foreach (var row in rowsUsed)
 			{
-				var racer = new Racer
-				{
-					Name = row.Cell(1).GetString(),
-					Surname = row.Cell(2).GetString(),
-					Bib = row.Cell(3).GetValue<string>(),
-					StartDateTime = DateTime.TryParse($"{row.Cell(4).GetString()} {row.Cell(5).GetString()}", out DateTime startDateTime)
-									? startDateTime : (DateTime?)null,
-					Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(racer => racer.Id))
-				};
-
-				for (int i = 6; i <= row.LastCellUsed().Address.ColumnNumber; i++)
-				{
-					var customFieldData = row.Cell(i).GetString();
-					if (!string.IsNullOrEmpty(customFieldData))
-					{
-						racer.CustomFields.Add(new Racer.CustomField(worksheet.RowsUsed().First().Cell(i).GetString(), customFieldData));
-					}
-				}
-
+				var racer = CreateRacerFromRow(row, worksheet, startlist);
 				startlist.Racers.Add(racer);
 			}
 		}
+
 		return startlist;
+	}
+
+	// Hjälpmetoder
+
+	private void SetTitleCells(IXLWorksheet worksheet, int row)
+	{
+		worksheet.Cell(row, 1).Value = "Name";
+		worksheet.Cell(row, 2).Value = "Surname";
+		worksheet.Cell(row, 3).Value = "Bib";
+		worksheet.Cell(row, 4).Value = "Automatic Start";
+	}
+
+	private void AddCustomFieldsTitles(IEnumerable<Startlist> startlists, IXLWorksheet worksheet, int startColumn)
+	{
+		int col = startColumn;
+		var fields = startlists
+			.SelectMany(sl => sl.Racers)
+			.SelectMany(r => r.CustomFields)
+			.Select(cf => cf.Name)
+			.Distinct();
+
+		foreach (var field in fields)
+		{
+			worksheet.Cell(1, col++).Value = field;
+		}
+	}
+
+	private void ExportRaceData(Race race, IXLWorksheet worksheet, int startRow)
+	{
+		int row = startRow;
+		foreach (var startlist in race.Startlists)
+		{
+			foreach (var racer in startlist.Racers)
+			{
+				ExportRacerData(racer, worksheet, row, startlist.Name);
+				row++;
+			}
+		}
+	}
+
+	private void ExportStartlistData(Startlist startlist, IXLWorksheet worksheet, int startRow, int customFieldStartColumn)
+	{
+		int row = startRow;
+		foreach (var racer in startlist.Racers)
+		{
+			ExportRacerData(racer, worksheet, row, customFieldStartColumn: customFieldStartColumn);
+			row++;
+		}
+	}
+
+	private void ExportRacerData(Racer racer, IXLWorksheet worksheet, int row, string startlistName = null, int customFieldStartColumn = 7)
+	{
+		worksheet.Cell(row, 1).Value = racer.Name;
+		worksheet.Cell(row, 2).Value = racer.Surname;
+		worksheet.Cell(row, 3).Value = racer.Bib;
+
+		if (racer.StartDateTime != null)
+		{
+			worksheet.Cell(row, 4).Value = racer.StartDateTime.Value;
+		}
+
+		if (startlistName != null)
+		{
+			worksheet.Cell(row, 5).Value = startlistName;
+		}
+
+		int col = customFieldStartColumn;
+		foreach (var customField in racer.CustomFields)
+		{
+			worksheet.Cell(row, col++).Value = customField.Data;
+		}
+	}
+
+	private Startlist GetOrCreateStartlist(Race race, string startlistName)
+	{
+		var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
+
+		if (!race.Startlists.Contains(startlist))
+		{
+			startlist.Id = IdGenerator.GenerateUniqueId(race.Startlists.Select(sl => sl.Id));
+			race.Startlists.Add(startlist);
+		}
+
+		return startlist;
+	}
+
+	private Racer CreateRacerFromRow(IXLRow row, IXLWorksheet worksheet, Startlist startlist)
+	{
+		var racer = new Racer
+		{
+			Name = row.Cell(1).GetString(),
+			Surname = row.Cell(2).GetString(),
+			Bib = row.Cell(3).GetValue<string>(),
+			StartDateTime = GetDateTimeFromExcel(row.Cell(4)),
+			Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(r => r.Id))
+		};
+
+		for (int i = 7; i <= row.LastCellUsed().Address.ColumnNumber; i++)
+		{
+			var customFieldData = row.Cell(i).GetString();
+			if (!string.IsNullOrEmpty(customFieldData))
+			{
+				racer.CustomFields.Add(new Racer.CustomField(worksheet.RowsUsed().First().Cell(i).GetString(), customFieldData));
+			}
+		}
+
+		return racer;
+	}
+
+	private void FinalizeRace(Race race, List<Race> allRaces, string raceName)
+	{
+		race.Startlists = race.Startlists.OrderBy(s => s.Name).ToList();
+		race.creationDateTime = DateTime.Now;
+		race.lastEditDateTime = DateTime.Now;
+		race.Id = IdGenerator.GenerateUniqueId(allRaces.Select(r => r.Id));
+		race.Name = raceName;
+	}
+
+	private DateTime? GetDateTimeFromExcel(IXLCell dateTimeCell)
+	{
+		if (dateTimeCell.IsEmpty())
+		{
+			Console.WriteLine("DateTimeCell är tom.");
+			return null;
+		}
+
+		if (dateTimeCell.DataType != XLDataType.DateTime)
+		{
+			Console.WriteLine($"DateTimeCell har ogiltig datatyp: {dateTimeCell.DataType}, Värde: {dateTimeCell.Value}");
+			return null;
+		}
+
+		try
+		{
+			return dateTimeCell.GetDateTime();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Fel vid konvertering: {ex.Message}");
+			return null;
+		}
 	}
 }

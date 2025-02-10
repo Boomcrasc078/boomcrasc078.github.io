@@ -9,7 +9,6 @@
 			@if (toast.Title != string.Empty)
 			{
 				<div class="toast-header">
-					<img src="..." class="rounded me-2" alt="...">
 					<strong class="me-auto">@toast.Title</strong>
 					<small>@Race.TimeSpanToString(DateTime.Now - toast.Created)</small>
 					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
