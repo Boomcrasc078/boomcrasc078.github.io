@@ -177,17 +177,6 @@ code {
     border: solid 1px white;
 }
 
-    .btn-normal-check:checked + .btn-normal span {
-        opacity: 0; /* Dölj texten */
-        transform: translateX(-100%); /* Flytta texten helt utanför knappen */
-    }
-
-    .btn-normal-check:checked + .btn-normal .btn-bi {
-        left: 50%; /* Flytta ikonen till mitten */
-        transform: translateX(-50%); /* Centrerar ikonen horisontellt */
-        font-size: 30px; /* Gör ikonen större */
-    }
-
 
 .modal-backdrop {
     display: none;

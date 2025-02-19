@@ -917,6 +917,121 @@ label[b-rpl8m6haxi] {
 .card-hover:hover[b-rpl8m6haxi] {
 	background-color: rgba(var(--bs-body-bg-rgb), .3);
 }
+/* /Pages/Results.razor.rz.scp.css */
+.page[b-cdmwv750bx] {
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.box-body[b-cdmwv750bx] {
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 90%;
+    max-width: 800px;
+    gap: 24px;
+}
+
+    .box-body:is(.box-body-stretch)[b-cdmwv750bx] {
+        flex-grow: 1;
+    }
+
+    .box-body > div[b-cdmwv750bx] {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+
+        .box-body > div > div[b-cdmwv750bx] {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .box-body > div > div > label[b-cdmwv750bx]{
+            flex-basis: 30%;
+            min-width: 200px;
+        }
+
+.top-row[b-cdmwv750bx] {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons[b-cdmwv750bx] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > *[b-cdmwv750bx] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title[b-cdmwv750bx] {
+    font-weight: bold;
+    word-wrap: anywhere;
+}
+
+.all-cards[b-cdmwv750bx] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card[b-cdmwv750bx] {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title[b-cdmwv750bx] {
+    padding-block-start: 6px;
+}
+
+.card-header[b-cdmwv750bx] {
+    display: flex;
+    align-content: center;
+}
+
+.card-body[b-cdmwv750bx] {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-footer[b-cdmwv750bx] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+h3[b-cdmwv750bx] {
+    font-weight: bold;
+}
+
+input[b-cdmwv750bx] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    pointer-events: none;
+}
+
 /* /Pages/SelectTimeRace.razor.rz.scp.css */
 .race-container[b-1os2eb7d6x] {
     max-width: 500px;
