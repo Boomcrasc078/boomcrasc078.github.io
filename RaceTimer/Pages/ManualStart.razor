@@ -41,7 +41,7 @@
 							<input type="checkbox" class="btn-normal-check" id="selectInput-@startlist.Id" @bind="startlistSelected[currentRace.Startlists.IndexOf(startlist)]">
 							<label class="btn btn-normal" for="selectInput-@startlist.Id">
 								<span>Press to Select</span>
-								<i class="bi btn-bi bi-check" />
+								<i class="bi btn-bi @((startlistSelected[currentRace.Startlists.IndexOf(startlist)])?"bi-check-circle":"bi-circle")" />
 							</label>
 						</div>
 					</div>

@@ -61,59 +61,59 @@
 			{
 				@foreach (Race race in races)
 				{
-					<div class="card @race.currentAnimation">
-						<div class="card-header">
-							<h5 class="card-title">
+							<div class="card @race.currentAnimation">
+								<div class="card-header">
+									<h5 class="card-title">
 								@if (race.Name == "")
 								{
-									<span>Untitled Race</span>
+												<span>Untitled Race</span>
 								}
 								else
 								{
 									@race.Name
 								}
-							</h5>
-						</div>
-						<div class="card-body">
-							<div class="card-text">
-								<div>
-									<div>Created @race.creationDateTime.ToShortDateString()</div>
-									<div>
-										Last edited <span>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</span>
-									</div>
+									</h5>
 								</div>
+								<div class="card-body">
+									<div class="card-text">
+										<div>
+											<div>Created @race.creationDateTime.ToShortDateString()</div>
+											<div>
+												Last edited <span>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</span>
+											</div>
+										</div>
 								@if (race.Startlists.Count > 0)
 								{
-									<div>Startlists:</div>
-									<ul>
+												<div>Startlists:</div>
+												<ul>
 										@foreach (Startlist startlist in race.Startlists)
 										{
-											<li>@startlist.Name</li>
+															<li>@startlist.Name</li>
 										}
-									</ul>
+												</ul>
 								}
-							</div>
+									</div>
 
-						</div>
-						<div class="card-footer">
-							<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
-								<span>Edit</span>
-								<i class="bi btn-bi bi-pencil-square"></i>
-							</a>
-							<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-								<span>Delete</span>
-								<i class="bi btn-bi bi-trash3"></i>
-							</button>
-							<button class="btn btn-normal btn-race" @onclick="()=>DuplicateRace(race)">
-								<span>Duplicate</span>
-								<i class="bi btn-bi bi-copy"></i>
-							</button>
-							<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
-								<span>Export</span>
-								<i class="bi btn-bi bi-box-arrow-up"></i>
-							</button>
-						</div>
-					</div>
+								</div>
+								<div class="card-footer">
+									<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
+										<span>Edit</span>
+										<i class="bi btn-bi bi-pencil-square"></i>
+									</a>
+									<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
+										<span>Delete</span>
+										<i class="bi btn-bi bi-trash3"></i>
+									</button>
+									<button class="btn btn-normal btn-race" @onclick="()=>DuplicateRace(race)">
+										<span>Duplicate</span>
+										<i class="bi btn-bi bi-copy"></i>
+									</button>
+									<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
+										<span>Export</span>
+										<i class="bi btn-bi bi-box-arrow-up"></i>
+									</button>
+								</div>
+							</div>
 				}
 			}
 		</div>

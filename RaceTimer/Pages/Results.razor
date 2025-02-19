@@ -1,0 +1,172 @@
+﻿@page "/results/{RaceId}"
+@inject RaceService raceService
+<div class="page">
+	@if (currentRace != null)
+	{
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">@currentRace.Name</h1>
+				<div class="top-row-buttons">
+					<a class="btn btn-normal" href="/race-view/@RaceId">
+						<span>Back</span>
+						<i class="bi btn-bi bi-chevron-double-left" />
+					</a>
+				</div>
+			</div>
+			<div>
+				<h3>Result Data</h3>
+				<div>
+					@foreach (KeyValuePair<string, CheckBox> checkbox in resultDataCheckboxes)
+					{
+						<input type="checkbox" class="btn-normal-check" id="@($"{checkbox.Key}resultDataCheckbox")" @bind="resultDataCheckboxes[checkbox.Key].Value">
+						<label class="btn btn-normal" for="@($"{checkbox.Key}resultDataCheckbox")">
+							<span>@checkbox.Value.Title</span>
+							<i class="bi btn-bi @((checkbox.Value.Value)?"bi-check-circle":"bi-circle")" />
+						</label>
+					}
+				</div>
+			</div>
+			<div>
+				<h3>Racer Data</h3>
+				<div>
+					@foreach (KeyValuePair<string, CheckBox> checkbox in racerResultDataCheckboxes)
+					{
+						<input type="checkbox" class="btn-normal-check" id="@($"{checkbox.Key}racerResultDataCheckbox")" @bind="racerResultDataCheckboxes[checkbox.Key].Value">
+						<label class="btn btn-normal" for="@($"{checkbox.Key}racerResultDataCheckbox")">
+							<span>@checkbox.Value.Title</span>
+							<i class="bi btn-bi @((checkbox.Value.Value)?"bi-check-circle":"bi-circle")" />
+						</label>
+					}
+				</div>
+			</div>
+			<div>
+				<h3>Result Design</h3>
+				<div>
+					<select class="form-select">
+						<option value="value">Default Design</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="box-body box-body-stretch">
+			<div class="top-row">
+				<h2 class="top-row-title">Results</h2>
+			</div>
+			<div class="all-cards">
+				@if (currentRace.Startlists != null)
+				{
+					@foreach (Startlist startlist in currentRace.Startlists)
+					{
+						<div class="card mb-3 @startlist.currentAnimation">
+							<div class="card-header">
+								<h5 class="card-title">@startlist.Name</h5>
+							</div>
+							<div class="card-body">
+								<div class="card-text">
+									<div>Type: Mass</div>
+									<div>Start: xx:xx</div>
+									<div>Total Racers: @startlist.Racers.Count</div>
+								</div>
+							</div>
+							<div class="card-footer">
+								<a href="@($"/races/edit/{currentRace.Id}/{startlist.Id}")" class="btn btn-normal">
+									<span>Edit</span>
+									<i class="bi btn-bi bi-pencil-square"></i>
+								</a>
+								<button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#deleteModal">
+									<span>Delete</span>
+									<i class="bi btn-bi bi-trash3"></i>
+								</button>
+								<button class="btn btn-normal">
+									<span>Duplicate</span>
+									<i class="bi btn-bi bi-copy"></i>
+								</button>
+								<button class="btn btn-normal">
+									<span>Export</span>
+									<i class="bi btn-bi bi-box-arrow-up"></i>
+								</button>
+
+							</div>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	}
+</div>
+
+
+@code {
+	[Parameter] public string RaceId { get; set; }
+	public Race currentRace = new Race();
+	private class CheckBox
+	{
+		public CheckBox(string title)
+		{
+			this.Title = title;
+			this.Value = false;
+		}
+
+		public string Title { get; set; }
+		public bool Value { get; set; } = false;
+	}
+	private Dictionary<string, CheckBox> resultDataCheckboxes = new Dictionary<string, CheckBox>
+	{
+	{"bib", new CheckBox("Bib")},
+	{"time", new CheckBox("Time")},
+	{"timestamp", new CheckBox("Timestamp")},
+	{"pace", new CheckBox("Pace (min/km)")},
+	{"speed", new CheckBox("Speed (km/h)")},
+	{"laptimes", new CheckBox("Laptimes")}
+	};
+
+	private Dictionary<string, CheckBox> racerResultDataCheckboxes = new Dictionary<string, CheckBox>
+	{
+	{"bib", new CheckBox("Bib")},
+	{"time", new CheckBox("Time")},
+	{"timestamp", new CheckBox("Timestamp")},
+	{"pace", new CheckBox("Pace (min/km)")},
+	{"speed", new CheckBox("Speed (km/h)")},
+	{"laptimes", new CheckBox("Laptimes")},
+	};
+
+	protected override async Task OnInitializedAsync()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+
+		await InvokeAsync(StateHasChanged);
+
+		AddCustomFieldsToCheckboxes(GetCustomFieldNames());
+	}
+
+	void AddCustomFieldsToCheckboxes(List<string> customFieldNames)
+	{
+		@foreach (string customFieldName in customFieldNames)
+		{
+			racerResultDataCheckboxes.Add
+			(
+				$"customField-{customFieldNames.IndexOf(customFieldName)}",
+				new CheckBox(customFieldName)
+			);
+		}
+	}
+
+	List<string> GetCustomFieldNames()
+	{
+		IEnumerable<Classes.Racer.CustomField> allCustomFields = currentRace.Startlists.SelectMany(s => s.Racers).SelectMany(r => r.CustomFields);
+
+		List<string> allCustomFieldNames = new List<string>();
+
+		foreach (Classes.Racer.CustomField customField in allCustomFields)
+		{
+			if (allCustomFieldNames.Contains(customField.Name))
+			{
+				continue;
+			}
+
+			allCustomFieldNames.Add(customField.Name);
+		}
+		return allCustomFieldNames;
+	}
+}
