@@ -1,8 +1,8 @@
 ﻿@page "/races/edit/{RaceId}/{StartlistId}"
-@using Classes
-@using Pages
 @inject RaceService raceService
 @inject NavigationManager NavManager
+
+<Toasts @ref="toasts" />
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
@@ -191,6 +191,7 @@
 	private Race currentRace = new Race();
 	private Startlist currentStartlist = new Startlist();
 	private Racer selectedRacer = new Racer();
+	Toasts toasts = new Toasts();
 
 	protected override async Task OnInitializedAsync()
 	{

@@ -2,10 +2,10 @@
 
 public class Startlist
 {
-	public string Id { get; set; } = "";
-	public string Name { get; set; } = "";
+	public string Id { get; set; } = string.Empty;
+	public string Name { get; set; } = string.Empty;
 	public List<Racer> Racers { get; set; } = new List<Racer>();
-	public string currentAnimation { get; set; } = "";
+	public string currentAnimation { get; set; } = string.Empty;
 
 
 	public Startlist DuplicateStartlist(IEnumerable<string> existingIds)

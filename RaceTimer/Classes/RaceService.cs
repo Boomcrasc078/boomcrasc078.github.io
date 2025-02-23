@@ -24,20 +24,29 @@ public class RaceService
 		{
 			PropertyNameCaseInsensitive = true,
 			Converters = { new DateTimeConverter() } // Konverteraren säkerställer DateTime-parsning
-		});
+		}) ?? new List<Race>(); // Ensure races is not null
 
 		// Kontrollera och logga datumen
-		foreach (var race in races)
+		if (races != null)
 		{
-			Console.WriteLine($"Race: {race.Name}, Created: {race.creationDateTime}, Last Edited: {race.lastEditDateTime}");
+			foreach (var race in races)
+			{
+				Console.WriteLine($"Race: {race.Name}, Created: {race.creationDateTime}, Last Edited: {race.lastEditDateTime}");
+			}
 		}
 
-		return races;
+		return races ?? new List<Race>();
 	}
 
-	public async Task<Race> GetRaceByIdAsync(string raceId)
+	public async Task<Race?> GetRaceByIdAsync(string raceId)
 	{
 		var races = await GetRacesAsync();
+
+		if(races == null)
+		{
+			return null;
+		}
+
 		return races.FirstOrDefault(r => r.Id == raceId);
 	}
 

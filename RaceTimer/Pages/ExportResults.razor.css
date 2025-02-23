@@ -1,0 +1,114 @@
+﻿.page {
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.box-body {
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 90%;
+    max-width: 800px;
+    gap: 24px;
+}
+
+    .box-body:is(.box-body-stretch) {
+        flex-grow: 1;
+    }
+
+    .box-body > div {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+
+        .box-body > div > div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+            .box-body > div > div > label {
+                flex-basis: 30%;
+                min-width: 200px;
+            }
+
+.top-row {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title {
+    font-weight: bold;
+    word-wrap: anywhere;
+}
+
+.all-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title {
+    padding-block-start: 6px;
+}
+
+.card-header {
+    display: flex;
+    align-content: center;
+}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+input {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    pointer-events: none;
+}

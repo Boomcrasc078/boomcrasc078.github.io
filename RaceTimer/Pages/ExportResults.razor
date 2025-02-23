@@ -1,0 +1,40 @@
+﻿@page "/results/{RaceId}/{StartlistId}"
+@inject RaceService raceService
+<div class="page">
+	@if (currentRace != null && currentStartlist != null)
+	{
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">@currentStartlist.Name</h1>
+				<div class="top-row-buttons">
+					<a class="btn btn-normal" href="/results/@RaceId">
+						<span>Back</span>
+						<i class="bi btn-bi bi-chevron-double-left" />
+					</a>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+
+@code {
+	[Parameter] public string RaceId { get; set; } = "";
+	[Parameter] public string StartlistId { get; set; } = "";
+	public Race? currentRace;
+	public Startlist? currentStartlist;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await GetStartlist();
+	}
+
+	private async Task GetStartlist()
+	{
+		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		if (currentRace != null)
+		{
+			currentStartlist = currentRace.Startlists?.Find(s => s.Id == StartlistId);
+		}
+	}
+}

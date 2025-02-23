@@ -43,7 +43,7 @@ main {
     padding-inline: 12px;
 }
 
-@media (max-width: 641px) {
+@media (max-width: 1020px) {
     .page {
         flex-direction: column;
     }

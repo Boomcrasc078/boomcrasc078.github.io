@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class Race
 {
-	public string Id { get; set; }
-	public string Name { get; set; }
+	public string Id { get; set; } = string.Empty;
+	public string Name { get; set; } = string.Empty;
 	public List<Startlist> Startlists { get; set; } = new List<Startlist>();
 	public DateTime creationDateTime { get; set; } = new DateTime();
 	public DateTime lastEditDateTime { get; set; } = new DateTime();

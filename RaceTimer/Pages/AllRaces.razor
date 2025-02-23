@@ -10,7 +10,7 @@
 
 <PageTitle>PocketRace | All Races</PageTitle>
 
-<Toasts />
+<Toasts @ref="toasts"/>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
@@ -124,7 +124,6 @@
 	private Random random = new Random();
 	private List<Race> races = new List<Race>();
 	private Race modalRace = new Race();
-	private string deleteAnimation = "";
 	private ExcelHandler excelHandler = new ExcelHandler();
 	private Toasts toasts = new Toasts();
 
