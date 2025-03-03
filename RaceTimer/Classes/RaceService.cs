@@ -17,8 +17,6 @@ public class RaceService
 		// Hämtar JSON-data från localStorage
 		var racesJson = await js.InvokeAsync<string>("localStorage.getItem", LocalStorageKey);
 
-		Console.WriteLine($"Hämtade JSON från localStorage: {racesJson}");
-
 		// Returnerar en tom lista om inget finns sparat i localStorage
 		var races = racesJson == null ? new List<Race>() : JsonSerializer.Deserialize<List<Race>>(racesJson, new JsonSerializerOptions
 		{
@@ -61,14 +59,13 @@ public class RaceService
 			Converters = { new DateTimeConverter() }
 		});
 
-		Console.WriteLine($"Sparar JSON till localStorage: {racesJson}");
+		Console.WriteLine($"Sparar alla race till localStorage");
 
 		await js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, racesJson);
 	}
 
 	public async Task UpdateRaceAsync(Race updatedRace)
 	{
-		Console.WriteLine("Sort startlists");
 		updatedRace.Startlists = updatedRace.Startlists.OrderBy(s => s.Name).ToList();
 
 		var races = await GetRacesAsync();

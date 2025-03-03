@@ -1,5 +1,10 @@
 ﻿@page "/results/{RaceId}/{StartlistId}"
+@inject IJSRuntime jsRuntime
 @inject RaceService raceService
+@inject SaveLoadService saveLoadService
+
+<Toasts @ref="toasts" />
+
 <div class="page">
 	@if (currentRace != null && currentStartlist != null)
 	{
@@ -13,28 +18,216 @@
 					</a>
 				</div>
 			</div>
+
+			<div>
+				<h3>Export Method</h3>
+				<div>
+					<select class="form-select" @bind="exportMethod">
+						<option value="Embed">HTML Embed (Interactive)</option>
+						<option value="Text">Text (Not interactive)</option>
+					</select>
+				</div>
+			</div>
+			@switch (exportMethod)
+			{
+				case "Embed":
+					<div>
+						<h3>Embed Size</h3>
+						<div style="display: flex; flex-direction: column;">
+							<div>
+								<label for="embed-width" class="form-label">Width</label>
+								<div class="input-group">
+									<input type="number" class="form-control" id="embed-width" style="pointer-events: auto; position: static;" step="10" @bind="embed.width" />
+									<select class="form-select" @bind="embed.widthType">
+										<option value="px">pixels</option>
+										<option value="%">%</option>
+									</select>
+								</div>
+							</div>
+							<div>
+								<label for="embed-height" class="form-label">Height</label>
+								<div class="input-group">
+									<input type="number" class="form-control" id="embed-height" style="pointer-events: auto; position: static;" step="10" @bind="embed.height" />
+									<select class="form-select" @bind="embed.heightType">
+										<option value="px">pixels</option>
+										<option value="%">%</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					break;
+			}
+
+		</div>
+
+		<div class="box-body">
+			<div class="top-row">
+				<h1 class="top-row-title">Generated Results</h1>
+				<div class="top-row-buttons">
+				</div>
+			</div>
+
+			@switch (exportMethod)
+			{
+				case "Embed":
+					<div>
+						<button class="btn btn-normal" @onclick="()=>embed.GenerateEmbedCode(currentStartlist, saveLoadService, toasts)">
+							<span>Generate Results</span>
+							<i class="bi btn-bi bi-stars"></i>
+						</button>
+					</div>
+					<div>
+						<h3>Embed</h3>
+						<div style="display: flex; justify-content: center; height: 300px; overflow: auto;">
+							@((MarkupString)embed.code)
+						</div>
+					</div>
+					<div>
+						<h3>Embed Code</h3>
+						<div>
+							<textarea readonly>
+								@embed.code
+							</textarea>
+							<button class="btn btn-normal">
+								<span>Copy to clipboard</span>
+								<i class="bi btn-bi bi-clipboard"></i>
+							</button>
+						</div>
+					</div>
+					break;
+
+				case "HTML":
+					<div>HTML</div>
+					break;
+
+				case "Text":
+					<div>Text</div>
+					break;
+			}
+
+
 		</div>
 	}
+
 </div>
 
 
 @code {
 	[Parameter] public string RaceId { get; set; } = "";
 	[Parameter] public string StartlistId { get; set; } = "";
+	public Toasts toasts = new Toasts();
 	public Race? currentRace;
 	public Startlist? currentStartlist;
+	private string exportMethod = "Embed";
+	private Embed embed = new Embed(100, "%", 100, "%");
 
 	protected override async Task OnInitializedAsync()
 	{
 		await GetStartlist();
-	}
 
+		await embed.GenerateEmbedCode(currentStartlist, saveLoadService, toasts);
+	}
 	private async Task GetStartlist()
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
 		if (currentRace != null)
 		{
 			currentStartlist = currentRace.Startlists?.Find(s => s.Id == StartlistId);
+		}
+
+		if (currentStartlist == null)
+		{
+			await toasts.CreateToast(new Toast("", "Startlist not found", "text-bg-danger"));
+			return;
+		}
+	}
+
+	public class Embed
+	{
+		public float width { get; set; }
+		public string widthType { get; set; }
+		public float height { get; set; }
+		public string heightType { get; set; }
+
+		public string @style { get; set; }
+
+		public string code { get; set; }
+
+		public Embed(float width, string widthType, float height, string heightType)
+		{
+			this.width = width;
+			this.height = height;
+			this.style = "border-radius: 12px;";
+			this.code = "";
+			this.widthType = widthType;
+			this.heightType = heightType;
+		}
+
+		public async Task GenerateEmbedCode(Startlist? currentStartlist, SaveLoadService saveLoadService, Toasts toasts)
+		{
+			if (currentStartlist == null)
+			{
+				await toasts.CreateToast(new Toast("", "No startlist found", "text-bg-danger"));
+				return;
+			}
+
+			var dataSelection = await GetDataSelectionAsync(saveLoadService, "resultData", toasts);
+
+			if (dataSelection == null)
+			{
+				return;
+			}
+
+			code = BuildEmbedString(currentStartlist, dataSelection);
+		}
+
+		public async Task<IEnumerable<Results.ResultData>?> GetDataSelectionAsync(SaveLoadService saveLoadService, string key, Toasts toasts)
+		{
+			IEnumerable<Results.ResultData>? dataSelection = await saveLoadService.LoadAsync<IEnumerable<Results.ResultData>>(key);
+
+			if (dataSelection == null)
+			{
+				await toasts.CreateToast(new Toast("", $"No data selection found in {key}", "text-bg-danger"));
+				return null;
+			}
+
+			return dataSelection;
+		}
+
+		public string BuildEmbedString(Startlist startlist, IEnumerable<Results.ResultData> dataSelection)
+		{
+			string newSourceDocument = "";
+
+			string background =
+			"<div class=\"background\">" +
+
+			"</div>";
+
+
+			string styling =
+			"<style>" +
+				".background{" +
+					"display: flex; " +
+					"flex-direction: column; " +
+					"background-color: #21212133; " +
+					"backdrop-filter: blur(20px); " +
+					"padding: 12px; " +
+					"gap: 12px; " +
+					"border: solid 1px white; " +
+					"border-radius: 12px; " +
+					$"width: {width + widthType}; " +
+					$"height: {height + heightType}; " +
+					$"{style} " +
+					"}" +
+			"</style>";
+
+
+			newSourceDocument += background;
+			newSourceDocument += styling;
+
+
+			return newSourceDocument;
 		}
 	}
 }

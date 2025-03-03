@@ -112,3 +112,15 @@ input {
     clip: rect(0, 0, 0, 0);
     pointer-events: none;
 }
+
+textarea {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    overflow: auto;
+    border-color: white;
+    border-radius: 12px;
+    background-color: #21212133;
+    padding: 12px;
+}

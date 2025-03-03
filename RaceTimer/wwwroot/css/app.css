@@ -182,14 +182,19 @@ code {
     display: none;
 }
 
-.form-control {
+.form-control, .form-select, .input-group-text {
     background-color: rgba(var(--bs-body-bg-rgb), .1);
     border-width: 1px;
+    border-color: white;
 }
 
     .form-control:focus {
-        background-color: rgba(var(--bs-body-bg-rgb), .5);
+        background-color: rgba(var(--bs-body-bg-rgb), .1);
     }
+
+option {
+    background-color: var(--bs-body-bg);
+}
 
 
 .modal {
@@ -199,5 +204,3 @@ code {
 .modal-content {
     background-color: rgba(var(--bs-body-bg-rgb), .8);
 }
-
-

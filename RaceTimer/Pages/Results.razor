@@ -1,5 +1,6 @@
 ﻿@page "/results/{RaceId}"
 @inject RaceService raceService
+@inject SaveLoadService saveLoadService
 @inject IJSRuntime jsRuntime
 
 <Toasts @ref="toasts" />
@@ -20,32 +21,44 @@
 			<div>
 				<h3>Result Data</h3>
 				<div>
-					@if (resultDataCheckboxes != null)
+					@if (resultData != null && checkboxValuesInitialized)
 					{
-						@foreach (CheckBox checkbox in resultDataCheckboxes)
+						@foreach (ResultData checkbox in resultData)
 						{
-							<input type="checkbox" class="btn-normal-check" id="@($"{checkbox.Id}resultDataCheckbox")" @bind="@(resultDataCheckboxes[resultDataCheckboxes.IndexOf(checkbox)].Value)">
+							<input type="checkbox" class="btn-normal-check" checked="@checkbox.Value" id="@($"{checkbox.Id}resultDataCheckbox")" @onchange="(ChangeEventArgs eventArgs)=>SetAndSaveCheckboxValues(eventArgs, checkbox)">
 							<label class="btn btn-normal" for="@($"{checkbox.Id}resultDataCheckbox")">
 								<span>@checkbox.Name</span>
 								<i class="bi btn-bi @((checkbox.Value)?"bi-check-circle":"bi-circle")" />
 							</label>
 						}
 					}
+					else
+					{
+						<div class="spinner-border" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+					}
 				</div>
 			</div>
 			<div>
 				<h3>Racer Data</h3>
 				<div>
-					@if (racerResultDataCheckboxes != null)
+					@if (racerResultData != null && checkboxValuesInitialized)
 					{
-						@foreach (CheckBox checkbox in racerResultDataCheckboxes)
+						@foreach (ResultData checkbox in racerResultData)
 						{
-							<input type="checkbox" class="btn-normal-check" id="@($"{checkbox.Id}racerResultDataCheckbox")" @bind="@(racerResultDataCheckboxes[racerResultDataCheckboxes.IndexOf(checkbox)].Value)">
+							<input type="checkbox" class="btn-normal-check" checked="@checkbox.Value" id="@($"{checkbox.Id}racerResultDataCheckbox")" @onchange="(ChangeEventArgs eventArgs)=>SetAndSaveCheckboxValues(eventArgs, checkbox)">
 							<label class="btn btn-normal" for="@($"{checkbox.Id}racerResultDataCheckbox")">
 								<span>@checkbox.Name</span>
 								<i class="bi btn-bi @((checkbox.Value)?"bi-check-circle":"bi-circle")" />
 							</label>
 						}
+					}
+					else
+					{
+						<div class="spinner-border" role="status" style="display: flex; justify-content: center;">
+							<span class="visually-hidden">Loading...</span>
+						</div>
 					}
 				</div>
 			</div>
@@ -91,12 +104,12 @@
 	}
 </div>
 
-
 @code {
 	[Parameter] public string? RaceId { get; set; }
 	public Race currentRace = new Race();
-	public List<CheckBox>? resultDataCheckboxes;
-	public List<CheckBox>? racerResultDataCheckboxes;
+	public List<ResultData>? resultData;
+	public List<ResultData>? racerResultData;
+	private bool checkboxValuesInitialized = false;
 
 	private Toasts toasts = new Toasts();
 
@@ -105,25 +118,25 @@
 		if (RaceId == null)
 			return;
 
-		resultDataCheckboxes = new List<CheckBox>
-	{
-		new CheckBox("resultbib", "Bib", jsRuntime),
-		new CheckBox("resulttime", "Time", jsRuntime),
-		new CheckBox("resulttimestamp", "Timestamp", jsRuntime),
-		new CheckBox("resultpace", "Pace (min/km)", jsRuntime),
-		new CheckBox("resultspeed", "Speed (km/h)", jsRuntime),
-		new CheckBox("resultlaptimes", "Laptimes", jsRuntime)
-	};
+		resultData = new List<ResultData>
+		{
+			new ResultData("bib", "Bib"),
+			new ResultData("time", "Time"),
+			new ResultData("timestamp", "Timestamp"),
+			new ResultData("pace", "Pace (min/km)"),
+			new ResultData("speed", "Speed (km/h)"),
+			new ResultData("laptimes", "Laptimes")
+		};
 
-		racerResultDataCheckboxes = new List<CheckBox>
-	{
-		new CheckBox("racerbib", "Bib", jsRuntime),
-		new CheckBox("racertime", "Time", jsRuntime),
-		new CheckBox("racertimestamp", "Timestamp", jsRuntime),
-		new CheckBox("racerpace", "Pace (min/km)", jsRuntime),
-		new CheckBox("racerspeed", "Speed (km/h)", jsRuntime),
-		new CheckBox("racerlaptimes", "Laptimes", jsRuntime),
-	};
+		racerResultData = new List<ResultData>
+		{
+			new ResultData("bib", "Bib"),
+			new ResultData("time", "Time"),
+			new ResultData("timestamp", "Timestamp"),
+			new ResultData("pace", "Pace (min/km)"),
+			new ResultData("speed", "Speed (km/h)"),
+			new ResultData("laptimes", "Laptimes"),
+		};
 
 		var getRace = await raceService.GetRaceByIdAsync(RaceId);
 
@@ -131,26 +144,27 @@
 			return;
 
 		currentRace = getRace;
-		AddCustomFieldsToCheckboxes(GetCustomFieldNames());
 
-		// Debugging log
-		Console.WriteLine($"racerResultDataCheckboxes count: {racerResultDataCheckboxes.Count}");
+		AddCustomFieldsToCheckboxes(GetCustomFieldNames());
 
 		await GetCheckboxValues();
 
+		await SaveCheckboxValues();
+
 		await InvokeAsync(StateHasChanged);
-		StateHasChanged();
+
+		checkboxValuesInitialized = true;
 	}
 
 	void AddCustomFieldsToCheckboxes(List<string> customFieldNames)
 	{
-		if (racerResultDataCheckboxes != null)
+		if (racerResultData != null)
 		{
-			@foreach (string customFieldName in customFieldNames)
+			foreach (string customFieldName in customFieldNames)
 			{
-				racerResultDataCheckboxes.Add
+				racerResultData.Add
 				(
-				new CheckBox($"customField-{customFieldNames.IndexOf(customFieldName)}", customFieldName, jsRuntime)
+					new ResultData($"customField-{customFieldNames.IndexOf(customFieldName)}", customFieldName)
 				);
 			}
 		}
@@ -159,7 +173,6 @@
 	List<string> GetCustomFieldNames()
 	{
 		IEnumerable<Classes.Racer.CustomField> allCustomFields = currentRace.Startlists.SelectMany(s => s.Racers).SelectMany(r => r.CustomFields);
-
 		List<string> allCustomFieldNames = new List<string>();
 
 		foreach (Classes.Racer.CustomField customField in allCustomFields)
@@ -176,60 +189,80 @@
 
 	async Task GetCheckboxValues()
 	{
-		if (resultDataCheckboxes != null)
+		List<ResultData>? getResultDataCheckboxes = await saveLoadService.LoadAsync<List<ResultData>>("resultData");
+		List<ResultData>? getRacerResultDataCheckboxes = await saveLoadService.LoadAsync<List<ResultData>>("racerResultData");
+
+		if (getResultDataCheckboxes != null && resultData != null)
 		{
-			foreach (CheckBox checkbox in resultDataCheckboxes)
+			foreach (ResultData checkbox in resultData)
 			{
-				await checkbox.LoadCheckboxValue();
+				ResultData? getCheckBox = getResultDataCheckboxes.FirstOrDefault(x => x.Id == checkbox.Id);
+				if (getCheckBox == null)
+				{
+					continue;
+				}
+
+				checkbox.Value = getCheckBox.Value;
 			}
 		}
 
-		if (racerResultDataCheckboxes != null)
+		if (getRacerResultDataCheckboxes != null && racerResultData != null)
 		{
-			foreach (CheckBox checkbox in racerResultDataCheckboxes)
+			foreach (ResultData checkbox in racerResultData)
 			{
-				await checkbox.LoadCheckboxValue();
+				ResultData? getCheckBox = getRacerResultDataCheckboxes.FirstOrDefault(x => x.Id == checkbox.Id);
+				if (getCheckBox == null)
+				{
+					continue;
+				}
+
+				checkbox.Value = getCheckBox.Value;
 			}
 		}
-
 	}
 
-    public class CheckBox
-    {
-        private readonly IJSRuntime jsRuntime;
-        private bool value;
+	async Task SetAndSaveCheckboxValues(ChangeEventArgs eventArgs, ResultData checkbox)
+	{
+		object? getValue = eventArgs.Value;
 
-        public CheckBox(string id, string name, IJSRuntime jSRuntime)
-        {
-            this.Id = id;
-            this.Name = name;
-            this.value = false;
-            this.jsRuntime = jSRuntime;
-        }
+		if (getValue == null)
+		{
+			await SaveCheckboxValues();
+			return;
+		}
 
-        public async Task SaveCheckboxValue()
-        {
-            SaveLoadService saveLoadService = new SaveLoadService(jsRuntime);
-            await saveLoadService.SaveAsync($"{Id}checkboxValue", Value);
-        }
+		bool unboxedValue = (bool)getValue;
 
-        public async Task LoadCheckboxValue()
-        {
-            SaveLoadService saveLoadService = new SaveLoadService(jsRuntime);
-            var getValue = await saveLoadService.LoadAsync<bool>($"{Id}checkboxValue");
-            Value = getValue;
-        }
+		checkbox.Value = unboxedValue;
 
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public bool Value
-        {
-            get => value;
-            set
-            {
-                this.value = value;
-                SaveCheckboxValue().ConfigureAwait(false);
-            }
-        }
-    }
+		await SaveCheckboxValues();
+	}
+
+	async Task SaveCheckboxValues()
+	{
+		if (resultData != null)
+		{
+			await saveLoadService.SaveAsync<List<ResultData>>("resultData", resultData);
+		}
+		if (racerResultData != null)
+		{
+			await saveLoadService.SaveAsync<List<ResultData>>("racerResultData", racerResultData);
+		}
+	}
+
+	public class ResultData
+	{
+
+		public ResultData(string id, string name)
+		{
+			this.Id = id;
+			this.Name = name;
+			this.Value = false;
+		}
+
+		public string Id { get; set; }
+		public string Name { get; set; }
+		public bool Value { get; set; }
+	}
+}
 }
