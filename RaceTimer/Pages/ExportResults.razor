@@ -88,7 +88,7 @@
 						<div>
 							<textarea readonly>
 								@embed.code
-							</textarea>
+													</textarea>
 							<button class="btn btn-normal">
 								<span>Copy to clipboard</span>
 								<i class="bi btn-bi bi-clipboard"></i>
@@ -105,11 +105,8 @@
 					<div>Text</div>
 					break;
 			}
-
-
 		</div>
 	}
-
 </div>
 
 
@@ -128,6 +125,7 @@
 
 		await embed.GenerateEmbedCode(currentStartlist, saveLoadService, toasts);
 	}
+
 	private async Task GetStartlist()
 	{
 		currentRace = await raceService.GetRaceByIdAsync(RaceId);
@@ -194,37 +192,68 @@
 
 			return dataSelection;
 		}
+		
+		string CreateEmbedTitleBox(List<Results.ResultData> dataList)
+		{
+			string titleBox = "<div class=\"result-box\">";
+
+			foreach (var data in dataList)
+			{
+				if (!data.Value)
+					continue;
+
+				titleBox += $"<span>{data.Name}</span>";
+			}
+
+			titleBox +=
+			"</div>";
+
+			return titleBox;
+		}
 
 		public string BuildEmbedString(Startlist startlist, IEnumerable<Results.ResultData> dataSelection)
 		{
-			string newSourceDocument = "";
-
-			string background =
-			"<div class=\"background\">" +
-
-			"</div>";
-
+			var dataList = dataSelection.ToList();
 
 			string styling =
 			"<style>" +
-				".background{" +
+				".result-embed{" +
 					"display: flex; " +
 					"flex-direction: column; " +
 					"background-color: #21212133; " +
 					"backdrop-filter: blur(20px); " +
 					"padding: 12px; " +
-					"gap: 12px; " +
 					"border: solid 1px white; " +
 					"border-radius: 12px; " +
 					$"width: {width + widthType}; " +
 					$"height: {height + heightType}; " +
 					$"{style} " +
 					"}" +
+
+					".result-box{" +
+					"height: 50px; " +
+					"background-color: black; " +
+					"padding: 12px; " +
+					"border-radius: 4px; " +
+					"display: flex; " +
+					"justify-content: space-between; " +
+					"border-bottom: solid 1px white; " +
+					"}" +
 			"</style>";
 
+			string resultBoxes = "";
+			resultBoxes += CreateEmbedTitleBox(dataList);
 
-			newSourceDocument += background;
-			newSourceDocument += styling;
+			for (int i = 0; i < 3; i++)
+			{
+
+			}
+
+			string newSourceDocument =
+				"<div class=\"result-embed\">" +
+				resultBoxes +
+				"</div>" +
+				styling;
 
 
 			return newSourceDocument;
