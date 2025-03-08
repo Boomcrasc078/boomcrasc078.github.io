@@ -88,7 +88,7 @@
 						<div>
 							<textarea readonly>
 								@embed.code
-													</textarea>
+																			</textarea>
 							<button class="btn btn-normal">
 								<span>Copy to clipboard</span>
 								<i class="bi btn-bi bi-clipboard"></i>
@@ -180,9 +180,9 @@
 			code = BuildEmbedString(currentStartlist, dataSelection);
 		}
 
-		public async Task<IEnumerable<Results.ResultData>?> GetDataSelectionAsync(SaveLoadService saveLoadService, string key, Toasts toasts)
+		public async Task<IEnumerable<Results.ResultDataOption>?> GetDataSelectionAsync(SaveLoadService saveLoadService, string key, Toasts toasts)
 		{
-			IEnumerable<Results.ResultData>? dataSelection = await saveLoadService.LoadAsync<IEnumerable<Results.ResultData>>(key);
+			IEnumerable<Results.ResultDataOption>? dataSelection = await saveLoadService.LoadAsync<IEnumerable<Results.ResultDataOption>>(key);
 
 			if (dataSelection == null)
 			{
@@ -192,10 +192,12 @@
 
 			return dataSelection;
 		}
-		
-		string CreateEmbedTitleBox(List<Results.ResultData> dataList)
+
+		string CreateEmbedTitleBox(List<Results.ResultDataOption> dataList)
 		{
 			string titleBox = "<div class=\"result-box\">";
+
+			titleBox += $"<span>Name</span>";
 
 			foreach (var data in dataList)
 			{
@@ -211,7 +213,22 @@
 			return titleBox;
 		}
 
-		public string BuildEmbedString(Startlist startlist, IEnumerable<Results.ResultData> dataSelection)
+		string CreateEmbedRacerBox(Racer racer, List<Results.ResultDataOption> dataList)
+		{
+			string box = "<div class=\"result-box\">";
+			box += $"<span>{racer.GetResultData("Name")} {racer.GetResultData("Surname")}</span>";
+			foreach (var data in dataList)
+			{
+				if (!data.Value)
+					continue;
+
+				box += $"<span>{racer.GetResultData(data.Name)}</span>";
+			}
+			box += "</div>";
+			return box;
+		}
+
+		public string BuildEmbedString(Startlist startlist, IEnumerable<Results.ResultDataOption> dataSelection)
 		{
 			var dataList = dataSelection.ToList();
 
@@ -228,6 +245,7 @@
 					$"width: {width + widthType}; " +
 					$"height: {height + heightType}; " +
 					$"{style} " +
+					"overflow: auto; " +
 					"}" +
 
 					".result-box{" +
@@ -244,9 +262,9 @@
 			string resultBoxes = "";
 			resultBoxes += CreateEmbedTitleBox(dataList);
 
-			for (int i = 0; i < 3; i++)
+			foreach (var racer in startlist.Racers)
 			{
-
+				resultBoxes += CreateEmbedRacerBox(racer, dataList);
 			}
 
 			string newSourceDocument =

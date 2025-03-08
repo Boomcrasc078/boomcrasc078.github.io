@@ -23,5 +23,16 @@
 			}
 		}
 
+		public object? GetResultData(string key)
+		{
+			switch (key)
+			{
+				case "Name": return Name;
+				case "Surname": return Surname;
+				case "Bib": return Bib;
+				case "Id": return Id;
+				default: return null;
+			}
+		}
 	}
 }
