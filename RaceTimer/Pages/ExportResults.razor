@@ -216,13 +216,13 @@
 		string CreateEmbedRacerBox(Racer racer, List<Results.ResultDataOption> dataList)
 		{
 			string box = "<div class=\"result-box\">";
-			box += $"<span>{racer.GetResultData("Name")} {racer.GetResultData("Surname")}</span>";
+			box += $"<span>{racer.GetResultData("name")} {racer.GetResultData("surname")}</span>";
 			foreach (var data in dataList)
 			{
 				if (!data.Value)
 					continue;
 
-				box += $"<span>{racer.GetResultData(data.Name)}</span>";
+				box += $"<span>{racer.GetResultData(data.Id)}</span>";
 			}
 			box += "</div>";
 			return box;

@@ -23,14 +23,61 @@
 			}
 		}
 
+		TimeSpan? GetTime()
+		{
+			if (LapDateTime.Count < 0)
+				return null;
+			if (StartDateTime == null)
+				return null;
+			var time = LapDateTime.Last() - StartDateTime.Value;
+			return time;
+		}
+
+		string? GetPace(float distanceMeters)
+		{
+			if (LapDateTime.Count < 0)
+				return null;
+			if (StartDateTime == null)
+				return null;
+			var time = LapDateTime.Last() - StartDateTime.Value;
+			var pace = time / (distanceMeters / 1000);
+
+			var stringPace = pace.ToString("mm//:ss");
+			return stringPace;
+		}
+
+		string GetSpeed(float distanceMeters)
+		{
+			if (LapDateTime.Count < 0)
+				return null;
+			if (StartDateTime == null)
+				return null;
+			var time = LapDateTime.Last() - StartDateTime.Value;
+			var speed = (distanceMeters / 1000) / time.TotalHours;
+
+			var stringSpeed = speed.ToString();
+			return stringSpeed;
+		}
+
 		public object? GetResultData(string key)
 		{
 			switch (key)
 			{
-				case "Name": return Name;
-				case "Surname": return Surname;
-				case "Bib": return Bib;
-				case "Id": return Id;
+				case "name": return Name;
+				case "surname": return Surname;
+				case "bib": return Bib;
+				case "id": return Id;
+				case "time": return GetTime();
+				default: return null;
+			}
+		}
+
+		public object? GetResultData(string key, float distanceMeters)
+		{
+			switch (key)
+			{
+				case "pace": return GetPace(distanceMeters);
+				case "speed": return GetSpeed(distanceMeters);
 				default: return null;
 			}
 		}

@@ -81,7 +81,7 @@
 				{
 					@foreach (Startlist startlist in currentRace.Startlists)
 					{
-						<div class="card mb-3 @startlist.currentAnimation">
+						<div class="card mb-3 @startlist.CurrentAnimation">
 							<div class="card-header">
 								<h5 class="card-title">@startlist.Name</h5>
 							</div>
@@ -176,11 +176,11 @@
 		if (!currentRace.Startlists.Contains(deleteStartlist))
 			return;
 
-		deleteStartlist.currentAnimation = "fade-out";
+		deleteStartlist.CurrentAnimation = "fade-out";
 
 		await Task.Delay(500);
 
-		deleteStartlist.currentAnimation = "";
+		deleteStartlist.CurrentAnimation = "";
 
 		currentRace.Startlists.Remove(deleteStartlist);
 		await raceService.UpdateRaceAsync(currentRace);
