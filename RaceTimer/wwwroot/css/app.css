@@ -192,14 +192,14 @@ code {
         background-color: rgba(var(--bs-body-bg-rgb), .1);
     }
 
-option {
+option{
     background-color: var(--bs-body-bg);
 }
 
 
-.modal {
-    backdrop-filter: blur(10px);
-}
+    .modal {
+        backdrop-filter: blur(10px);
+    }
 
 .modal-content {
     background-color: rgba(var(--bs-body-bg-rgb), .8);

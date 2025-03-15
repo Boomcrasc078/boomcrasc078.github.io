@@ -88,7 +88,10 @@
 							<div class="card-body">
 								<div class="card-text">
 									<div>Type: Mass</div>
-									<div>Start: xx:xx</div>
+									<div>Start: @startlist.StartDateTimeString(startlist.StartDateTime())
+									
+									</div>
+									<div>Distance: @(startlist.DistanceMeters + "m")</div>
 									<div>Total Racers: @startlist.Racers.Count</div>
 								</div>
 							</div>
@@ -126,7 +129,7 @@
 @code {
 	[Parameter] public string RaceId { get; set; }
 	private Race currentRace;
-	private Startlist modalStartlist = new Startlist();
+	private Startlist modalStartlist;
 	private Toasts toasts = new Toasts();
 	private ExcelHandler excelHandler = new ExcelHandler();
 
@@ -150,17 +153,7 @@
 
 	private async Task AddStartlist()
 	{
-		Startlist addStartlist = new Startlist()
-			{
-				Name = "Untitled Startlist",
-				Id = IdGenerator.GenerateBase64String(5),
-				Racers = new List<Racer>()
-			};
-
-		while (currentRace.Startlists.Exists(startlist => startlist.Id == addStartlist.Id) || addStartlist.Id.Contains("/"))
-		{
-			addStartlist.Id = IdGenerator.GenerateBase64String(5);
-		}
+		Startlist addStartlist = new Startlist("Untitled Startlist", currentRace.Startlists.Select(s => s.Id));
 
 		currentRace.Startlists.Add(addStartlist);
 		await SaveRace();

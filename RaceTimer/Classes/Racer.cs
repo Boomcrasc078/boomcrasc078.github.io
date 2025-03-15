@@ -23,14 +23,15 @@
 			}
 		}
 
-		TimeSpan? GetTime()
+		string? GetTime()
 		{
 			if (LapDateTime.Count < 0)
 				return null;
 			if (StartDateTime == null)
 				return null;
 			var time = LapDateTime.Last() - StartDateTime.Value;
-			return time;
+			var timeString = time.ToString("hh\\:mm\\:ss\\.ff");
+			return timeString;
 		}
 
 		string? GetPace(float distanceMeters)
@@ -46,7 +47,7 @@
 			return stringPace;
 		}
 
-		string GetSpeed(float distanceMeters)
+		string? GetSpeed(float distanceMeters)
 		{
 			if (LapDateTime.Count < 0)
 				return null;

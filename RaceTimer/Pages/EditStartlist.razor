@@ -141,7 +141,22 @@
 
 			<div>
 				<label>Name:</label>
-				<input type="text" @onchange="UpdateName" class="form-control startlist-input" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
+				<input type="text" @onchange="UpdateName" class="form-control" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
+			</div>
+
+			<div>
+				<label>Type:</label>
+				<select class="form-control" placeholder="Untitled Startlist">
+					<option selected>Mass Start</option>
+				</select>
+			</div>
+
+			<div>
+				<label>Distance:</label>
+				<div class="input-group mb-3">
+					<input type="number" inputmode="decimal" class="form-control" aria-label="Distance" value="@currentStartlist.DistanceMeters" @onchange="UpdateDistance">
+					<span class="form-control">m</span>
+				</div>
 			</div>
 
 		</div>
@@ -189,7 +204,7 @@
 	[Parameter] public string RaceId { get; set; } = "";
 	[Parameter] public string StartlistId { get; set; } = "";
 	private Race currentRace = new Race();
-	private Startlist currentStartlist = new Startlist();
+	private Startlist currentStartlist;
 	private Racer selectedRacer = new Racer();
 	Toasts toasts = new Toasts();
 
@@ -200,8 +215,22 @@
 
 	private async Task GetStartlist()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
-		currentStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
+		var getRace = await raceService.GetRaceByIdAsync(RaceId);
+		if(getRace == null)
+		{
+			throw new NullReferenceException("Race not found");
+		}
+
+		currentRace = getRace;
+
+		var getStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
+
+		if(getStartlist == null)
+		{
+			throw new NullReferenceException("Startlist not found");
+		}
+
+		currentStartlist = getStartlist;
 	}
 
 	private async Task SaveRace()
@@ -216,9 +245,28 @@
 		}
 	}
 
-	private async Task UpdateName(ChangeEventArgs e)
+	private async Task UpdateName(ChangeEventArgs eventArgs)
 	{
-		currentStartlist.Name = e.Value.ToString();
+		if (eventArgs.Value != null)
+		{
+			currentStartlist.Name = eventArgs.Value?.ToString() ?? string.Empty;
+			await SaveRace();
+		}
+	}
+
+	private async Task UpdateDistance(ChangeEventArgs eventArgs)
+	{
+		var value = eventArgs.Value;
+		if (value == null)
+		{
+			return;
+		}
+		var stringValue = value.ToString();
+		if (stringValue == null)
+		{
+			return;
+		}
+		currentStartlist.DistanceMeters = float.Parse(stringValue);
 		await SaveRace();
 	}
 
@@ -236,7 +284,7 @@
 			addRacer.Id = IdGenerator.GenerateBase64String(5);
 		}
 
-		while (currentRace.Startlists.SelectMany(s=>s.Racers).Select(racer => racer.Bib).Contains(addRacer.Bib))
+		while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Bib).Contains(addRacer.Bib))
 		{
 			addRacer.Bib = (int.Parse(addRacer.Bib) + 1).ToString();
 		}

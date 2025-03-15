@@ -83,11 +83,7 @@ public class ExcelHandler
 	// Importerar startlistdata från en Excel-fil
 	public Startlist ImportStartlistFromExcel(Stream fileStream, List<Startlist> allStartlists, string startlistName)
 	{
-		var startlist = new Startlist
-		{
-			Name = startlistName,
-			Id = IdGenerator.GenerateUniqueId(allStartlists.Select(s => s.Id))
-		};
+		var startlist = new Startlist(startlistName, allStartlists.Select(s => s.Id));
 
 		using (var workbook = new XLWorkbook(fileStream))
 		{
@@ -177,11 +173,10 @@ public class ExcelHandler
 
 	private Startlist GetOrCreateStartlist(Race race, string startlistName)
 	{
-		var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist { Name = startlistName };
+		var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist(startlistName, race.Startlists.Select(sl => sl.Id));
 
 		if (!race.Startlists.Contains(startlist))
 		{
-			startlist.Id = IdGenerator.GenerateUniqueId(race.Startlists.Select(sl => sl.Id));
 			race.Startlists.Add(startlist);
 		}
 
