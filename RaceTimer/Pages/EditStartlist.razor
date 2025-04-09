@@ -4,124 +4,127 @@
 
 <Toasts @ref="toasts" />
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				Are you sure you want to delete @selectedRacer.Name?
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRacer(selectedRacer)">
-					<span>Delete</span>
-					<i class="bi btn-bi bi-trash3"></i>
-				</button>
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal">
-					<span>Cancel</span>
-					<i class="bi btn-bi bi-x-lg"></i>
-				</button>
+@if (selectedRacer != null)
+{
+	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					Are you sure you want to delete @selectedRacer.Name?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRacer(selectedRacer)">
+						<span>Delete</span>
+						<i class="bi btn-bi bi-trash3"></i>
+					</button>
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal">
+						<span>Cancel</span>
+						<i class="bi btn-bi bi-x-lg"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true" data-bs-backdrop="static">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="deleteModal">Edit @selectedRacer.Name @selectedRacer.Surname</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="()=>GetStartlist()" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div class="border-3 border-bottom pb-4">
+							<div class="form-floating mb-3">
+								<input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="selectedRacer.Name">
+								<label for="floatingInput">Name</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input type="text" class="form-control" id="floatingInput" placeholder="Surname" @bind="selectedRacer.Surname">
+								<label for="floatingInput">Surname</label>
+							</div>
+							<div class="form-floating">
+								<input type="number" class="form-control" id="floatingInputGroup2" placeholder="Bib Number" @bind="selectedRacer.Bib">
+								<label for="floatingInputGroup2">Bib Number</label>
+							</div>
+						</div>
+						<div class="border-3 border-bottom py-4">
+							<div class="flex-custom-field-button">
+								<button class="btn btn-normal" @onclick="AddCustomField">
+									<span>Add Custom Field</span>
+									<i class="bi btn-bi bi-plus-lg"></i>
+								</button>
+							</div>
+							<div class="my-3">
+								@foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
+								{
+									<div class="input-group mb-3">
+										<div class="form-floating">
+											<input type="text" class="form-control" placeholder="Custom Field Name"
+												   @bind="selectedRacer.CustomFields[customField.index].Name"
+												   list="customFields" />
+											<datalist id="customFields">
+												<option value="E-Mail" />
+												<option value="Phone" />
+												<option value="Age" />
+												<option value="Sponsors" />
+											</datalist>
+											<label>Custom Field Name</label>
+										</div>
+										<div class="form-floating">
+											<input type="text" class="form-control" placeholder="Custom Field Data"
+												   @bind="selectedRacer.CustomFields[customField.index].Data" />
+											<label>
+												@if (@selectedRacer.CustomFields[customField.index].Name != "")
+												{
+													@selectedRacer.CustomFields[customField.index].Name
+												}
+												else
+												{
+													<span>Custom Field Data</span>
+												}
+											</label>
 
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true" data-bs-backdrop="static">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="deleteModal">Edit @selectedRacer.Name @selectedRacer.Surname</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="()=>GetStartlist()" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div>
-					<div class="border-3 border-bottom pb-4">
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="selectedRacer.Name">
-							<label for="floatingInput">Name</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="floatingInput" placeholder="Surname" @bind="selectedRacer.Surname">
-							<label for="floatingInput">Surname</label>
-						</div>
-						<div class="form-floating">
-							<input type="number" class="form-control" id="floatingInputGroup2" placeholder="Bib Number" @bind="selectedRacer.Bib">
-							<label for="floatingInputGroup2">Bib Number</label>
-						</div>
-					</div>
-					<div class="border-3 border-bottom py-4">
-						<div class="flex-custom-field-button">
-							<button class="btn btn-normal" @onclick="AddCustomField">
-								<span>Add Custom Field</span>
-								<i class="bi btn-bi bi-plus-lg"></i>
-							</button>
-						</div>
-						<div class="my-3">
-							@foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
-							{
-								<div class="input-group mb-3">
-									<div class="form-floating">
-										<input type="text" class="form-control" placeholder="Custom Field Name"
-											   @bind="selectedRacer.CustomFields[customField.index].Name"
-											   list="customFields" />
-										<datalist id="customFields">
-											<option value="E-Mail" />
-											<option value="Phone" />
-											<option value="Age" />
-											<option value="Sponsors" />
-										</datalist>
-										<label>Custom Field Name</label>
+										</div>
 									</div>
-									<div class="form-floating">
-										<input type="text" class="form-control" placeholder="Custom Field Data"
-											   @bind="selectedRacer.CustomFields[customField.index].Data" />
-										<label>
-											@if (@selectedRacer.CustomFields[customField.index].Name != "")
-											{
-												@selectedRacer.CustomFields[customField.index].Name
-											}
-											else
-											{
-												<span>Custom Field Data</span>
-											}
-										</label>
+								}
+							</div>
 
-									</div>
-								</div>
-							}
 						</div>
-
-					</div>
-					<div class="border-3 pt-4">
-						<h5 class="mb-3">
-							Automatic Start
-						</h5>
-						<div class="form-floating mb-3">
-							<input type="date" class="form-control" id="floatingInput" placeholder="Start Date" @bind="selectedRacer.StartDateTime">
-							<label for="floatingInput">Start Date</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="time" class="form-control" id="floatingInput" placeholder="Start Time" @bind="selectedRacer.StartDateTime">
-							<label for="floatingInput">Start Time</label>
+						<div class="border-3 pt-4">
+							<h5 class="mb-3">
+								Automatic Start
+							</h5>
+							<div class="form-floating mb-3">
+								<input type="date" class="form-control" id="floatingInput" placeholder="Start Date" @bind="selectedRacer.StartDateTime">
+								<label for="floatingInput">Start Date</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input type="time" class="form-control" id="floatingInput" placeholder="Start Time" @bind="selectedRacer.StartDateTime">
+								<label for="floatingInput">Start Time</label>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#deleteModal">
-					<span>Delete</span>
-					<i class="bi btn-bi bi-trash3"></i>
-				</button>
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>SaveRace()">
-					<span>Save</span>
-					<i class="bi btn-bi bi-floppy"></i>
-				</button>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#deleteModal">
+						<span>Delete</span>
+						<i class="bi btn-bi bi-trash3"></i>
+					</button>
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>SaveRace()">
+						<span>Save</span>
+						<i class="bi btn-bi bi-floppy"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+}
+
 
 <div class="page">
 
@@ -193,8 +196,9 @@
 	}
 	else
 	{
-		<PageTitle>Loading...</PageTitle>
-		<p>Loading...</p>
+		<div class="page-spinner spinner-border" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
 	}
 </div>
 
@@ -216,7 +220,7 @@
 	private async Task GetStartlist()
 	{
 		var getRace = await raceService.GetRaceByIdAsync(RaceId);
-		if(getRace == null)
+		if (getRace == null)
 		{
 			throw new NullReferenceException("Race not found");
 		}
@@ -225,7 +229,7 @@
 
 		var getStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
 
-		if(getStartlist == null)
+		if (getStartlist == null)
 		{
 			throw new NullReferenceException("Startlist not found");
 		}

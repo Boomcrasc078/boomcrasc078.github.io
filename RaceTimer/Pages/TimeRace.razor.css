@@ -6,7 +6,7 @@
 	margin: 0;
 }
 
-@media(min-width:641px) {
+@media(min-width:1020px) {
 	.layout {
 		height: 95vh;
 	}

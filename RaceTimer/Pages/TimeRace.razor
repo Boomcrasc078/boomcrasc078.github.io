@@ -235,7 +235,7 @@
 		timeList.Remove(getRacer);
 		await raceService.UpdateRaceAsync(currentRace);
 
-		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", "text-bg-success"));
+		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
 
 		if (nextEdit.Contains(getRacer))
 		{

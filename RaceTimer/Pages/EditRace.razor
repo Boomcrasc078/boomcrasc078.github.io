@@ -5,33 +5,37 @@
 
 <Toasts @ref="toasts" />
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="deleteModal">Delete Startlist</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				Are you sure you want to delete @modalStartlist.Name?
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteStartlist(modalStartlist)">
-					<span>Delete</span>
-					<i class="bi btn-bi bi-trash3"></i>
-				</button>
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
-					<span>Cancel</span>
-					<i class="bi btn-bi bi-x-lg"></i>
-				</button>
+@if (currentRace != null)
+{
+	@if (modalStartlist != null)
+	{
+		<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="deleteModal">Delete Startlist</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						Are you sure you want to delete @modalStartlist.Name?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteStartlist(modalStartlist)">
+							<span>Delete</span>
+							<i class="bi btn-bi bi-trash3"></i>
+						</button>
+						<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
+							<span>Cancel</span>
+							<i class="bi btn-bi bi-x-lg"></i>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
+	}
 
-<div class="page">
-	@if (currentRace != null)
-	{
+	<div class="page">
+
 		<PageTitle>Edit @currentRace.Name</PageTitle>
 
 		<div class="box-body">
@@ -88,8 +92,20 @@
 							<div class="card-body">
 								<div class="card-text">
 									<div>Type: Mass</div>
-									<div>Start: @startlist.StartDateTimeString(startlist.StartDateTime())
-									
+									<div>
+										Start:
+										@if (startlist.AllStartDateTime().Count > 1)
+										{
+											@foreach (var startTime in startlist.AllStartDateTime())
+											{
+												<div>@Startlist.StartDateTimeString(startTime)</div>
+											}
+										}
+										else
+										{
+											<span>@Startlist.StartDateTimeString(startlist.FirstStartDateTime());</span>
+										}
+
 									</div>
 									<div>Distance: @(startlist.DistanceMeters + "m")</div>
 									<div>Total Racers: @startlist.Racers.Count</div>
@@ -121,15 +137,21 @@
 
 		</div>
 
-	}
-</div>
+	</div>
+}
+else
+{
+	<div class="page-spinner spinner-border" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
+}
 
 
 
 @code {
-	[Parameter] public string RaceId { get; set; }
-	private Race currentRace;
-	private Startlist modalStartlist;
+	[Parameter] public string? RaceId { get; set; }
+	private Race? currentRace;
+	private Startlist? modalStartlist = null;
 	private Toasts toasts = new Toasts();
 	private ExcelHandler excelHandler = new ExcelHandler();
 
@@ -141,7 +163,11 @@
 
 	private async Task UpdateName(ChangeEventArgs e)
 	{
-		currentRace.Name = e.Value.ToString();
+		if (e.Value == null || currentRace == null)
+		{
+			return;
+		}
+		currentRace.Name = e.Value?.ToString() ?? string.Empty;
 		await SaveRace();
 	}
 

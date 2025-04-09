@@ -25,6 +25,7 @@
 					<select class="form-select" @bind="exportMethod">
 						<option value="Embed">HTML Embed (Interactive)</option>
 						<option value="Text">Text (Not interactive)</option>
+						<option value="Excel">Excel File (Only Racer Data)</option>
 					</select>
 				</div>
 			</div>
@@ -97,8 +98,8 @@
 					</div>
 					break;
 
-				case "HTML":
-					<div>HTML</div>
+				case "Excel":
+					<div>Excel File</div>
 					break;
 
 				case "Text":
@@ -195,7 +196,7 @@
 
 		string CreateEmbedTitleBox(List<Results.ResultDataOption> dataList)
 		{
-			string titleBox = "<div class=\"result-box\">";
+			string titleBox = "<div class=\"title-result-box\">";
 
 			titleBox += $"<span>Name</span>";
 
@@ -215,7 +216,7 @@
 
 		string CreateEmbedRacerBox(Racer racer, List<Results.ResultDataOption> dataList)
 		{
-			string box = "<div class=\"result-box\">";
+			string box = "<div class=\"result-box\"><div class=\"result-box-text\">";
 			box += $"<span>{racer.GetResultData("name")} {racer.GetResultData("surname")}</span>";
 			foreach (var data in dataList)
 			{
@@ -224,6 +225,8 @@
 
 				box += $"<span>{racer.GetResultData(data.Id)}</span>";
 			}
+			box += "</div>";
+			box += "<div class=\"result-box-toggle\"></div>";
 			box += "</div>";
 			return box;
 		}
@@ -248,14 +251,44 @@
 					"overflow: auto; " +
 					"}" +
 
-					".result-box{" +
+					".title-result-box{" +
 					"height: 50px; " +
-					"background-color: black; " +
+					"background-color: #d4d4d4; " +
 					"padding: 12px; " +
-					"border-radius: 4px; " +
+					"border-start-start-radius: 12px; " +
+					"border-start-end-radius: 12px; " +
 					"display: flex; " +
 					"justify-content: space-between; " +
-					"border-bottom: solid 1px white; " +
+					"border-bottom: solid 1px black; " +
+					"color: black; " +
+					"}" +
+
+					".result-box{" +
+					"height: 50px; " +
+					"background-color: white; " +
+					"display: flex; " +
+					"justify-content: space-between; " +
+					"border-bottom: solid 1px black; " +
+					"color: black; " +
+					"}" +
+
+					".result-box-text{" +
+					"height: 50px; " +
+					"width: 100%; " +
+					"background-color: white; " +
+					"padding: 12px; " +
+					"display: flex; " +
+					"justify-content: space-between; " +
+					"border-bottom: solid 1px black; " +
+					"color: black; " +
+					"}" +
+
+					".result-box-toggle{" +
+					"height: 49px; " +
+					"width: 49px; " +
+					"background-color: #d4d4d4; " +
+					"padding: 12px; " +
+					"color: black; " +
 					"}" +
 			"</style>";
 

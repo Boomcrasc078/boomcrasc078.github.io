@@ -1,5 +1,6 @@
 ﻿using RaceTimer.Classes;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 public class Startlist
 {
@@ -9,7 +10,7 @@ public class Startlist
 	public string CurrentAnimation { get; set; } = string.Empty;
 	public float DistanceMeters { get; set; }
 	public string StartType { get; set; }
-
+	public Startlist() { }
 	public Startlist(string name, IEnumerable<string> existingIds)
 	{
 		Name = name;
@@ -18,6 +19,7 @@ public class Startlist
 		DistanceMeters = 0;
 		StartType = "mass-start";
 	}
+
 
 	public Startlist DuplicateStartlist(IEnumerable<string> existingIds)
 	{
@@ -29,13 +31,13 @@ public class Startlist
 		return duplicatedStartlist;
 	}
 
-	public DateTime? StartDateTime()
+	public DateTime? FirstStartDateTime()
 	{
 		DateTime? firstDateTime = null;
 
-		foreach(var racer in Racers)
+		foreach (var racer in Racers)
 		{
-			if(firstDateTime == null || racer.StartDateTime < firstDateTime)
+			if (firstDateTime == null || racer.StartDateTime < firstDateTime)
 			{
 				firstDateTime = racer.StartDateTime;
 			}
@@ -44,9 +46,31 @@ public class Startlist
 		return firstDateTime;
 	}
 
-	public string StartDateTimeString(DateTime? startDateTime)
+	public List<DateTime> AllStartDateTime()
 	{
-		if(!startDateTime.HasValue)
+		List<DateTime> DateTimes = new List<DateTime>();
+
+		foreach (var racer in Racers)
+		{
+			if(racer.StartDateTime == null)
+			{
+				continue;
+			}
+
+			if (!DateTimes.Contains(racer.StartDateTime.Value))
+			{
+				DateTimes.Add(racer.StartDateTime.Value);
+			}
+		}
+
+		DateTimes = DateTimes.Order().ToList<DateTime>();
+
+		return DateTimes;
+	}
+
+	public static string StartDateTimeString(DateTime? startDateTime)
+	{
+		if (!startDateTime.HasValue)
 		{
 			return "Not Set";
 		}
