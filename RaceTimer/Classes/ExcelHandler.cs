@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using RaceTimer.Classes;
 
-public class ExcelHandler
+public static class ExcelHandler
 {
 	// Exporterar racedata till en Excel-fil och returnerar den som en MemoryStream
-	public MemoryStream ExportRaceToExcel(Race race)
+	public static MemoryStream ExportRaceToExcel(Race race)
 	{
 		var memoryStream = new MemoryStream();
 
@@ -33,7 +33,7 @@ public class ExcelHandler
 	}
 
 	// Importerar racedata från en Excel-fil
-	public Race ImportRaceFromExcel(Stream fileStream, List<Race> allRaces, string raceName)
+	public static Race ImportRaceFromExcel(Stream fileStream, List<Race> allRaces, string raceName)
 	{
 		var race = new Race();
 
@@ -57,7 +57,7 @@ public class ExcelHandler
 	}
 
 	// Exporterar startlistdata till en Excel-fil och returnerar den som en MemoryStream
-	public MemoryStream ExportStartlistToExcel(Startlist startlist)
+	public static MemoryStream ExportStartlistToExcel(Startlist startlist)
 	{
 		var memoryStream = new MemoryStream();
 
@@ -81,7 +81,7 @@ public class ExcelHandler
 	}
 
 	// Importerar startlistdata från en Excel-fil
-	public Startlist ImportStartlistFromExcel(Stream fileStream, List<Startlist> allStartlists, string startlistName)
+	public static Startlist ImportStartlistFromExcel(Stream fileStream, List<Startlist> allStartlists, string startlistName)
 	{
 		var startlist = new Startlist(startlistName, allStartlists.Select(s => s.Id));
 
@@ -102,7 +102,7 @@ public class ExcelHandler
 
 	// Hjälpmetoder
 
-	private void SetTitleCells(IXLWorksheet worksheet, int row)
+	private static void SetTitleCells(IXLWorksheet worksheet, int row)
 	{
 		worksheet.Cell(row, 1).Value = "Name";
 		worksheet.Cell(row, 2).Value = "Surname";
@@ -110,7 +110,7 @@ public class ExcelHandler
 		worksheet.Cell(row, 4).Value = "Automatic Start";
 	}
 
-	private void AddCustomFieldsTitles(IEnumerable<Startlist> startlists, IXLWorksheet worksheet, int startColumn)
+	private static void AddCustomFieldsTitles(IEnumerable<Startlist> startlists, IXLWorksheet worksheet, int startColumn)
 	{
 		int col = startColumn;
 		var fields = startlists
@@ -125,7 +125,7 @@ public class ExcelHandler
 		}
 	}
 
-	private void ExportRaceData(Race race, IXLWorksheet worksheet, int startRow)
+	private static void ExportRaceData(Race race, IXLWorksheet worksheet, int startRow)
 	{
 		int row = startRow;
 		foreach (var startlist in race.Startlists)
@@ -138,7 +138,7 @@ public class ExcelHandler
 		}
 	}
 
-	private void ExportStartlistData(Startlist startlist, IXLWorksheet worksheet, int startRow, int customFieldStartColumn)
+	private static void ExportStartlistData(Startlist startlist, IXLWorksheet worksheet, int startRow, int customFieldStartColumn)
 	{
 		int row = startRow;
 		foreach (var racer in startlist.Racers)
@@ -148,7 +148,7 @@ public class ExcelHandler
 		}
 	}
 
-	private void ExportRacerData(Racer racer, IXLWorksheet worksheet, int row, string startlistName = null, int customFieldStartColumn = 7)
+	private static void ExportRacerData(Racer racer, IXLWorksheet worksheet, int row, string startlistName = null, int customFieldStartColumn = 7)
 	{
 		worksheet.Cell(row, 1).Value = racer.Name;
 		worksheet.Cell(row, 2).Value = racer.Surname;
@@ -171,7 +171,7 @@ public class ExcelHandler
 		}
 	}
 
-	private Startlist GetOrCreateStartlist(Race race, string startlistName)
+	private static Startlist GetOrCreateStartlist(Race race, string startlistName)
 	{
 		var startlist = race.Startlists.FirstOrDefault(sl => sl.Name == startlistName) ?? new Startlist(startlistName, race.Startlists.Select(sl => sl.Id));
 
@@ -183,7 +183,7 @@ public class ExcelHandler
 		return startlist;
 	}
 
-	private Racer CreateRacerFromRow(IXLRow row, IXLWorksheet worksheet, Startlist startlist)
+	private static Racer CreateRacerFromRow(IXLRow row, IXLWorksheet worksheet, Startlist startlist)
 	{
 		var racer = new Racer
 		{
@@ -206,7 +206,7 @@ public class ExcelHandler
 		return racer;
 	}
 
-	private void FinalizeRace(Race race, List<Race> allRaces, string raceName)
+	private static void FinalizeRace(Race race, List<Race> allRaces, string raceName)
 	{
 		race.Startlists = race.Startlists.OrderBy(s => s.Name).ToList();
 		race.creationDateTime = DateTime.Now;
@@ -215,7 +215,7 @@ public class ExcelHandler
 		race.Name = raceName;
 	}
 
-	private DateTime? GetDateTimeFromExcel(IXLCell dateTimeCell)
+	private	static DateTime? GetDateTimeFromExcel(IXLCell dateTimeCell)
 	{
 		if (dateTimeCell.IsEmpty())
 		{
@@ -239,4 +239,29 @@ public class ExcelHandler
 			return null;
 		}
 	}
+
+	public static MemoryStream ExportCustomExcelFile(List<List<string>> data)
+	{
+		var memoryStream = new MemoryStream();
+
+		using (var workbook = new XLWorkbook())
+		{
+			var worksheet = workbook.Worksheets.Add("Custom Data");
+
+			for (int rowIndex = 0; rowIndex < data.Count; rowIndex++)
+			{
+				var row = data[rowIndex];
+				for (int colIndex = 0; colIndex < row.Count; colIndex++)
+				{
+					worksheet.Cell(rowIndex + 1, colIndex + 1).Value = row[colIndex];
+				}
+			}
+
+			workbook.SaveAs(memoryStream);
+		}
+
+		memoryStream.Position = 0; // Återställ strömpositionen till början
+		return memoryStream;
+	}
+
 }

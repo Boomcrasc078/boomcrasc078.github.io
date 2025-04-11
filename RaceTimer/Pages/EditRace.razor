@@ -153,7 +153,6 @@ else
 	private Race? currentRace;
 	private Startlist? modalStartlist = null;
 	private Toasts toasts = new Toasts();
-	private ExcelHandler excelHandler = new ExcelHandler();
 
 
 	protected override async Task OnInitializedAsync()
@@ -207,7 +206,7 @@ else
 
 	private async Task ExportAndDownloadStartlist(Startlist startlist)
 	{
-		using var memoryStream = excelHandler.ExportStartlistToExcel(startlist);
+		using var memoryStream = ExcelHandler.ExportStartlistToExcel(startlist);
 		var fileName = $"{startlist.Name}.xlsx";
 		var fileBytes = memoryStream.ToArray();
 		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -227,7 +226,7 @@ else
 			var memoryStream = new MemoryStream();
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
-			var importedStartlist = excelHandler.ImportStartlistFromExcel(memoryStream, currentRace.Startlists, file.Name);
+			var importedStartlist = ExcelHandler.ImportStartlistFromExcel(memoryStream, currentRace.Startlists, file.Name);
 			currentRace.Startlists.Add(importedStartlist);
 			await SaveRace();
 			await InvokeAsync(StateHasChanged);

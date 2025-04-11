@@ -127,7 +127,6 @@
 	private Random random = new Random();
 	private List<Race> races = new List<Race>();
 	private Race modalRace = new Race();
-	private ExcelHandler excelHandler = new ExcelHandler();
 	private Toasts toasts = new Toasts();
 
 	protected override async Task OnInitializedAsync()
@@ -171,7 +170,7 @@
 
 	private async Task ExportAndDownloadRace(Race race)
 	{
-		using var memoryStream = excelHandler.ExportRaceToExcel(race);
+		using var memoryStream = ExcelHandler.ExportRaceToExcel(race);
 		var fileName = $"{race.Name}.xlsx";
 		var fileBytes = memoryStream.ToArray();
 		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -191,7 +190,7 @@
 			var memoryStream = new MemoryStream();
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
-			var importedRace = excelHandler.ImportRaceFromExcel(memoryStream, races, file.Name);
+			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, file.Name);
 
 			races.Add(importedRace);
 

@@ -11,6 +11,7 @@
 		public List<DateTime> LapDateTime { get; set; } = new List<DateTime>();
 		public string currentAnimation { get; set; } = string.Empty;
 		public List<CustomField> CustomFields { get; set; } = new List<CustomField>();
+
 		public class CustomField
 		{
 			public string Name { get; set; }
@@ -25,7 +26,7 @@
 
 		string? GetTime()
 		{
-			if (LapDateTime.Count < 0)
+			if (LapDateTime.Count == 0)
 				return null;
 			if (StartDateTime == null)
 				return null;
@@ -36,20 +37,20 @@
 
 		string? GetPace(float distanceMeters)
 		{
-			if (LapDateTime.Count < 0)
+			if (LapDateTime.Count == 0)
 				return null;
 			if (StartDateTime == null)
 				return null;
 			var time = LapDateTime.Last() - StartDateTime.Value;
 			var pace = time / (distanceMeters / 1000);
 
-			var stringPace = pace.ToString("mm//:ss");
+			var stringPace = pace.ToString("mm\\:ss");
 			return stringPace;
 		}
 
 		string? GetSpeed(float distanceMeters)
 		{
-			if (LapDateTime.Count < 0)
+			if (LapDateTime.Count == 0)
 				return null;
 			if (StartDateTime == null)
 				return null;
@@ -58,6 +59,31 @@
 
 			var stringSpeed = speed.ToString();
 			return stringSpeed;
+		}
+
+		List<string>? GetLaptimes()
+		{
+			if (LapDateTime.Count == 0)
+				return null;
+			if (StartDateTime == null)
+				return null;
+
+			List<TimeSpan> lapTimes = new List<TimeSpan>();
+
+			for (int i = 0; i < LapDateTime.Count; i++)
+			{
+				if (i == 0)
+				{
+					lapTimes.Add(LapDateTime[i] - StartDateTime.Value);
+					continue;
+				}
+
+				lapTimes.Add(LapDateTime[i] - LapDateTime[i - 1]);
+			}
+
+			List<string> lapTimesString = lapTimes.Select(x => x.ToString("hh\\:mm\\:ss\\.ff")).ToList();
+
+			return lapTimesString;
 		}
 
 		public object? GetResultData(string key)
@@ -69,6 +95,8 @@
 				case "bib": return Bib;
 				case "id": return Id;
 				case "time": return GetTime();
+				case "laps": return LapDateTime.Count;
+				case "laptimes": return GetLaptimes();
 				default: return null;
 			}
 		}

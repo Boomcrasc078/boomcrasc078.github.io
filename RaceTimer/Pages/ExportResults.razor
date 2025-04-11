@@ -89,7 +89,7 @@
 						<div>
 							<textarea readonly>
 								@embed.code
-																			</textarea>
+																																																							</textarea>
 							<button class="btn btn-normal">
 								<span>Copy to clipboard</span>
 								<i class="bi btn-bi bi-clipboard"></i>
@@ -99,7 +99,47 @@
 					break;
 
 				case "Excel":
-					<div>Excel File</div>
+					<div>
+						<button class="btn btn-normal" @onclick="()=>excelFile.GenerateExcelFile(currentStartlist, saveLoadService, toasts)">
+							<span>Generate Excel File</span>
+							<i class="bi btn-bi bi-stars"></i>
+						</button>
+					</div>
+					<div>
+						<h3>Preview</h3>
+						<div style="display: flex; justify-content: left; height: 300px; overflow: auto;">
+							<table class="table table-sm table-responsive">
+								<thead class="">
+									<tr>
+										@foreach (string title in excelFile.TitleRow)
+										{
+											<td>@title</td>
+										}
+									</tr>
+								</thead>
+								<tbody class="table-group-divider">
+									@foreach (var row in excelFile.Rows)
+									{
+										<tr>
+											@foreach (string cell in row)
+											{
+												<td>@cell</td>
+											}
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div>
+						<h3>Download File</h3>
+						<div>
+							<button class="btn btn-normal">
+								<span>Download File</span>
+								<i class="bi btn-bi bi-clipboard"></i>
+							</button>
+						</div>
+					</div>
 					break;
 
 				case "Text":
@@ -119,6 +159,7 @@
 	public Startlist? currentStartlist;
 	private string exportMethod = "Embed";
 	private Embed embed = new Embed(100, "%", 100, "%");
+	private ExcelFile excelFile = new ExcelFile(jsRuntime);
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -179,19 +220,6 @@
 			}
 
 			code = BuildEmbedString(currentStartlist, dataSelection);
-		}
-
-		public async Task<IEnumerable<Results.ResultDataOption>?> GetDataSelectionAsync(SaveLoadService saveLoadService, string key, Toasts toasts)
-		{
-			IEnumerable<Results.ResultDataOption>? dataSelection = await saveLoadService.LoadAsync<IEnumerable<Results.ResultDataOption>>(key);
-
-			if (dataSelection == null)
-			{
-				await toasts.CreateToast(new Toast("", $"No data selection found in {key}", "text-bg-danger"));
-				return null;
-			}
-
-			return dataSelection;
 		}
 
 		string CreateEmbedTitleBox(List<Results.ResultDataOption> dataList)
@@ -300,14 +328,195 @@
 				resultBoxes += CreateEmbedRacerBox(racer, dataList);
 			}
 
-			string newSourceDocument =
+			string code =
 				"<div class=\"result-embed\">" +
 				resultBoxes +
 				"</div>" +
 				styling;
 
 
-			return newSourceDocument;
+			return code;
 		}
+
+
 	}
+
+	public static async Task<IEnumerable<Results.ResultDataOption>?> GetDataSelectionAsync(SaveLoadService saveLoadService, string key, Toasts toasts)
+	{
+		IEnumerable<Results.ResultDataOption>? dataSelection = await saveLoadService.LoadAsync<IEnumerable<Results.ResultDataOption>>(key);
+
+		if (dataSelection == null)
+		{
+			await toasts.CreateToast(new Toast("", $"No data selection found in {key}", "text-bg-danger"));
+			return null;
+		}
+
+		return dataSelection;
+	}
+
+	class ExcelFile
+	{
+		public List<string> TitleRow;
+		public List<List<string>> Rows;
+		private IJSRuntime jsRuntime;
+
+		public ExcelFile(IJSRuntime jsRuntime)
+		{
+			TitleRow = new List<string>();
+			Rows = new List<List<string>>();
+			this.jsRuntime = jsRuntime;
+		}
+
+		public async Task GenerateExcelFile(Startlist? currentStartlist, SaveLoadService saveLoadService, Toasts toasts)
+		{
+			if (currentStartlist == null)
+			{
+				await toasts.CreateToast(new Toast("", "No startlist found", "text-bg-danger"));
+				return;
+			}
+
+			var dataSelection = await GetDataSelectionAsync(saveLoadService, "racerResultData", toasts);
+
+			if (dataSelection == null)
+			{
+				return;
+			}
+
+			var titleRow = CreateExcelTitleRow(dataSelection, currentStartlist);
+			TitleRow = titleRow;
+
+			Rows = new List<List<string>>();
+
+			foreach (var racer in currentStartlist.Racers)
+			{
+				var row = CreateExcelRow(racer, currentStartlist, dataSelection);
+				Rows.Add(row);
+			}
+		}
+
+		public List<string> CreateExcelTitleRow(IEnumerable<Results.ResultDataOption>? dataList, Startlist startlist)
+		{
+			if (dataList == null)
+			{
+				return new();
+			}
+
+			List<string> titleRow = new List<string>();
+
+			titleRow.Add("Name");
+			titleRow.Add("Surname");
+
+			foreach (var data in dataList)
+			{
+				if (!data.Value)
+					continue;
+
+				int maxLaps = CalculateMaxLaps(startlist);
+
+				if (data.Id == "laptimes")
+				{
+
+					for (int i = 0; i < maxLaps; i++)
+					{
+						titleRow.Add($"Lap {i + 1}");
+					}
+					continue;
+				}
+
+				titleRow.Add(data.Name);
+			}
+
+			return titleRow;
+		}
+
+		int CalculateMaxLaps(Startlist startlist)
+		{
+			int maxLaps = 0;
+			foreach (var racer in startlist.Racers)
+			{
+				if (racer.LapDateTime.Count > maxLaps)
+				{
+					maxLaps = racer.LapDateTime.Count;
+				}
+			}
+			return maxLaps;
+		}
+
+		public List<string> CreateExcelRow(Racer racer, Startlist startlist, IEnumerable<Results.ResultDataOption>? dataList)
+		{
+			if (dataList == null)
+			{
+				return new();
+			}
+
+			List<string> row = new List<string>();
+
+			row.Add(racer.GetResultData("name") + "");
+			row.Add(racer.GetResultData("surname") + "");
+
+			foreach (var data in dataList)
+			{
+				if (!data.Value)
+					continue;
+
+				if (data.Id == "laptimes")
+				{
+					int maxLaps = CalculateMaxLaps(startlist);
+
+					var getLaptimes = racer.GetResultData("laptimes");
+					if (getLaptimes == null)
+					{
+						for (int i = 0; i < maxLaps; i++)
+						{
+							row.Add("");
+						}
+						continue;
+					}
+					var lapTimes = (List<string>)getLaptimes;
+					for (int i = 0; i < maxLaps; i++)
+					{
+						if (i >= lapTimes.Count)
+						{
+							row.Add("");
+						}
+						else
+						{
+							row.Add(lapTimes[i]);
+						}
+					}
+					continue;
+				}
+
+				row.Add(racer.GetResultData(data.Id) + "");
+			}
+
+			return row;
+		}
+
+		void DownloadExcelFile()
+		{
+			List<List<string>> Worksheet = new();
+
+			Worksheet.Add(TitleRow);
+			Rows.ForEach(row => Worksheet.Add(row));
+
+			ExportAndDownloadExcelFile("results", Worksheet);
+		}
+
+		private async Task ExportAndDownloadExcelFile(string fileName, List<List<string>> Worksheet)
+		{
+			using var memoryStream = ExcelHandler.ExportCustomExcelFile(Worksheet);
+			fileName = $"{fileName}.xlsx";
+			var fileBytes = memoryStream.ToArray();
+			await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		}
+
+		private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+		{
+			var base64Data = Convert.ToBase64String(fileBytes);
+			await jsRuntime.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
+		}
+
+	}
+
 }
