@@ -134,7 +134,7 @@
 					<div>
 						<h3>Download File</h3>
 						<div>
-							<button class="btn btn-normal">
+							<button class="btn btn-normal" @onclick="()=>excelFile.DownloadExcelFile()">
 								<span>Download File</span>
 								<i class="bi btn-bi bi-clipboard"></i>
 							</button>
@@ -159,10 +159,11 @@
 	public Startlist? currentStartlist;
 	private string exportMethod = "Embed";
 	private Embed embed = new Embed(100, "%", 100, "%");
-	private ExcelFile excelFile = new ExcelFile(jsRuntime);
+	private ExcelFile? excelFile;
 
 	protected override async Task OnInitializedAsync()
 	{
+		excelFile = new ExcelFile(jsRuntime);
 		await GetStartlist();
 
 		await embed.GenerateEmbedCode(currentStartlist, saveLoadService, toasts);
@@ -493,17 +494,17 @@
 			return row;
 		}
 
-		void DownloadExcelFile()
+		public async Task DownloadExcelFile()
 		{
 			List<List<string>> Worksheet = new();
 
 			Worksheet.Add(TitleRow);
 			Rows.ForEach(row => Worksheet.Add(row));
 
-			ExportAndDownloadExcelFile("results", Worksheet);
+			await ExportAndDownloadExcelFile("results", Worksheet);
 		}
 
-		private async Task ExportAndDownloadExcelFile(string fileName, List<List<string>> Worksheet)
+		public async Task ExportAndDownloadExcelFile(string fileName, List<List<string>> Worksheet)
 		{
 			using var memoryStream = ExcelHandler.ExportCustomExcelFile(Worksheet);
 			fileName = $"{fileName}.xlsx";
@@ -511,7 +512,7 @@
 			await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		}
 
-		private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+		public async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
 		{
 			var base64Data = Convert.ToBase64String(fileBytes);
 			await jsRuntime.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
