@@ -206,14 +206,25 @@ public static class ExcelHandler
 		return racer;
 	}
 
-	private static void FinalizeRace(Race race, List<Race> allRaces, string raceName)
-	{
-		race.Startlists = race.Startlists.OrderBy(s => s.Name).ToList();
-		race.creationDateTime = DateTime.Now;
-		race.lastEditDateTime = DateTime.Now;
-		race.Id = IdGenerator.GenerateUniqueId(allRaces.Select(r => r.Id));
-		race.Name = raceName;
-	}
+    private static void FinalizeRace(Race race, List<Race> allRaces, string raceName)
+    {
+        race.Startlists = race.Startlists
+            .OrderBy(s => ExtractNumericPrefix(s.Name)) // Sort numerically by prefix
+            .ThenBy(s => s.Name) // Then sort alphabetically
+            .ToList();
+
+        race.creationDateTime = DateTime.Now;
+        race.lastEditDateTime = DateTime.Now;
+        race.Id = IdGenerator.GenerateUniqueId(allRaces.Select(r => r.Id));
+        race.Name = raceName;
+    }
+
+    // Helper method to extract numeric prefix
+    private static int ExtractNumericPrefix(string name)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(name, @"^\d+");
+        return match.Success ? int.Parse(match.Value) : int.MaxValue; // Use int.MaxValue for non-numeric names
+    }
 
 	private	static DateTime? GetDateTimeFromExcel(IXLCell dateTimeCell)
 	{

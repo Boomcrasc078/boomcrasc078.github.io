@@ -64,21 +64,31 @@ public class RaceService
 		await js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, racesJson);
 	}
 
-	public async Task UpdateRaceAsync(Race updatedRace)
-	{
-		updatedRace.Startlists = updatedRace.Startlists.OrderBy(s => s.Name).ToList();
+    public async Task UpdateRaceAsync(Race updatedRace)
+    {
+        updatedRace.Startlists = updatedRace.Startlists
+            .OrderBy(s => ExtractNumericPrefix(s.Name)) // Sort numerically by prefix
+            .ThenBy(s => s.Name) // Then sort alphabetically
+            .ToList();
 
-		var races = await GetRacesAsync();
-		var index = races.FindIndex(r => r.Id == updatedRace.Id);
+        var races = await GetRacesAsync();
+        var index = races.FindIndex(r => r.Id == updatedRace.Id);
 
-		if (index == -1)
-		{
-			return;
-		}
+        if (index == -1)
+        {
+            return;
+        }
 
-		races[index] = updatedRace;
-		await SaveRacesAsync(races);
-	}
+        races[index] = updatedRace;
+        await SaveRacesAsync(races);
+    }
+
+    // Helper method to extract numeric prefix
+    private int ExtractNumericPrefix(string name)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(name, @"^\d+");
+        return match.Success ? int.Parse(match.Value) : int.MaxValue; // Use int.MaxValue for non-numeric names
+    }
 }
 
 // DateTime-konverterare för att säkerställa korrekt serialisering/deserialisering av DateTime

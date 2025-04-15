@@ -152,7 +152,7 @@
 		{
 			return;
 		}
-		await SetRacer(activeRacer);
+		await TrySetRacer(activeRacer);
 	}
 
 	private void CreateUpdateTimer()
@@ -181,17 +181,26 @@
 	{
 		if (activeRacer != null && activeRacer.Id != "")
 		{
-			activeRacer.LapDateTime.Add(dateTime);
-			Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
-			timeList.Remove(activeRacer);
-			timeList.Add(activeRacer);
-			toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", ""));
-			activeRacer = null;
-			await raceService.UpdateRaceAsync(currentRace);
-			await ScrollToBottomAsync();
+			await AddDatetimeToRacer(dateTime);
 			return;
 		}
 
+		await AddDatetimeToLaptimelist(dateTime);
+	}
+
+	private async Task AddDatetimeToRacer(DateTime dateTime)
+	{
+		activeRacer.LapDateTime.Add(dateTime);
+		Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
+		timeList.Remove(activeRacer);
+		timeList.Add(activeRacer);
+		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", ""));
+		activeRacer = null;
+		await raceService.UpdateRaceAsync(currentRace);
+	}
+
+	private async Task AddDatetimeToLaptimelist(DateTime dateTime)
+	{
 		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
 		racer.LapDateTime.Add(dateTime);
@@ -201,14 +210,41 @@
 		await ScrollToBottomAsync();
 	}
 
-	private async Task SetRacer(Racer getRacer)
+	private async Task TrySetRacer(Racer getRacer)
 	{
-		if(activeRacer.Id != "")
+		if(activeRacer == null || activeRacer.Id != "")
 		{
 			activeRacer = null;
 			return;
 		}
 
+		Racer? foundRacer = TryFindRacer(getRacer);
+
+		if (foundRacer == null)
+		{
+			ResetActiveRacer(getRacer);
+			return;
+		}
+
+		await SetRacer(foundRacer, getRacer, raceService);
+
+		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
+
+		if (nextEdit.Contains(getRacer))
+		{
+			nextEdit.Remove(getRacer);
+		}
+
+		activeRacer = null;
+
+		if (nextEdit.Count > 0)
+		{
+			activeRacer = nextEdit[0];
+		}
+	}
+
+	private Racer? TryFindRacer(Racer getRacer)
+	{
 		Console.WriteLine($"Trying to find {getRacer.Bib}");
 		Racer? foundRacer = null;
 		foreach (Startlist startlist in currentRace.Startlists)
@@ -218,35 +254,28 @@
 				break;
 		}
 
-		if (foundRacer == null)
-		{
-			Console.WriteLine($"Didn't find {getRacer.Bib}");
-			toasts?.CreateToast(new Toast("", $"There is no racer with Bib: {getRacer.Bib}", "text-bg-danger"));
-			getRacer.Bib = "";
-			activeRacer = null;
-			return;
-		}
-
-		Console.WriteLine($"Found {foundRacer.Bib} named {foundRacer.Name} {foundRacer.Surname}");
-		foundRacer.LapDateTime.AddRange(getRacer.LapDateTime);
-		int index = timeList.IndexOf(getRacer);
-		timeList.Remove(foundRacer);
-		timeList.Insert(index, foundRacer);
-		timeList.Remove(getRacer);
-		await raceService.UpdateRaceAsync(currentRace);
-
-		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
-
-		if (nextEdit.Contains(getRacer))
-		{
-			nextEdit.Remove(getRacer);
-		}
-		activeRacer = null;
-		if (nextEdit.Count > 0)
-		{
-			activeRacer = nextEdit[0];
-		}
+		return foundRacer;
 	}
+
+	private void ResetActiveRacer(Racer getRacer)
+	{
+		Console.WriteLine($"Didn't find {getRacer.Bib}");
+		toasts?.CreateToast(new Toast("", $"There is no racer with Bib: {getRacer.Bib}", "text-bg-danger"));
+		activeRacer = null;
+		getRacer.Bib = "";
+	}
+
+	private async Task SetRacer(Racer racer, Racer tempRacer, RaceService raceService)
+	{
+		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
+		racer.LapDateTime.AddRange(tempRacer.LapDateTime);
+		int index = timeList.IndexOf(tempRacer);
+		timeList.Remove(racer);
+		timeList.Insert(index, racer);
+		timeList.Remove(tempRacer);
+		await raceService.UpdateRaceAsync(currentRace);
+	}
+
 
 	private async Task ScrollToBottomAsync()
 	{
