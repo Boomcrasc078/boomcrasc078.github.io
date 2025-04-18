@@ -1,6 +1,6 @@
 ﻿@page "/races/edit/{RaceId}/{StartlistId}"
-@inject RaceService raceService
 @inject NavigationManager NavManager
+@inject IJSRuntime JS
 
 <Toasts @ref="toasts" />
 
@@ -219,7 +219,7 @@
 
 	private async Task GetStartlist()
 	{
-		var getRace = await raceService.GetRaceByIdAsync(RaceId);
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, JS);
 		if (getRace == null)
 		{
 			throw new NullReferenceException("Race not found");
@@ -245,7 +245,7 @@
 		{
 			currentRace.Startlists[index] = currentStartlist;
 			currentRace.lastEditDateTime = DateTime.UtcNow;
-			await raceService.UpdateRaceAsync(currentRace);
+			await RaceService.UpdateRaceAsync(currentRace, JS);
 		}
 	}
 

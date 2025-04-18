@@ -1,0 +1,27 @@
+﻿.content-box-section{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 95%;
+    height: calc(100dvh - 100px);
+    margin: 0px;
+}
+
+@media(max-width: 1020px){
+    .content-box-section {
+        height: calc(100dvh - 100px - 70px);
+        width: 100%;
+    }
+
+}
+
+th, td {
+    background-color: rgb(var(--bs-body-bg-rgb), .1);
+}
+
+tr:hover {
+    background-color: rgb(var(--bs-body-bg-rgb), .3);
+}
+
+table .active {
+    background-color: rgb(var(--bs-body-bg-rgb), .5);
+}

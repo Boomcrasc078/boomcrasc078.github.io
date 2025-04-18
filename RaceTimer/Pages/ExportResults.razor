@@ -1,6 +1,5 @@
 ﻿@page "/results/{RaceId}/{StartlistId}"
 @inject IJSRuntime jsRuntime
-@inject RaceService raceService
 @inject SaveLoadService saveLoadService
 
 <Toasts @ref="toasts" />
@@ -171,7 +170,7 @@
 
 	private async Task GetStartlist()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		currentRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 		if (currentRace != null)
 		{
 			currentStartlist = currentRace.Startlists?.Find(s => s.Id == StartlistId);

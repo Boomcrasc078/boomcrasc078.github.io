@@ -1,5 +1,4 @@
-﻿@inject IJSRuntime JS
-
+﻿
 <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
 	@foreach (Toast toast in toasts)
 	{
@@ -29,6 +28,6 @@
 		await InvokeAsync(StateHasChanged); // Rendera om komponenten
 											// Vänta tills Blazor har uppdaterat DOM innan vi kör JS
 		await Task.Delay(50); // Fördröjning för säkerhets skull
-		await JS.InvokeVoidAsync("createToast", toast.Id);
+		await jsRuntime.InvokeVoidAsync("createToast", toast.Id);
 	}
 }

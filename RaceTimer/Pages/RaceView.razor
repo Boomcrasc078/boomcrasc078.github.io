@@ -1,5 +1,4 @@
 ﻿@page "/race-view/{RaceId}"
-@inject RaceService raceService
 
 @if (currentRace != null)
 {
@@ -102,7 +101,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		currentRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 
 		// Visa alla racers när sidan laddas
 		filteredRacers = currentRace.Startlists

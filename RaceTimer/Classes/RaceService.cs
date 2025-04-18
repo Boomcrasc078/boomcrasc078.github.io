@@ -2,17 +2,11 @@
 using RaceTimer.Classes;
 using System.Text.Json;
 
-public class RaceService
+public static class RaceService
 {
 	private const string LocalStorageKey = "races";
-	private readonly IJSRuntime js;
 
-	public RaceService(IJSRuntime js)
-	{
-		this.js = js;
-	}
-
-	public async Task<List<Race>> GetRacesAsync()
+	public static async Task<List<Race>> GetRacesAsync(IJSRuntime js)
 	{
 		// Hämtar JSON-data från localStorage
 		var racesJson = await js.InvokeAsync<string>("localStorage.getItem", LocalStorageKey);
@@ -36,9 +30,9 @@ public class RaceService
 		return races ?? new List<Race>();
 	}
 
-	public async Task<Race?> GetRaceByIdAsync(string raceId)
+	public static async Task<Race?> GetRaceByIdAsync(string raceId, IJSRuntime js)
 	{
-		var races = await GetRacesAsync();
+		var races = await GetRacesAsync(js);
 
 		if(races == null)
 		{
@@ -48,7 +42,7 @@ public class RaceService
 		return races.FirstOrDefault(r => r.Id == raceId);
 	}
 
-	public async Task SaveRacesAsync(List<Race> races)
+	public static async Task SaveRacesAsync(List<Race> races, IJSRuntime js)
 	{
 		// Sorterar racen efter senaste ändring
 		races = races.OrderByDescending(race => race.lastEditDateTime).ToList();
@@ -64,14 +58,14 @@ public class RaceService
 		await js.InvokeVoidAsync("localStorage.setItem", LocalStorageKey, racesJson);
 	}
 
-    public async Task UpdateRaceAsync(Race updatedRace)
+    public static async Task UpdateRaceAsync(Race updatedRace, IJSRuntime js)
     {
         updatedRace.Startlists = updatedRace.Startlists
             .OrderBy(s => ExtractNumericPrefix(s.Name)) // Sort numerically by prefix
             .ThenBy(s => s.Name) // Then sort alphabetically
             .ToList();
 
-        var races = await GetRacesAsync();
+        var races = await GetRacesAsync(js);
         var index = races.FindIndex(r => r.Id == updatedRace.Id);
 
         if (index == -1)
@@ -80,11 +74,11 @@ public class RaceService
         }
 
         races[index] = updatedRace;
-        await SaveRacesAsync(races);
+        await SaveRacesAsync(races, js);
     }
 
     // Helper method to extract numeric prefix
-    private int ExtractNumericPrefix(string name)
+    private static int ExtractNumericPrefix(string name)
     {
         var match = System.Text.RegularExpressions.Regex.Match(name, @"^\d+");
         return match.Success ? int.Parse(match.Value) : int.MaxValue; // Use int.MaxValue for non-numeric names

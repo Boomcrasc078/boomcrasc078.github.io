@@ -1,0 +1,67 @@
+﻿@page "/dashboard"
+@inject NavigationManager NavigationManager
+
+<Toasts @ref="toasts"></Toasts>
+
+@if (AllRaces != null)
+{
+	<h1 class="text-center m-3">Welcome back, arranger</h1>
+
+	<div class="content-box-section">
+		<div class="content-box">
+
+			<div>
+				<h2>Races</h2>
+			</div>
+			<div>
+				<table class="table table-responsive">
+					<thead>
+						<tr>
+							<td>Name</td>
+							<td>Last Edited</td>
+						</tr>
+					</thead>
+					<tbody class="table-group-divider">
+						@foreach (var race in AllRaces)
+						{
+							<tr @onclick="@(()=>NavigationManager.NavigateTo($"/races/edit/{race.Id}"))">
+								<th>@race.Name</th>
+								<td>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<div class="page-spinner spinner-border" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
+}
+
+
+
+@code {
+	List<Race>? AllRaces;
+	private Toasts toasts = new Toasts();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadRaces();
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async Task LoadRaces()
+	{
+		var races = await RaceService.GetRacesAsync(jsRuntime);
+		if (races == null)
+		{
+			toasts?.CreateToast(new Toast("", "Error while loading races", "text-bg-danger"));
+			return;
+		}
+		AllRaces = races;
+	}
+}

@@ -1,5 +1,4 @@
 ﻿@page "/results/{RaceId}"
-@inject RaceService raceService
 @inject SaveLoadService saveLoadService
 @inject IJSRuntime jsRuntime
 
@@ -140,7 +139,7 @@
 			new ResultDataOption("laptimes", "Laptimes"),
 		};
 
-		var getRace = await raceService.GetRaceByIdAsync(RaceId);
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 
 		if (getRace == null)
 			return;

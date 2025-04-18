@@ -1,5 +1,4 @@
 ﻿@page "/timer/{RaceId}/finish-line"
-@inject RaceService raceService
 @inject IJSRuntime JS
 @using RaceTimer.Classes
 @using RaceTimer.Components
@@ -87,10 +86,10 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		var getRace = await raceService.GetRaceByIdAsync(RaceId);
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 		if (getRace == null)
 		{
-			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}."));
+			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}.", "text-bg-danger"));
 			return;
 		}
 		currentRace = getRace;
@@ -272,7 +271,7 @@
 		timeList.Add(activeRacer);
 		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", ""));
 		activeRacer = null;
-		await raceService.UpdateRaceAsync(currentRace);
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
 	private async Task AddTimestampToLapList(DateTime dateTime)
@@ -302,7 +301,7 @@
 			return;
 		}
 
-		await AssignRacer(foundRacer, getRacer, raceService);
+		await AssignRacer(foundRacer, getRacer);
 
 		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
 
@@ -341,7 +340,7 @@
 		getRacer.Bib = "";
 	}
 
-	private async Task AssignRacer(Racer racer, Racer tempRacer, RaceService raceService)
+	private async Task AssignRacer(Racer racer, Racer tempRacer)
 	{
 		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
 		racer.LapDateTime.AddRange(tempRacer.LapDateTime);
@@ -349,7 +348,7 @@
 		timeList.Remove(racer);
 		timeList.Insert(index, racer);
 		timeList.Remove(tempRacer);
-		await raceService.UpdateRaceAsync(currentRace);
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
 	private async Task ScrollToBottomAsync()

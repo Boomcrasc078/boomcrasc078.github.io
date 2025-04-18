@@ -1,5 +1,4 @@
 ﻿@page "/races/edit/{RaceId}"
-@inject RaceService raceService
 @inject NavigationManager NavManager
 @inject IJSRuntime JS
 
@@ -157,7 +156,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		currentRace = await RaceService.GetRaceByIdAsync(RaceId, JS);
 	}
 
 	private async Task UpdateName(ChangeEventArgs e)
@@ -173,7 +172,7 @@ else
 	private async Task SaveRace()
 	{
 		currentRace.lastEditDateTime = DateTime.Now;
-		await raceService.UpdateRaceAsync(currentRace);
+		await RaceService.UpdateRaceAsync(currentRace, JS);
 	}
 
 	private async Task AddStartlist()
@@ -201,7 +200,7 @@ else
 		deleteStartlist.CurrentAnimation = "";
 
 		currentRace.Startlists.Remove(deleteStartlist);
-		await raceService.UpdateRaceAsync(currentRace);
+		await RaceService.UpdateRaceAsync(currentRace, JS);
 	}
 
 	private async Task ExportAndDownloadStartlist(Startlist startlist)
@@ -226,7 +225,7 @@ else
 			var memoryStream = new MemoryStream();
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
-			var importedStartlist = ExcelHandler.ImportStartlistFromExcel(memoryStream, currentRace.Startlists, file.Name);
+			var importedStartlist = ExcelHandler.ImportStartlistFromExcel(memoryStream, currentRace.Startlists, ExcelHandler.RemoveExcelFileExtension(file.Name));
 			currentRace.Startlists.Add(importedStartlist);
 			await SaveRace();
 			await InvokeAsync(StateHasChanged);

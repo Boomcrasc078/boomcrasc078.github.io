@@ -1,5 +1,4 @@
 ﻿@page "/timer"
-@inject RaceService raceService
 @inject NavigationManager navManager
 
 <h1>Time A Race</h1>
@@ -60,6 +59,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        races = await raceService.GetRacesAsync();
+        races = await RaceService.GetRacesAsync(jsRuntime);
     }
 }

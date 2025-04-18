@@ -1,6 +1,6 @@
 ﻿@page "/race-view/{RaceId}/manual-start"
-@inject RaceService raceService
 @inject NavigationManager NavManager
+@inject IJSRuntime jsRuntime
 
 @if (currentRace != null)
 {
@@ -61,7 +61,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		currentRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 		foreach (Startlist startlist in currentRace.Startlists)
 		{
 			startlistSelected.Add(false);
@@ -96,7 +96,7 @@
 		DateTime startDateTime = DateTime.Now;
 		startlist.Racers.ForEach(racer => { racer.StartDateTime = startDateTime; });
 
-		await raceService.UpdateRaceAsync(currentRace);
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
 	private async Task TryStartStartlist(bool selected, int index)

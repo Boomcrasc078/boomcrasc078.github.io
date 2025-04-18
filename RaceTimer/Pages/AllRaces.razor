@@ -1,7 +1,6 @@
 ﻿@page "/races"
 
 @using RaceTimer.Classes
-@inject RaceService raceService
 @inject NavigationManager NavManager
 @inject IJSRuntime JS
 @using System.IO
@@ -131,7 +130,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		races = await raceService.GetRacesAsync();
+		races = await RaceService.GetRacesAsync(JS);
 	}
 
 	private async Task AddRace()
@@ -146,7 +145,7 @@
 			};
 
 		races.Add(addRace);
-		await raceService.SaveRacesAsync(races);
+		await RaceService.SaveRacesAsync(races, JS);
 
 		NavManager.NavigateTo($"/races/edit/{addRace.Id}");
 	}
@@ -165,7 +164,7 @@
 		deleteRace.currentAnimation = "";
 
 		races.Remove(deleteRace);
-		await raceService.SaveRacesAsync(races);
+		await RaceService.SaveRacesAsync(races, JS);
 	}
 
 	private async Task ExportAndDownloadRace(Race race)
@@ -190,11 +189,11 @@
 			var memoryStream = new MemoryStream();
 			await file.OpenReadStream().CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
-			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, file.Name);
+			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
 
 			races.Add(importedRace);
 
-			await raceService.SaveRacesAsync(races);
+			await RaceService.SaveRacesAsync(races, JS);
 			await InvokeAsync(StateHasChanged);
 
 			NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
@@ -212,7 +211,7 @@
 		Race duplicatedRace = race.DuplicateRace(races.Select(r => r.Id));
 
 		races.Add(duplicatedRace);
-		await raceService.SaveRacesAsync(races);
+		await RaceService.SaveRacesAsync(races, JS);
 
 		NavManager.NavigateTo($"/races/edit/{duplicatedRace.Id}");
 

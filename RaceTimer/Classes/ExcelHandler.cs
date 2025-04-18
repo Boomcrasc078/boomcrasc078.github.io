@@ -275,4 +275,11 @@ public static class ExcelHandler
 		return memoryStream;
 	}
 
+	public static string RemoveExcelFileExtension(string fileName)
+	{
+		string raceName = fileName.Replace(".xlsx", "");
+
+		return raceName;
+    }
+
 }
