@@ -6,7 +6,7 @@
 
 <Toasts @ref="toasts" />
 
-<div class="layout">
+<div class="layout" tabindex="0" @ref="KeyboardRef" @onkeydown="HandleKeyboardInput">
 	<div id="timeListContainer" class="table-container">
 		<table class="table table-sm table-responsive">
 			<thead>
@@ -23,7 +23,7 @@
 					<tr class="@((activeRacer==racer)?"active":"")" @onclick="@(()=>activeRacer = racer)">
 						<th>@racer.Bib</th>
 						<td>
-							@if(racer != null && racer.Id != "")
+							@if (racer != null && racer.Id != "")
 							{
 								<span>@racer.Name</span> <span>@racer.Surname</span>
 							}
@@ -50,7 +50,7 @@
 		</table>
 	</div>
 
-	<button class="btn time-container" @onclick="()=>SetTimeClick(DateTime.Now)">
+	<button class="btn time-container" @onclick="()=>TimestampButtonClicked(DateTime.Now)">
 		<h5 class="text-center">@currentTime.ToString("HH:mm:ss.ff")</h5>
 		@if (activeRacer != null && activeRacer.Id != "")
 		{
@@ -81,17 +81,89 @@
 	private Racer? activeRacer;
 	private List<Racer> nextEdit = new List<Racer>();
 	public Toasts toasts { get; set; } = new Toasts();
-
+	private ElementReference KeyboardRef;
 	public DateTime currentTime;
+	string pressedKey = "";
 
 	protected override async Task OnInitializedAsync()
 	{
-		currentRace = await raceService.GetRaceByIdAsync(RaceId);
+		var getRace = await raceService.GetRaceByIdAsync(RaceId);
+		if (getRace == null)
+		{
+			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}."));
+			return;
+		}
+		currentRace = getRace;
 		CreateUpdateTimer();
-		AddAllRacersToTimeList();
+		LoadRacersIntoTimeList();
 	}
 
-	private void AddAllRacersToTimeList()
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await KeyboardRef.FocusAsync();
+		}
+	}
+
+	private async Task HandleKeyboardInput(KeyboardEventArgs e)
+	{
+		pressedKey = e.Key;
+
+		switch (pressedKey)
+		{
+			case "1":
+				NumberClicked(1);
+				break;
+			case "2":
+				NumberClicked(2);
+				break;
+			case "3":
+				NumberClicked(3);
+				break;
+			case "4":
+				NumberClicked(4);
+				break;
+			case "5":
+				NumberClicked(5);
+				break;
+			case "6":
+				NumberClicked(6);
+				break;
+			case "7":
+				NumberClicked(7);
+				break;
+			case "8":
+				NumberClicked(8);
+				break;
+			case "9":
+				NumberClicked(9);
+				break;
+			case "0":
+				NumberClicked(0);
+				break;
+			case "Backspace":
+				BackspaceClicked();
+				break;
+			case "-":
+				BackspaceClicked();
+				break;
+			case ".":
+				BackspaceClicked();
+				break;
+			case "Enter":
+				await EnterClicked();
+				break;
+			case " ":
+				await TimestampButtonClicked(DateTime.Now);
+				break;
+			case "+":
+				await TimestampButtonClicked(DateTime.Now);
+				break;
+		}
+	}
+
+	private void LoadRacersIntoTimeList()
 	{
 		foreach (Racer racer in currentRace.Startlists.SelectMany(s => s.Racers))
 		{
@@ -137,7 +209,7 @@
 		{
 			timeList.Remove(activeRacer);
 			activeRacer = null;
-			if(nextEdit.Count > 0)
+			if (nextEdit.Count > 0)
 			{
 				activeRacer = nextEdit[0];
 			}
@@ -152,7 +224,7 @@
 		{
 			return;
 		}
-		await TrySetRacer(activeRacer);
+		await AttemptAssignRacer(activeRacer);
 	}
 
 	private void CreateUpdateTimer()
@@ -166,7 +238,7 @@
 	private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 	{
 		currentTime = DateTime.Now;
-		AddAllRacersToTimeList();
+		LoadRacersIntoTimeList();
 
 		// Uppdaterar UI:t på huvudtråden
 		InvokeAsync(StateHasChanged);
@@ -177,19 +249,23 @@
 		timer?.Dispose();
 	}
 
-	private async Task SetTimeClick(DateTime dateTime)
+	private async Task TimestampButtonClicked(DateTime dateTime)
 	{
 		if (activeRacer != null && activeRacer.Id != "")
 		{
-			await AddDatetimeToRacer(dateTime);
+			await AddLapTimeToRacer(dateTime);
 			return;
 		}
 
-		await AddDatetimeToLaptimelist(dateTime);
+		await AddTimestampToLapList(dateTime);
 	}
 
-	private async Task AddDatetimeToRacer(DateTime dateTime)
+	private async Task AddLapTimeToRacer(DateTime dateTime)
 	{
+		if (activeRacer == null)
+		{
+			return;
+		}
 		activeRacer.LapDateTime.Add(dateTime);
 		Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
 		timeList.Remove(activeRacer);
@@ -199,7 +275,7 @@
 		await raceService.UpdateRaceAsync(currentRace);
 	}
 
-	private async Task AddDatetimeToLaptimelist(DateTime dateTime)
+	private async Task AddTimestampToLapList(DateTime dateTime)
 	{
 		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
@@ -210,23 +286,23 @@
 		await ScrollToBottomAsync();
 	}
 
-	private async Task TrySetRacer(Racer getRacer)
+	private async Task AttemptAssignRacer(Racer getRacer)
 	{
-		if(activeRacer == null || activeRacer.Id != "")
+		if (activeRacer == null || activeRacer.Id != "")
 		{
 			activeRacer = null;
 			return;
 		}
 
-		Racer? foundRacer = TryFindRacer(getRacer);
+		Racer? foundRacer = FindRacerByBib(getRacer);
 
 		if (foundRacer == null)
 		{
-			ResetActiveRacer(getRacer);
+			ClearActiveRacer(getRacer);
 			return;
 		}
 
-		await SetRacer(foundRacer, getRacer, raceService);
+		await AssignRacer(foundRacer, getRacer, raceService);
 
 		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
 
@@ -243,7 +319,7 @@
 		}
 	}
 
-	private Racer? TryFindRacer(Racer getRacer)
+	private Racer? FindRacerByBib(Racer getRacer)
 	{
 		Console.WriteLine($"Trying to find {getRacer.Bib}");
 		Racer? foundRacer = null;
@@ -257,7 +333,7 @@
 		return foundRacer;
 	}
 
-	private void ResetActiveRacer(Racer getRacer)
+	private void ClearActiveRacer(Racer getRacer)
 	{
 		Console.WriteLine($"Didn't find {getRacer.Bib}");
 		toasts?.CreateToast(new Toast("", $"There is no racer with Bib: {getRacer.Bib}", "text-bg-danger"));
@@ -265,7 +341,7 @@
 		getRacer.Bib = "";
 	}
 
-	private async Task SetRacer(Racer racer, Racer tempRacer, RaceService raceService)
+	private async Task AssignRacer(Racer racer, Racer tempRacer, RaceService raceService)
 	{
 		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
 		racer.LapDateTime.AddRange(tempRacer.LapDateTime);
@@ -275,7 +351,6 @@
 		timeList.Remove(tempRacer);
 		await raceService.UpdateRaceAsync(currentRace);
 	}
-
 
 	private async Task ScrollToBottomAsync()
 	{

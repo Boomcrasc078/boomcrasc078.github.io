@@ -1,4 +1,6 @@
-﻿namespace RaceTimer.Classes
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+
+namespace RaceTimer.Classes
 {
 
 	public class Racer
@@ -42,7 +44,8 @@
 			if (StartDateTime == null)
 				return null;
 			var time = LapDateTime.Last() - StartDateTime.Value;
-			var pace = time / (distanceMeters / 1000);
+			var laps = LapDateTime.Count;
+            var pace = time / (distanceMeters * laps / 1000);
 
 			var stringPace = pace.ToString("mm\\:ss");
 			return stringPace;
@@ -55,9 +58,10 @@
 			if (StartDateTime == null)
 				return null;
 			var time = LapDateTime.Last() - StartDateTime.Value;
-			var speed = (distanceMeters / 1000) / time.TotalHours;
+			var laps = LapDateTime.Count;
+            var speed = (distanceMeters * laps / 1000) / time.TotalHours;
 
-			var stringSpeed = speed.ToString();
+			string stringSpeed = Double.Floor(speed).ToString();
 			return stringSpeed;
 		}
 

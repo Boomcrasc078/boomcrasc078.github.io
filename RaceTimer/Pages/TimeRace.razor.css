@@ -1,85 +1,89 @@
 ﻿.layout {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: calc(100lvh - 100px);
-	margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100lvh - 100px);
+    margin: 0;
 }
 
+    .layout:focus-visible {
+        outline: none;
+    }
+
 @media(min-width:1020px) {
-	.layout {
-		height: 95vh;
-	}
+    .layout {
+        height: 95vh;
+    }
 }
 
 /* Styla huvudcontainern */
 .time-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	border-radius: 20px;
-	backdrop-filter: blur(10px);
-	background-color: #0000002f;
-	border: solid 1px white;
-	color: white;
-	overflow: hidden;
-	padding: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    background-color: #0000002f;
+    border: solid 1px white;
+    color: white;
+    overflow: hidden;
+    padding: 2vh;
 }
 
-	.time-container > h5 {
-		font-size: 2.5vh;
-	}
+    .time-container > h5 {
+        font-size: 2.5vh;
+    }
 
-	.time-container > h6 {
-		font-size: 1.5vh;
-		margin: 0;
-	}
+    .time-container > h6 {
+        font-size: 1.5vh;
+        margin: 0;
+    }
 
 .table-container {
-	flex: 1;
-	overflow: auto;
-	backdrop-filter: blur(10px);
-	border-radius: 20px;
-	padding: 15px;
-	font-size: 0.8rem;
+    flex: 1;
+    overflow: auto;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px;
+    font-size: 0.8rem;
 }
 
 th, td {
-	background-color: rgb(var(--bs-body-bg-rgb), .1);
+    background-color: rgb(var(--bs-body-bg-rgb), .1);
 }
 
 tr:hover {
-	background-color: rgb(var(--bs-body-bg-rgb), .3);
+    background-color: rgb(var(--bs-body-bg-rgb), .3);
 }
 
 table .active {
-	background-color: rgb(var(--bs-body-bg-rgb), .5);
+    background-color: rgb(var(--bs-body-bg-rgb), .5);
 }
 
 .top-row {
-	padding: 12px;
-	display: flex;
-	justify-content: space-between;
-	column-gap: 15%;
-	row-gap: 12px;
-	flex-wrap: wrap;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
 }
 
 .top-row-buttons {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-	flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
 }
 
-	.top-row-buttons > * {
-		display: flex;
-		flex-grow: 1;
-		flex-basis: 40%;
-	}
+    .top-row-buttons > * {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
 
 .top-row-title {
-	font-weight: bold;
+    font-weight: bold;
 }

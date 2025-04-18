@@ -89,7 +89,7 @@
 						<div>
 							<textarea readonly>
 								@embed.code
-																																																							</textarea>
+							</textarea>
 							<button class="btn btn-normal">
 								<span>Copy to clipboard</span>
 								<i class="bi btn-bi bi-clipboard"></i>
@@ -134,7 +134,7 @@
 					<div>
 						<h3>Download File</h3>
 						<div>
-							<button class="btn btn-normal" @onclick="()=>excelFile.DownloadExcelFile()">
+							<button class="btn btn-normal" @onclick="()=>excelFile.DownloadExcelFile(currentRace, currentStartlist)">
 								<span>Download File</span>
 								<i class="bi btn-bi bi-clipboard"></i>
 							</button>
@@ -388,9 +388,11 @@
 
 			Rows = new List<List<string>>();
 
-			foreach (var racer in currentStartlist.Racers)
+			int place = 0;
+			foreach (var racer in currentStartlist.Racers.OrderByDescending(racer => racer.LapDateTime.Count).ThenByDescending(racer => racer.StartDateTime - racer.LapDateTime.Last()))
 			{
-				var row = CreateExcelRow(racer, currentStartlist, dataSelection);
+				place++;
+				var row = CreateExcelRow(racer, currentStartlist, dataSelection, place);
 				Rows.Add(row);
 			}
 		}
@@ -404,6 +406,7 @@
 
 			List<string> titleRow = new List<string>();
 
+			titleRow.Add("Place");
 			titleRow.Add("Name");
 			titleRow.Add("Surname");
 
@@ -416,6 +419,7 @@
 
 				if (data.Id == "laptimes")
 				{
+
 
 					for (int i = 0; i < maxLaps; i++)
 					{
@@ -443,7 +447,26 @@
 			return maxLaps;
 		}
 
-		public List<string> CreateExcelRow(Racer racer, Startlist startlist, IEnumerable<Results.ResultDataOption>? dataList)
+		List<string> CreateLaptimeExcelRows(Startlist startlist, int maxLaps, List<string> lapTimes)
+		{
+			List<string> LaptimeRows = new();
+
+			for (int i = 0; i < maxLaps; i++)
+			{
+				if (i >= lapTimes.Count)
+				{
+					LaptimeRows.Add("");
+				}
+				else
+				{
+					LaptimeRows.Add(lapTimes[i]);
+				}
+			}
+
+			return LaptimeRows;
+		}
+
+		public List<string> CreateExcelRow(Racer racer, Startlist startlist, IEnumerable<Results.ResultDataOption>? dataList, int place)
 		{
 			if (dataList == null)
 			{
@@ -452,6 +475,7 @@
 
 			List<string> row = new List<string>();
 
+			row.Add(place.ToString());
 			row.Add(racer.GetResultData("name") + "");
 			row.Add(racer.GetResultData("surname") + "");
 
@@ -473,18 +497,15 @@
 						}
 						continue;
 					}
-					var lapTimes = (List<string>)getLaptimes;
-					for (int i = 0; i < maxLaps; i++)
-					{
-						if (i >= lapTimes.Count)
-						{
-							row.Add("");
-						}
-						else
-						{
-							row.Add(lapTimes[i]);
-						}
-					}
+
+					CreateLaptimeExcelRows(startlist, maxLaps, (List<string>)getLaptimes).ForEach(x => row.Add(x));
+
+					continue;
+				}
+
+				if(data.Id == "pace" || data.Id == "speed")
+				{
+					row.Add(racer.GetResultData(data.Id, startlist.DistanceMeters) + "");
 					continue;
 				}
 
@@ -494,14 +515,14 @@
 			return row;
 		}
 
-		public async Task DownloadExcelFile()
+		public async Task DownloadExcelFile(Race race, Startlist startlist)
 		{
 			List<List<string>> Worksheet = new();
 
 			Worksheet.Add(TitleRow);
 			Rows.ForEach(row => Worksheet.Add(row));
 
-			await ExportAndDownloadExcelFile("results", Worksheet);
+			await ExportAndDownloadExcelFile($"{race.Name} - {startlist.Name} Results", Worksheet);
 		}
 
 		public async Task ExportAndDownloadExcelFile(string fileName, List<List<string>> Worksheet)
