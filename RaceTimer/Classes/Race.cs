@@ -48,6 +48,39 @@ public class Race
 		return duplicatedRace;
 	}
 
+	public DateTime? FirstStartDatetime()
+	{
+		DateTime? datetime = null;
+		foreach(var startlist in Startlists)
+		{
+			var getDatetime = startlist.FirstStartDateTime();
+			if(getDatetime < datetime || datetime == null)
+			{
+				datetime = getDatetime;
+			}
+		}
+		return datetime;
+	}
+
+	public List<DateTime> AllStartDatetime()
+	{
+		List<DateTime> datetimes = new();
+
+		foreach(var startlist in Startlists)
+		{
+			var getStartlistDatetimes = startlist.AllStartDateTime();
+			foreach(var datetime in getStartlistDatetimes)
+			{
+				if (datetimes.Contains(datetime))
+				{
+					continue;
+				}
+				datetimes.Add(datetime);
+			}
+		}
+		return datetimes;
+	}
+
 	public class TimingEvent
 	{
 		public Racer Racer { get; set; } = new Racer();

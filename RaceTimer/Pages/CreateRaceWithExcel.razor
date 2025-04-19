@@ -1,0 +1,292 @@
+﻿@page "/new-race/excel"
+
+<Toasts @ref="toasts"></Toasts>
+
+<div class="content-box-section">
+	<div class="content-box">
+		<h2>Excel Race Template</h2>
+		<h5>The template should have been downloaded.</h5>
+		<h5>Check the downloads tab and open the Excel document.</h5>
+	</div>
+	<div class="content-box">
+		<h2>How to use the template</h2>
+		<p>
+			The template provided includes an example racer to demonstrate
+			how to format entries in the document. Below is additional
+			guidance to help you utilize its full range of features.
+			<div>
+				<h5>Template Columns</h5>
+				<ul>
+					<li>
+						<b>Name</b>
+						<div>
+							<p>
+								The racer’s first name.
+							</p>
+							<p>
+								Example: <code>John</code>
+							</p>
+						</div>
+					</li>
+					<li>
+						<b>Surname</b>
+						<p>
+							The racer’s last name.
+						</p>
+						<p>
+							Example: <code>Johnson</code>
+						</p>
+					</li>
+					<li>
+						<b>Bib</b>
+						<p>
+							The number displayed on the racer’s bib
+							(number plate). If you are not using bibs
+							for the race, you may leave this field empty
+							or assign incrementing numbers.
+							While PocketRace recommends bibs for timing,
+							they are not mandatory.
+						</p>
+						<p>
+							Example: <code>12</code>
+						</p>
+					</li>
+					<li>
+						<b>Automatic Start</b>
+						<p>
+							If you want PocketRace to begin timing automatically
+							at a specific time, enter the date and time
+							here using the format:
+							<code>yyyy-mm-dd hh:mm:ss</code>.
+						</p>
+						<p>
+							Example: <code>2026-07-05 12:00:00</code>
+						</p>
+					</li>
+					<li>
+						<b>Startlist</b>
+						<p>
+							Start lists divide racers into groups, such as by distance,
+							age group, or category. Each start list will generate a
+							separate results page after the race.
+						</p>
+						<p>
+							Example: <code>Men - 15Km</code>
+						</p>
+					</li>
+					<li>
+						<b>Custom Fields</b>
+						<p>
+							Custom fields allow you to collect additional data
+							beyond the default columns. Add columns for contact
+							details (e.g., email, phone number) or even preferences
+							like a racer’s favorite food (if relevant to your event).
+						</p>
+					</li>
+				</ul>
+			</div>
+
+		</p>
+	</div>
+	<div class="content-box">
+		<h2>Racer Registration</h2>
+		<div>
+			<p>
+				Instead of manually entering all racers’ data, you can create a
+				registration form allowing participants to input their
+				information themselves. Recommended tools for this include
+				Google Forms and Microsoft Forms. Once responses are collected,
+				navigate to the "Responses" tab to export the data directly to
+				Excel or Google Sheets, where you can then copy it into the template.
+			</p>
+			<div>
+				<h5>Google Forms</h5>
+				<p>
+					<ol>
+						<li>
+							<b>Create a New Google Form</b>
+							<p>
+								Go to Google Forms.<br />
+								Click Blank (or +) to create a new form.<br />
+								Rename the form (e.g., "Race Registration") by clicking the default title.<br />
+							</p>
+						</li>
+						<li>
+							<b>Add Questions Matching the Template Columns</b>
+							<p>
+								For each column in your template (e.g., Name, Surname, Startlist), add a question:<br />
+								Click + (Add question).<br />
+								Write the name of the question (e.g., "Distance" instead of "Startlist").<br />
+								Repeat for all columns <br />
+							</p>
+						</li>
+						<li>
+							<b>Share the Form</b>
+							<p>
+								Click Send (top-right). <br />
+								Share the link with racers via email, link, or embed. <br />
+							</p>
+						</li>
+						<li>
+							<b>Export Responses to Google Sheets</b>
+							<p>
+								Go to the Responses tab. <br />
+								Click the Google Sheets icon → Create new spreadsheet → Create. <br />
+							</p>
+						</li>
+						<li>
+							<b>Copy Data Column by Column to Your Template</b>
+							<p>
+								Open your template (e.g., in Google Sheets/Excel). <br />
+								Open the Google Sheets response file. <br />
+								Copy each column individually from the response sheet: <br />
+								Select the Name column → Ctrl+C / Cmd+C. <br />
+								Paste into the Name column in your template → Ctrl+V / Cmd+V. <br />
+								Repeat for Surname, Startlist, etc. <br />
+							</p>
+						</li>
+					</ol>
+				</p>
+			</div>
+			<div>
+				<h5>Microsoft Forms</h5>
+				<p>
+					<ol>
+						<li>
+							<b>Create a New Microsoft Form</b>
+							<p>
+								Go to Microsoft Forms. <br />
+								Click New Form. <br />
+								Rename the form (e.g., "Race Registration") by clicking the default title. <br />
+							</p>
+						</li>
+						<li>
+							<b>Add Questions Matching the Template Columns</b>
+							<p>
+								For each column in your template (e.g., Name, Surname, Startlist), add a question:<br />
+								Click + (Add question).<br />
+								Write the name of the question (e.g., "Distance" instead of "Startlist").<br />
+								Repeat for all columns <br />
+							</p>
+						</li>
+						<li>
+							<b>Share the Form</b>
+							<p>
+								Click Share (top-right). <br />
+								Copy the link or share via email. <br />
+							</p>
+						</li>
+						<li>
+							<b>Export Responses to Excel</b>
+							<p>
+								Go to the Responses tab.<br />
+								Click Open in Excel → Download/Open the Excel file.<br />
+							</p>
+						</li>
+						<li>
+							<b>Copy Data Column by Column to Your Template</b>
+							<p>
+								Open your template (Excel/Google Sheets). <br />
+								Open the Excel response file. <br />
+								Copy each column individually: <br />
+								Select the Name column → Ctrl+C / Cmd+C. <br />
+								Paste into the Name column in your template. <br />
+								Repeat for Surname, Startlist, etc. <br />
+							</p>
+						</li>
+					</ol>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="content-box">
+		<div>
+			<h2>Import Excel File</h2>
+			<p>
+				Once the Excel file is finalized, you can import it into PocketRace.
+				After importing, you can modify race and startlist settings
+				such as name, start type, or distance directly within the platform.
+			</p>
+		</div>
+		<div>
+			<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
+			<label for="fileInput" class="btn btn-normal">
+				<span>Import</span>
+				<i class="bi btn-bi bi-box-arrow-in-down"></i>
+			</label>
+		</div>
+	</div>
+</div>
+
+@code {
+	private Toasts toasts = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await DownloadRaceTemplate();
+	}
+
+	private async Task DownloadRaceTemplate()
+	{
+		var templateRace = new Race
+			{
+				Name = "Race Excel Template",
+				Startlists = new List<Startlist>
+			{
+				new Startlist
+				{
+					Name = "Men - 15Km",
+					Racers = new List<Racer>
+					{
+						new Racer
+						{
+							Name = "John",
+							Surname = "Johnson",
+							Bib = "12",
+							StartDateTime = new DateTime(2026, 7, 5, 12, 0, 0)
+						}
+					}
+				}
+			}
+			};
+
+		await ExportAndDownloadRace(templateRace);
+	}
+
+
+	private async Task ExportAndDownloadRace(Race race)
+	{
+		using var memoryStream = ExcelHandler.ExportRaceToExcel(race);
+		var fileName = $"{race.Name}.xlsx";
+		var fileBytes = memoryStream.ToArray();
+		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	}
+
+	private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+	{
+		var base64Data = Convert.ToBase64String(fileBytes);
+		await jsRuntime.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
+	}
+
+	private async Task ImportRace(InputFileChangeEventArgs e)
+	{
+		var races = await RaceService.GetRacesAsync(jsRuntime);
+
+		try
+		{
+			var file = e.File;
+			var memoryStream = new MemoryStream();
+			await file.OpenReadStream().CopyToAsync(memoryStream);
+			memoryStream.Position = 0;
+			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
+			races.Add(importedRace);
+			await RaceService.SaveRacesAsync(races, jsRuntime);
+			NavigationManager.NavigateTo($"/races/edit/{importedRace.Id}");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error during file import: {ex.Message}\n" + ex.StackTrace);
+			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
+		}
+	}
+}

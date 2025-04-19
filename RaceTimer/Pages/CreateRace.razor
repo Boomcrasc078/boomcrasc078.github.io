@@ -1,0 +1,69 @@
+﻿@page "/new-race"
+
+<div class="content-box-section">
+	<div class="content-box">
+		<div>
+			<h2>
+				Create with Excel
+			</h2>
+			<p>
+				<h5>Easier when you want:</h5>
+				<ul>
+					<li>Racers registered through a form</li>
+					<li>More than 10 racers</li>
+					<li>Multiple startlists</li>
+					<li>Automatic start</li>
+					<li>Stored contact information for each racer</li>
+					<li>Stored custom data for each racer</li>
+				</ul>
+			</p>
+		</div>
+		<a class="btn btn-normal" href="/new-race/excel">
+			<span>Download Excel Template</span>
+			<i class="bi btn-bi bi-download"></i>
+		</a>
+	</div>
+	<div class="content-box">
+		<div>
+			<h2>
+				Create Manually
+			</h2>
+			<p>
+				<h5>Easier when you want:</h5>
+				<ul>
+					<li>A quick solution for timing with a phone or tablet</li>
+					<li>No use of other applications</li>
+					<li>Fewer than 10 racers</li>
+					<li>One or two startlists</li>
+					<li>Manual start</li>
+				</ul>
+			</p>
+		</div>
+		<btn class="btn btn-normal" @onclick="()=>CreateRaceManually()">
+			<span>Open Manual Creation</span>
+			<i class="bi btn-bi bi-chevron-double-right"></i>
+		</btn>
+	</div>
+</div>
+
+@code {
+
+	private async Task CreateRaceManually()
+	{
+		var races = await RaceService.GetRacesAsync(jsRuntime);
+
+		Race addRace = new Race()
+			{
+				Name = "Untitled Race",
+				Startlists = new List<Startlist>(),
+				creationDateTime = DateTime.Now,
+				lastEditDateTime = DateTime.Now,
+				Id = IdGenerator.GenerateUniqueId(races.Select(race => race.Id))
+			};
+
+		races.Add(addRace);
+		await RaceService.SaveRacesAsync(races, jsRuntime);
+
+		NavigationManager.NavigateTo($"/races/edit/{addRace.Id}");
+	}
+}

@@ -97,12 +97,12 @@
 										{
 											@foreach (var startTime in startlist.AllStartDateTime())
 											{
-												<div>@Startlist.StartDateTimeString(startTime)</div>
+												<div>@Startlist.StartDatetimeString(startTime)</div>
 											}
 										}
 										else
 										{
-											<span>@Startlist.StartDateTimeString(startlist.FirstStartDateTime());</span>
+											<span>@Startlist.StartDatetimeString(startlist.FirstStartDateTime())</span>
 										}
 
 									</div>

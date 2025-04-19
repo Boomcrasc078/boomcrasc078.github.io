@@ -6,6 +6,12 @@
     margin: 0px;
 }
 
+@media(max-width: 1500px) {
+    .content-box-section {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 @media(max-width: 1020px){
     .content-box-section {
         height: calc(100dvh - 100px - 70px);

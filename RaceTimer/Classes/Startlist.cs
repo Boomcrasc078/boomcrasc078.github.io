@@ -6,7 +6,7 @@ public class Startlist
 {
 	public string Id { get; set; }
 	public string Name { get; set; }
-	public List<Racer> Racers { get; set; }
+	public List<Racer> Racers { get; set; } = new();
 	public string CurrentAnimation { get; set; } = string.Empty;
 	public float DistanceMeters { get; set; }
 	public string StartType { get; set; }
@@ -19,7 +19,6 @@ public class Startlist
 		DistanceMeters = 0;
 		StartType = "mass-start";
 	}
-
 
 	public Startlist DuplicateStartlist(IEnumerable<string> existingIds)
 	{
@@ -68,7 +67,7 @@ public class Startlist
 		return DateTimes;
 	}
 
-	public static string StartDateTimeString(DateTime? startDateTime)
+	public static string StartDatetimeString(DateTime? startDateTime)
 	{
 		if (!startDateTime.HasValue)
 		{

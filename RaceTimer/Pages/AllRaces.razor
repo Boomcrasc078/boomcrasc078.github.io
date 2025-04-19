@@ -147,7 +147,7 @@
 		races.Add(addRace);
 		await RaceService.SaveRacesAsync(races, JS);
 
-		NavManager.NavigateTo($"/races/edit/{addRace.Id}");
+		NavigationManager.NavigateTo($"/races/edit/{addRace.Id}");
 	}
 
 	private async Task DeleteRace(Race deleteRace)

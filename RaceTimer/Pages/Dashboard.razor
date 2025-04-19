@@ -11,22 +11,50 @@
 		<div class="content-box">
 
 			<div>
-				<h2>Races</h2>
+				<h2>New Race</h2>
+			</div>
+			<div class="d-flex flex-column gap-3">
+				<a class="btn btn-normal" href="@($"/new-race")">
+					<span>Create a new race from scratch</span>
+					<i class="bi btn-bi bi-plus-lg"></i>
+				</a>
+				<a class="btn btn-normal">
+					<span>Duplicate an existing race</span>
+					<i class="bi btn-bi bi-copy"></i>
+				</a>
+			</div>
+		</div>
+		<div class="content-box">
+
+			<div>
+				<h2>Upcoming Races</h2>
 			</div>
 			<div>
 				<table class="table table-responsive">
 					<thead>
 						<tr>
 							<td>Name</td>
-							<td>Last Edited</td>
+							<td>Start</td>
 						</tr>
 					</thead>
 					<tbody class="table-group-divider">
 						@foreach (var race in AllRaces)
 						{
-							<tr @onclick="@(()=>NavigationManager.NavigateTo($"/races/edit/{race.Id}"))">
+							<tr @onclick="@(()=>NavigationManager.NavigateTo($"/race-view/{race.Id}"))">
 								<th>@race.Name</th>
-								<td>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</td>
+								<td>
+									@if (race.AllStartDatetime().Count > 1)
+									{
+										@foreach (var startTime in race.AllStartDatetime())
+										{
+											<div>@Startlist.StartDatetimeString(startTime)</div>
+										}
+									}
+									else
+									{
+										<span>@Startlist.StartDatetimeString(race.FirstStartDatetime())</span>
+									}
+								</td>
 							</tr>
 						}
 					</tbody>
@@ -62,6 +90,6 @@ else
 			toasts?.CreateToast(new Toast("", "Error while loading races", "text-bg-danger"));
 			return;
 		}
-		AllRaces = races;
+		AllRaces = races.OrderBy(race => race.FirstStartDatetime() == null).ThenBy(race => race.FirstStartDatetime()).ToList();
 	}
 }
