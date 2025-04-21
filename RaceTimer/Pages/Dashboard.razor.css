@@ -1,9 +1,15 @@
-﻿.content-box-section{
+﻿.content-box-section {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: 95%;
     height: calc(100dvh - 100px);
-    margin: 0px;
+    margin: 0;
+    padding-block: 32px;
+    align-content: stretch;
+}
+
+.content-box {
+    justify-content: start;
 }
 
 @media(max-width: 1500px) {
@@ -12,12 +18,17 @@
     }
 }
 
-@media(max-width: 1020px){
+@media(max-width: 1020px) {
     .content-box-section {
         height: calc(100dvh - 100px - 70px);
         width: 100%;
     }
+}
 
+@media(max-width:800px) {
+    .content-box-section {
+        grid-template-columns: 1fr;
+    }
 }
 
 th, td {

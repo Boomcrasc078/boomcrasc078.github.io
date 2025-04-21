@@ -1,0 +1,46 @@
+﻿@page "/race-view/{RaceId}/{RacerId}"
+
+<Toasts @ref="toasts"></Toasts>
+
+@if (currentRacer != null)
+{
+	<h1>@currentRacer.Name</h1>
+}
+
+@code {
+	[Parameter] public string RaceId { get; set; }
+	[Parameter] public string RacerId { get; set; }
+	private Toasts toasts = new Toasts();
+	private Race currentRace { get; set; } = new Race();
+	private Racer currentRacer { get; set; } = new Racer();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadRace();
+		await LoadRacer();
+	}
+
+	async Task LoadRace()
+	{
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
+
+		if (getRace == null)
+		{
+			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}", "text-bg-danger"));
+		}
+
+		currentRace = getRace;
+	}
+
+	async Task LoadRacer()
+	{
+		var getRacer = currentRace.Startlists.SelectMany(startlist => startlist.Racers).First(racer => racer.Id == RacerId);
+
+		if (getRacer == null)
+		{
+			toasts?.CreateToast(new Toast("", $"Could not find a racer with id: {RacerId}", "text-bg-danger"));
+		}
+
+		currentRacer = getRacer;
+	}
+}

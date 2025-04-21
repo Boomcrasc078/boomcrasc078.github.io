@@ -25,41 +25,49 @@
 			</div>
 		</div>
 		<div class="content-box">
-
-			<div>
-				<h2>Upcoming Races</h2>
-			</div>
-			<div>
-				<table class="table table-responsive">
-					<thead>
-						<tr>
-							<td>Name</td>
-							<td>Start</td>
-						</tr>
-					</thead>
-					<tbody class="table-group-divider">
-						@foreach (var race in AllRaces)
-						{
-							<tr @onclick="@(()=>NavigationManager.NavigateTo($"/race-view/{race.Id}"))">
-								<th>@race.Name</th>
-								<td>
-									@if (race.AllStartDatetime().Count > 1)
-									{
-										@foreach (var startTime in race.AllStartDatetime())
-										{
-											<div>@Startlist.StartDatetimeString(startTime)</div>
-										}
-									}
-									else
-									{
-										<span>@Startlist.StartDatetimeString(race.FirstStartDatetime())</span>
-									}
-								</td>
+			@if (AllRaces.Count > 0)
+			{
+				<div>
+					<h2>Upcoming Races</h2>
+				</div>
+				<div>
+					<table class="table table-responsive">
+						<thead>
+							<tr>
+								<td>Name</td>
+								<td>Start</td>
 							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
+						</thead>
+						<tbody class="table-group-divider">
+							@foreach (var race in AllRaces)
+							{
+								<tr @onclick="@(()=>NavigationManager.NavigateTo($"/race-view/{race.Id}"))">
+									<th>@race.Name</th>
+									<td>
+										@if (race.AllStartDatetime().Count > 1)
+										{
+											@foreach (var startTime in race.AllStartDatetime())
+											{
+												<div>@Startlist.StartDatetimeString(startTime)</div>
+											}
+										}
+										else
+										{
+											<span>@Startlist.StartDatetimeString(race.FirstStartDatetime())</span>
+										}
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+			else
+			{
+				<div>
+					<h2>No Upcoming Races</h2>
+				</div>
+			}
 		</div>
 	</div>
 }

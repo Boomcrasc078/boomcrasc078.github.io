@@ -11,10 +11,7 @@
 			<div>
 				<h2>Start</h2>
 				<div>
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
-					Lorem Ipsum<br />
+					(Automatic start times will show here)
 				</div>
 			</div>
 			<a class="btn btn-normal" href="/race-view/@RaceId/manual-start">
@@ -58,7 +55,7 @@
 							<div class="all-cards pe-3">
 								@foreach (var racer in filteredRacers)
 								{
-									<div class="card card-hover">
+									<div class="card card-hover" @onclick="@(()=>NavigationManager.NavigateTo($"/race-view/{RaceId}/{racer.Id}"))">
 										<div class="card-header d-flex justify-content-between">
 											<div>@racer.Bib</div>
 											<div>@racer.Name @racer.Surname </div>
