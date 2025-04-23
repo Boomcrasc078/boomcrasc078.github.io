@@ -55,7 +55,7 @@
 	[Parameter] public string RaceId { get; set; }
 	public Race currentRace;
 	private List<bool> startlistSelected = new List<bool>();
-		private System.Timers.Timer timer = new System.Timers.Timer();
+	private System.Timers.Timer timer = new System.Timers.Timer();
 	public DateTime currentTime = DateTime.Now;
 
 
@@ -70,7 +70,7 @@
 
 	}
 
-		private void CreateUpdateTimer()
+	private void CreateUpdateTimer()
 	{
 		// Skapa en timer som tickar var 10:e millisekund (0.01 sekund).
 		timer = new System.Timers.Timer(10);
@@ -91,15 +91,14 @@
 		timer?.Dispose();
 	}
 
-	private async Task StartStartlist(Startlist startlist)
+	private async Task StartStartlist(Startlist startlist, DateTime startDateTime)
 	{
-		DateTime startDateTime = DateTime.Now;
 		startlist.Racers.ForEach(racer => { racer.StartDateTime = startDateTime; });
 
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
-	private async Task TryStartStartlist(bool selected, int index)
+	private async Task TryStartStartlist(bool selected, int index, DateTime startDateTime)
 	{
 		if (!selected) return;
 
@@ -108,15 +107,16 @@
 		Console.WriteLine($"Starting startlist: {selectedStartlist.Name}, Index: {index}");
 
 
-		await StartStartlist(selectedStartlist);
+		await StartStartlist(selectedStartlist, startDateTime);
 	}
 
 	private async Task StartMultipleStartlists()
 	{
+		DateTime startTime = DateTime.Now;
 		int startlistIndex = 0;
 		foreach (bool selected in startlistSelected)
 		{
-			await TryStartStartlist(selected, startlistIndex);
+			await TryStartStartlist(selected, startlistIndex, startTime);
 			startlistIndex++;
 		}
 

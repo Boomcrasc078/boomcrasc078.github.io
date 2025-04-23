@@ -58,6 +58,7 @@ public class Startlist
 
 			if (!DateTimes.Contains(racer.StartDateTime.Value))
 			{
+				Console.WriteLine("Startlist: " + racer.StartDateTime.Value);
 				DateTimes.Add(racer.StartDateTime.Value);
 			}
 		}
