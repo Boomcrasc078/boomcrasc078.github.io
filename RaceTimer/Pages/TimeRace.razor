@@ -5,6 +5,38 @@
 
 <Toasts @ref="toasts" />
 
+<div class="modal fade" id="newRacerModal" tabindex="-1" aria-labelledby="newRacerModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5">New Racer</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div>
+					<label for="#StartlistSelect">Startlist</label>
+					<select class="form-select" id="StartlistSelect" aria-label="Startlist Select" @onchange="(ChangeEventArgs args) => modalSelectedStartlist = currentRace.Startlists.Find(startlist => startlist.Id == (string)args.Value)">
+						@foreach(var startlist in currentRace.Startlists)
+						{
+							<option value="@startlist.Id">@startlist.Name</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
+					<span>Save</span>
+					<i class="bi btn-bi bi-floppy"></i>
+				</button>
+				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
+					<span>Cancel</span>
+					<i class="bi btn-bi bi-x-lg"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="layout" tabindex="0" @ref="KeyboardRef" @onkeydown="HandleKeyboardInput">
 	<div id="timeListContainer" class="table-container">
 		<table class="table table-sm table-responsive">
@@ -48,26 +80,40 @@
 			</tbody>
 		</table>
 	</div>
+	@if (showNumpad)
+	{
+		<button class="btn time-container" @onclick="()=>TimestampButtonClicked(DateTime.Now)">
+			<h5 class="text-center">@currentTime.ToString("HH:mm:ss.ff")</h5>
+			@if (activeRacer != null && activeRacer.Id != "")
+			{
+				<h6 class="text-center">Press to add lap to @activeRacer.Name</h6>
+			}
+			else
+			{
+				<h6 class="text-center">Press to set timestamp</h6>
+			}
 
-	<button class="btn time-container" @onclick="()=>TimestampButtonClicked(DateTime.Now)">
-		<h5 class="text-center">@currentTime.ToString("HH:mm:ss.ff")</h5>
-		@if (activeRacer != null && activeRacer.Id != "")
-		{
-			<h6 class="text-center">Press to add lap to @activeRacer.Name</h6>
-		}
-		else
-		{
-			<h6 class="text-center">Press to set timestamp</h6>
-		}
-
-	</button>
-	<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
+		</button>
+		<Numpad NumberClicked="NumberClicked" BackspaceClicked="BackspaceClicked" EnterClicked="EnterClicked"></Numpad>
+	}
 	<div class="top-row">
 		<div class="top-row-buttons">
 			<a class="btn btn-normal" href="/race-view/@RaceId">
-				<span>Back to RaceView</span>
+				<span>Back</span>
 				<i class="bi btn-bi bi-chevron-double-left" />
 			</a>
+			<button class="btn btn-normal" @onclick="() => showNumpad=!showNumpad">
+				@if (showNumpad)
+				{
+					<span>Hide</span>
+					<i class="bi btn-bi bi-arrow-bar-down" />
+				}
+				else
+				{
+					<span>Show</span>
+					<i class="bi btn-bi bi-arrow-bar-up" />
+				}
+			</button>
 		</div>
 	</div>
 </div>
@@ -83,6 +129,8 @@
 	private ElementReference KeyboardRef;
 	public DateTime currentTime;
 	string pressedKey = "";
+	private bool showNumpad = true;
+	private Startlist? modalSelectedStartlist;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -95,6 +143,7 @@
 		currentRace = getRace;
 		CreateUpdateTimer();
 		LoadRacersIntoTimeList();
+		await ScrollToBottomAsync();
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -207,6 +256,10 @@
 		if (activeRacer.Bib.Length == 0)
 		{
 			timeList.Remove(activeRacer);
+			if (nextEdit.Contains(activeRacer))
+			{
+				nextEdit.Remove(activeRacer);
+			}
 			activeRacer = null;
 			if (nextEdit.Count > 0)
 			{
@@ -297,7 +350,7 @@
 
 		if (foundRacer == null)
 		{
-			ClearActiveRacer(getRacer);
+			await AttemptAddNewRacer(getRacer);
 			return;
 		}
 
@@ -349,6 +402,22 @@
 		timeList.Insert(index, racer);
 		timeList.Remove(tempRacer);
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
+	async Task AttemptAddNewRacer(Racer racer)
+	{
+		modalSelectedStartlist = null;
+		
+	}
+
+	Racer AddNewRacer(Racer racer, Startlist startlist)
+	{
+		racer.Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(racer => racer.Id));
+		racer.StartDateTime = startlist.FirstStartDateTime();
+
+		startlist.Racers.Add(racer);
+
+		return racer;
 	}
 
 	private async Task ScrollToBottomAsync()

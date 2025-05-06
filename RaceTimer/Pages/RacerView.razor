@@ -4,7 +4,33 @@
 
 @if (currentRacer != null)
 {
-	<h1>@currentRacer.Name</h1>
+	<div class="content-box-section">
+		<div class="content-box">
+			<h1>@currentRacer.Name @currentRacer.Surname</h1>
+
+			<div>
+				<label>Name:</label>
+				<input type="text" value="@currentRacer.Name" class="form-control" placeholder="John" />
+			</div>
+			<div>
+				<label>Surname:</label>
+				<input type="text" value="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
+			</div>
+			<div>
+				<label>Bib:</label>
+				<input type="number" value="@currentRacer.Bib" class="form-control" placeholder="123" />
+			</div>
+		</div>
+
+
+
+	</div>
+}
+else
+{
+	<div class="page-spinner spinner-border" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
 }
 
 @code {
