@@ -5,14 +5,17 @@ html, body {
 
 h1 {
 	font-weight: bold;
+	overflow-wrap: break-word;
 }
 
 h2 {
 	font-weight: bold;
+	overflow-wrap: break-word;
 }
 
 h5 {
 	font-weight: bold;
+	overflow-wrap: break-word;
 }
 
 h1:focus {

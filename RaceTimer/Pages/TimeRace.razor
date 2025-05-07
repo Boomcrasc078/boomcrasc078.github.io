@@ -4,38 +4,67 @@
 @using RaceTimer.Components
 
 <Toasts @ref="toasts" />
-
-<div class="modal fade" id="newRacerModal" tabindex="-1" aria-labelledby="newRacerModal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5">New Racer</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div>
-					<label for="#StartlistSelect">Startlist</label>
-					<select class="form-select" id="StartlistSelect" aria-label="Startlist Select" @onchange="(ChangeEventArgs args) => modalSelectedStartlist = currentRace.Startlists.Find(startlist => startlist.Id == (string)args.Value)">
-						@foreach(var startlist in currentRace.Startlists)
-						{
-							<option value="@startlist.Id">@startlist.Name</option>
-						}
-					</select>
+@if (activeRacer != null)
+{
+	<div class="modal fade" id="newRacerModal" tabindex="-1" aria-labelledby="newRacerModal" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5">New Racer</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="()=>RemoveActiveRacer()"></button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
-					<span>Save</span>
-					<i class="bi btn-bi bi-floppy"></i>
-				</button>
-				<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
-					<span>Cancel</span>
-					<i class="bi btn-bi bi-x-lg"></i>
-				</button>
+				<div class="modal-body">
+					<div>
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="activeRacer.Name">
+							<label for="floatingInput">Name</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control" id="floatingInput2" placeholder="Surname" @bind="activeRacer.Surname">
+							<label for="floatingInput2">Surname</label>
+						</div>
+						<div class="form-floating">
+							<input type="number" class="form-control" id="floatingInputGroup2" placeholder="Bib Number" @bind="activeRacer.Bib">
+							<label for="floatingInputGroup2">Bib Number</label>
+						</div>
+						<label for="#StartlistSelect">Startlist</label>
+						<select class="form-select" id="StartlistSelect" aria-label="Startlist Select" @bind="modalSelectedStartlistId">
+							@foreach (var startlist in currentRace.Startlists)
+							{
+								<option value="@startlist.Id">@startlist.Name</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>AddNewRacer(activeRacer, currentRace.Startlists.Find(startlist => startlist.Id == modalSelectedStartlistId))">
+						<span>Save</span>
+						<i class="bi btn-bi bi-floppy"></i>
+					</button>
+					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>RemoveActiveRacer()">
+						<span>Cancel</span>
+						<i class="bi btn-bi bi-x-lg"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+}
+
+<script>
+	window.interop = {
+	toggleModal: function (modalId) {
+	const modalElement = document.getElementById(modalId);
+	if (modalElement) {
+	const modal = new bootstrap.Modal(modalElement);
+	modal.toggle();
+	} else {
+	console.error(`Modal with ID '${modalId}' not found.`);
+	}
+	}
+	};
+
+</script>
 
 <div class="layout" tabindex="0" @ref="KeyboardRef" @onkeydown="HandleKeyboardInput">
 	<div id="timeListContainer" class="table-container">
@@ -130,7 +159,7 @@
 	public DateTime currentTime;
 	string pressedKey = "";
 	private bool showNumpad = true;
-	private Startlist? modalSelectedStartlist;
+	private string modalSelectedStartlistId = "";
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -143,6 +172,9 @@
 		currentRace = getRace;
 		CreateUpdateTimer();
 		LoadRacersIntoTimeList();
+
+		modalSelectedStartlistId = currentRace.Startlists[0].Id;
+
 		await ScrollToBottomAsync();
 	}
 
@@ -255,16 +287,7 @@
 			return;
 		if (activeRacer.Bib.Length == 0)
 		{
-			timeList.Remove(activeRacer);
-			if (nextEdit.Contains(activeRacer))
-			{
-				nextEdit.Remove(activeRacer);
-			}
-			activeRacer = null;
-			if (nextEdit.Count > 0)
-			{
-				activeRacer = nextEdit[0];
-			}
+			RemoveActiveRacer();
 			return;
 		}
 		activeRacer.Bib = activeRacer.Bib.Substring(0, activeRacer.Bib.Length - 1);
@@ -393,6 +416,25 @@
 		getRacer.Bib = "";
 	}
 
+	private void RemoveActiveRacer()
+	{
+		if (activeRacer == null)
+		{
+			return;
+		}
+
+		timeList.Remove(activeRacer);
+		if (nextEdit.Contains(activeRacer))
+		{
+			nextEdit.Remove(activeRacer);
+		}
+		activeRacer = null;
+		if (nextEdit.Count > 0)
+		{
+			activeRacer = nextEdit[0];
+		}
+	}
+
 	private async Task AssignRacer(Racer racer, Racer tempRacer)
 	{
 		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
@@ -406,18 +448,39 @@
 
 	async Task AttemptAddNewRacer(Racer racer)
 	{
-		modalSelectedStartlist = null;
-		
+		await jsRuntime.InvokeVoidAsync("interop.toggleModal", "newRacerModal");
 	}
 
-	Racer AddNewRacer(Racer racer, Startlist startlist)
+	async Task<Racer?> AddNewRacer(Racer? tempRacer, Startlist? startlist)
 	{
-		racer.Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(racer => racer.Id));
-		racer.StartDateTime = startlist.FirstStartDateTime();
+		if (tempRacer == null)
+		{
+			return null;
+		}
 
-		startlist.Racers.Add(racer);
+		if (startlist == null)
+		{
+			return null;
+		}
 
-		return racer;
+		Racer newRacer = new Racer();
+
+		newRacer.Bib = tempRacer.Bib;
+		newRacer.Id = IdGenerator.GenerateUniqueId(startlist.Racers.Select(racer => racer.Id));
+		newRacer.StartDateTime = startlist.FirstStartDateTime();
+		newRacer.Name = tempRacer.Name;
+		newRacer.Surname = tempRacer.Surname;
+		newRacer.CustomFields = tempRacer.CustomFields;
+
+		startlist.Racers.Add(newRacer);
+
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+
+		await AttemptAssignRacer(activeRacer);
+
+		await InvokeAsync(StateHasChanged);
+
+		return tempRacer;
 	}
 
 	private async Task ScrollToBottomAsync()

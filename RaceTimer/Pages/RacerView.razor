@@ -6,11 +6,25 @@
 {
 	<div class="content-box-section">
 		<div class="content-box">
-			<h1>@currentRacer.Name @currentRacer.Surname</h1>
-
+			<div class="d-flex justify-content-between flex-wrap">
+				@if (currentRacer.Name != "" || currentRacer.Surname != "")
+				{
+					<h1 class="top-row-title">@currentRacer.Name @currentRacer.Surname</h1>
+				}
+				else
+				{
+					<h1 class="top-row-title">Unnamed Racer</h1>
+				}
+				<div class="top-row-buttons">
+					<a class="btn btn-normal" href="/race-view/@RaceId">
+						<span>Back</span>
+						<i class="bi btn-bi bi-chevron-double-left" />
+					</a>
+				</div>
+			</div>
 			<div>
 				<label>Name:</label>
-				<input type="text" value="@currentRacer.Name" class="form-control" placeholder="John" />
+				<input type="text" value="@currentRacer.Name" class="form-control" placeholder="John" @onchange="UpdateRacerName" />
 			</div>
 			<div>
 				<label>Surname:</label>
@@ -22,7 +36,21 @@
 			</div>
 		</div>
 
-
+		<div class="content-box">
+			<div>
+				<label>Start:</label>
+				<input type="datetime" value="@currentRacer.StartDateTime" class="form-control" />
+			</div>
+		</div>
+		<div class="content-box">
+			@foreach (var lap in currentRacer.LapDateTime)
+			{
+				<div>
+					<label>Lap:</label>
+					<input type="datetime" value="@lap" class="form-control" />
+				</div>
+			}
+		</div>
 
 	</div>
 }
@@ -68,5 +96,41 @@ else
 		}
 
 		currentRacer = getRacer;
+	}
+
+	async Task UpdateRacerName(ChangeEventArgs args)
+	{
+		var getNewValue = args.Value;
+		if (getNewValue == null)
+		{
+			return;
+		}
+		string newName = (string)getNewValue;
+		currentRacer.Name = newName;
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
+	async Task UpdateRacerSurname(ChangeEventArgs args)
+	{
+		var getNewValue = args.Value;
+		if (getNewValue == null)
+		{
+			return;
+		}
+		string newSurname = (string)getNewValue;
+		currentRacer.Name = newSurname;
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
+	async Task UpdateRacerBib(ChangeEventArgs args)
+	{
+		var getNewValue = args.Value;
+		if (getNewValue == null)
+		{
+			return;
+		}
+		string newBib = (string)getNewValue;
+		currentRacer.Name = newBib;
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 }
