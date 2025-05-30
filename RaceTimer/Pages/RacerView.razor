@@ -28,26 +28,26 @@
 			</div>
 			<div>
 				<label>Surname:</label>
-				<input type="text" value="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
+				<input type="text" value="@currentRacer.Surname" class="form-control" placeholder="Johnson" @onchange="UpdateRacerSurname" />
 			</div>
 			<div>
 				<label>Bib:</label>
-				<input type="number" value="@currentRacer.Bib" class="form-control" placeholder="123" />
+				<input type="number" value="@currentRacer.Bib" class="form-control" placeholder="123" @onchange="UpdateRacerBib" />
 			</div>
 		</div>
 
 		<div class="content-box">
 			<div>
 				<label>Start:</label>
-				<input type="datetime" value="@currentRacer.StartDateTime" class="form-control" />
+				<input type="datetime-local" value="@currentRacer.StartDateTime" class="form-control" @onchange="UpdateStartDatetime" />
 			</div>
 		</div>
 		<div class="content-box">
-			@foreach (var lap in currentRacer.LapDateTime)
+			@for (int i = 0; i < currentRacer.LapDateTime.Count; i++)
 			{
 				<div>
-					<label>Lap:</label>
-					<input type="datetime" value="@lap" class="form-control" />
+					<label>Lap @(i + 1):</label>
+					<input type="datetime-local" value="@currentRacer.LapDateTime[i]" class="form-control" @onchange="(ChangeEventArgs args)=>UpdateLaptime(args, i)" />
 				</div>
 			}
 		</div>
@@ -118,7 +118,7 @@ else
 			return;
 		}
 		string newSurname = (string)getNewValue;
-		currentRacer.Name = newSurname;
+		currentRacer.Surname = newSurname;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
@@ -130,7 +130,32 @@ else
 			return;
 		}
 		string newBib = (string)getNewValue;
-		currentRacer.Name = newBib;
+		currentRacer.Bib = newBib;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
+
+	async Task UpdateStartDatetime(ChangeEventArgs args)
+	{
+		var getNewValue = args.Value;
+		if (getNewValue == null)
+		{
+			return;
+		}
+		DateTime newDatetime = (DateTime)getNewValue;
+		currentRacer.StartDateTime = newDatetime;
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
+	async Task UpdateLaptime(ChangeEventArgs args, int index)
+	{
+		var getNewValue = args.Value;
+		if (getNewValue == null)
+		{
+			return;
+		}
+		DateTime newDatetime = (DateTime)getNewValue;
+		currentRacer.LapDateTime[index] = newDatetime;
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
 }
