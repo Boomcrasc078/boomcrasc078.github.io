@@ -1,4 +1,5 @@
 ﻿@page "/race-view/{RaceId}"
+@using RaceTimer.Classes.Timing
 
 @if (currentRace != null)
 {
@@ -88,7 +89,6 @@
 @code {
 	[Parameter] public string RaceId { get; set; }
 	public Race currentRace;
-	public List<RaceEvent> raceEvents = new List<RaceEvent>();
 	private System.Timers.Timer timer = new System.Timers.Timer();
 
 	public DateTime currentTime = DateTime.Now;

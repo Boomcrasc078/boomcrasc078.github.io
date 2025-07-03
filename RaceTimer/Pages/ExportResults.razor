@@ -388,7 +388,7 @@
 			Rows = new List<List<string>>();
 
 			int place = 0;
-			foreach (var racer in currentStartlist.Racers.OrderByDescending(racer => racer.LapDateTime.Count).ThenByDescending(racer => racer.StartDateTime - racer.LapDateTime.Last()))
+			foreach (var racer in currentStartlist.Racers.OrderByDescending(racer => racer.LapEvents.Count).ThenByDescending(racer => racer.StartDateTime - (racer.LapEvents.Count > 0 ? racer.LapEvents.Last().DateTime : DateTime.MinValue)))
 			{
 				place++;
 				var row = CreateExcelRow(racer, currentStartlist, dataSelection, place);
@@ -438,9 +438,9 @@
 			int maxLaps = 0;
 			foreach (var racer in startlist.Racers)
 			{
-				if (racer.LapDateTime.Count > maxLaps)
+				if (racer.LapEvents.Count > maxLaps)
 				{
-					maxLaps = racer.LapDateTime.Count;
+					maxLaps = racer.LapEvents.Count;
 				}
 			}
 			return maxLaps;

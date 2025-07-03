@@ -94,16 +94,16 @@
 
 						</td>
 						<td>
-							@if (racer.LapDateTime.Count > 0 && racer.StartDateTime.HasValue)
+							@if (racer.LapEvents.Count > 0 && racer.StartDateTime.HasValue)
 							{
-								@((racer.LapDateTime.Last() - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
+								@((racer.LapEvents.Last().DateTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
 							}
 							@if (racer.StartDateTime.HasValue)
 							{
 								<span> (@((currentTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff")))</span>
 							}
 						</td>
-						<td>@racer.LapDateTime.Count</td>
+						<td>@racer.LapEvents.Count</td>
 					</tr>
 				}
 			</tbody>
@@ -341,11 +341,11 @@
 		{
 			return;
 		}
-		activeRacer.LapDateTime.Add(dateTime);
+		activeRacer.LapEvents.Add(new RacerEvent("Lap", dateTime, activeRacer.LapEvents.Select(e => e.Id)));
 		Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
 		timeList.Remove(activeRacer);
 		timeList.Add(activeRacer);
-		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapDateTime.Count}!", ""));
+		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapEvents.Count}!", ""));
 		activeRacer = null;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
@@ -354,7 +354,7 @@
 	{
 		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
-		racer.LapDateTime.Add(dateTime);
+		racer.LapEvents.Add(new RacerEvent("Lap", dateTime, racer.LapEvents.Select(e => e.Id)));
 		timeList.Add(racer);
 		nextEdit.Add(racer);
 		activeRacer = nextEdit[0];
@@ -379,7 +379,7 @@
 
 		await AssignRacer(foundRacer, getRacer);
 
-		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapDateTime.Count}!", ""));
+		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapEvents.Count}!", ""));
 
 		if (nextEdit.Contains(getRacer))
 		{
@@ -438,7 +438,7 @@
 	private async Task AssignRacer(Racer racer, Racer tempRacer)
 	{
 		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
-		racer.LapDateTime.AddRange(tempRacer.LapDateTime);
+		racer.LapEvents.AddRange(tempRacer.LapEvents);
 		int index = timeList.IndexOf(tempRacer);
 		timeList.Remove(racer);
 		timeList.Insert(index, racer);
