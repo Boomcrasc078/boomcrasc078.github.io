@@ -16,44 +16,72 @@
 					<h1 class="top-row-title">Unnamed Racer</h1>
 				}
 				<div class="top-row-buttons">
-					<a class="btn btn-normal" href="/race-view/@RaceId">
-						<span>Back</span>
+					<button class="btn btn-normal" @onclick="SaveRacerAndReturn">
+						<span>Save</span>
 						<i class="bi btn-bi bi-chevron-double-left" />
-					</a>
+					</button>
 				</div>
 			</div>
 			<div>
 				<label>Name:</label>
-				<input type="text" value="@currentRacer.Name" class="form-control" placeholder="John" @onchange="UpdateRacerName" />
+				<input type="text" @bind="@currentRacer.Name" class="form-control" placeholder="John" />
 			</div>
 			<div>
 				<label>Surname:</label>
-				<input type="text" value="@currentRacer.Surname" class="form-control" placeholder="Johnson" @onchange="UpdateRacerSurname" />
+				<input type="text" @bind="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
 			</div>
 			<div>
 				<label>Bib:</label>
-				<input type="number" value="@currentRacer.Bib" class="form-control" placeholder="123" @onchange="UpdateRacerBib" />
+				<input type="number" @bind="@currentRacer.Bib" class="form-control" placeholder="123" />
 			</div>
 		</div>
 
 		<div class="content-box">
-			<div>
-				<label>Start:</label>
-				<input type="datetime-local" value="@currentRacer.StartDateTime" class="form-control" @onchange="UpdateStartDatetime" />
-			</div>
-		</div>
-		<div class="content-box">
-			@for (int i = 0; i < currentRacer.LapDateTime.Count; i++)
-			{
-				<div>
-					<label>Lap @(i + 1):</label>
-					<input type="datetime-local" value="@currentRacer.LapDateTime[i]" class="form-control" @onchange="(ChangeEventArgs args)=>UpdateLaptime(args, i)" />
+			<div class="d-flex justify-content-between flex-wrap">
+				<h2 class="top-row-title">Start</h2>
+				<div class="top-row-buttons">
 				</div>
-			}
+			</div>
+			<div class="d-flex flex-column gap-3">
+				<input type="date" @bind="@currentRacer.StartDateTime" class="form-control" />
+				<input type="time" step="1" @bind="@currentRacer.StartDateTime" class="form-control" />
+			</div>
 		</div>
+		@foreach (var lap in currentRacer.LapDateTime.Select((lap, index) => new { lap, index }))
+		{
+			<div class="content-box">
+				<div class="d-flex justify-content-between flex-wrap">
+					<h2 class="top-row-title">@($"Lap {lap.index + 1}")</h2>
+					<div class="top-row-buttons">
+						<button class="btn btn-normal" @onclick="() => DeleteLap(lap.index)">
+							<span>Delete</span>
+							<i class="bi btn-bi bi-trash3" />
+						</button>
+					</div>
+				</div>
+				<div class="d-flex flex-column gap-3">
+					<input type="date" class="form-control" @bind="currentRacer.LapDateTime[lap.index]" />
+					<input type="time" step="1" class="form-control" @bind="currentRacer.LapDateTime[lap.index]" />
+				</div>
 
+				<div>
+
+				</div>
+
+				@if (currentRacer.LapDateTime.Count - 1 == lap.index)
+				{
+					<div class="d-flex">
+						<button class="btn btn-normal" @onclick="AddLap">
+							<span>Add Lap</span>
+							<i class="bi btn-bi bi-trash3" />
+						</button>
+					</div>
+				}
+			</div>
+		}
 	</div>
 }
+
 else
 {
 	<div class="page-spinner spinner-border" role="status">
@@ -71,7 +99,7 @@ else
 	protected override async Task OnInitializedAsync()
 	{
 		await LoadRace();
-		await LoadRacer();
+		LoadRacer();
 	}
 
 	async Task LoadRace()
@@ -86,7 +114,7 @@ else
 		currentRace = getRace;
 	}
 
-	async Task LoadRacer()
+	void LoadRacer()
 	{
 		var getRacer = currentRace.Startlists.SelectMany(startlist => startlist.Racers).First(racer => racer.Id == RacerId);
 
@@ -98,64 +126,33 @@ else
 		currentRacer = getRacer;
 	}
 
-	async Task UpdateRacerName(ChangeEventArgs args)
+	async Task SaveRacer()
 	{
-		var getNewValue = args.Value;
-		if (getNewValue == null)
-		{
-			return;
-		}
-		string newName = (string)getNewValue;
-		currentRacer.Name = newName;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
 
-	async Task UpdateRacerSurname(ChangeEventArgs args)
+	async Task SaveRacerAndReturn()
 	{
-		var getNewValue = args.Value;
-		if (getNewValue == null)
-		{
-			return;
-		}
-		string newSurname = (string)getNewValue;
-		currentRacer.Surname = newSurname;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+		NavigationManager.NavigateTo($"/race-view/{RaceId}");
 	}
 
-	async Task UpdateRacerBib(ChangeEventArgs args)
+	async Task DeleteLap(int index)
 	{
-		var getNewValue = args.Value;
-		if (getNewValue == null)
+		if (index >= 0 && index < currentRacer.LapDateTime.Count)
 		{
-			return;
+			currentRacer.LapDateTime.RemoveAt(index);
 		}
-		string newBib = (string)getNewValue;
-		currentRacer.Bib = newBib;
-		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+		await SaveRacer();
+		await InvokeAsync(StateHasChanged);
 	}
 
-	async Task UpdateStartDatetime(ChangeEventArgs args)
+	async Task AddLap()
 	{
-		var getNewValue = args.Value;
-		if (getNewValue == null)
-		{
-			return;
-		}
-		DateTime newDatetime = (DateTime)getNewValue;
-		currentRacer.StartDateTime = newDatetime;
-		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+		// Add a new lap with the current time or a default value
+		var newLapTime = DateTime.Now;
+		currentRacer.LapDateTime.Add(newLapTime);
+		await SaveRacer();
+		await InvokeAsync(StateHasChanged);
 	}
-
-	async Task UpdateLaptime(ChangeEventArgs args, int index)
-	{
-		var getNewValue = args.Value;
-		if (getNewValue == null)
-		{
-			return;
-		}
-		DateTime newDatetime = (DateTime)getNewValue;
-		currentRacer.LapDateTime[index] = newDatetime;
-		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
-	}
-
 }

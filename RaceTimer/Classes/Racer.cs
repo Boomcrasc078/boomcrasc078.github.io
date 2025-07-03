@@ -1,8 +1,8 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using RaceTimer.Classes.Timing;
 
 namespace RaceTimer.Classes
 {
-
 	public class Racer
 	{
 		public string Name { get; set; } = string.Empty;
@@ -11,6 +11,7 @@ namespace RaceTimer.Classes
 		public string Id { get; set; } = string.Empty;
 		public DateTime? StartDateTime { get; set; } = null;
 		public List<DateTime> LapDateTime { get; set; } = new List<DateTime>();
+		//public List<RacerEvent> Events { get; set; } = new List<RacerEvent>();
 		public string currentAnimation { get; set; } = string.Empty;
 		public List<CustomField> CustomFields { get; set; } = new List<CustomField>();
 
