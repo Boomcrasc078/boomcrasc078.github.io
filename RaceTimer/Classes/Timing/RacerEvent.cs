@@ -6,6 +6,9 @@
 		public DateTime DateTime { get; set; }
 		public string Id { get; private set; }
 
+		// Parameterless constructor for deserialization
+		public RacerEvent() { }
+
 		public RacerEvent(string name, IEnumerable<string> existingIds)
 		{
 			Name = name;
