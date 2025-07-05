@@ -94,16 +94,16 @@
 
 						</td>
 						<td>
-							@if (racer.LapEvents.Count > 0 && racer.StartDateTime.HasValue)
+							@if (racer.Events.Count > 0 && racer.StartDateTime.HasValue)
 							{
-								@((racer.LapEvents.Last().DateTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
+								@((racer.Events.Last().DateTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff"))
 							}
 							@if (racer.StartDateTime.HasValue)
 							{
 								<span> (@((currentTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff")))</span>
 							}
 						</td>
-						<td>@racer.LapEvents.Count</td>
+						<td>@racer.Events.Count</td>
 					</tr>
 				}
 			</tbody>
@@ -175,7 +175,6 @@
 
 		modalSelectedStartlistId = currentRace.Startlists[0].Id;
 
-		await ScrollToBottomAsync();
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -341,11 +340,11 @@
 		{
 			return;
 		}
-		activeRacer.LapEvents.Add(new RacerEvent("Lap", dateTime, activeRacer.LapEvents.Select(e => e.Id)));
+		activeRacer.Events.Add(new RacerEvent("Lap", dateTime, activeRacer.Events.Select(e => e.Id)));
 		Console.WriteLine($"Added {dateTime} to activeRacer: {activeRacer.Bib}");
 		timeList.Remove(activeRacer);
 		timeList.Add(activeRacer);
-		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.LapEvents.Count}!", ""));
+		toasts?.CreateToast(new Toast("", $"{activeRacer.Name} {activeRacer.Surname} finished lap {activeRacer.Events.Count}!", ""));
 		activeRacer = null;
 		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
 	}
@@ -354,7 +353,7 @@
 	{
 		Console.WriteLine($"Added {dateTime} to lapTimeList");
 		var racer = new Racer();
-		racer.LapEvents.Add(new RacerEvent("Lap", dateTime, racer.LapEvents.Select(e => e.Id)));
+		racer.Events.Add(new RacerEvent("Lap", dateTime, racer.Events.Select(e => e.Id)));
 		timeList.Add(racer);
 		nextEdit.Add(racer);
 		activeRacer = nextEdit[0];
@@ -379,7 +378,7 @@
 
 		await AssignRacer(foundRacer, getRacer);
 
-		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.LapEvents.Count}!", ""));
+		toasts?.CreateToast(new Toast("", $"{foundRacer.Name} {foundRacer.Surname} finished lap {foundRacer.Events.Count}!", ""));
 
 		if (nextEdit.Contains(getRacer))
 		{
@@ -438,7 +437,7 @@
 	private async Task AssignRacer(Racer racer, Racer tempRacer)
 	{
 		Console.WriteLine($"Found {racer.Bib} named {racer.Name} {racer.Surname}");
-		racer.LapEvents.AddRange(tempRacer.LapEvents);
+		racer.Events.AddRange(tempRacer.Events);
 		int index = timeList.IndexOf(tempRacer);
 		timeList.Remove(racer);
 		timeList.Insert(index, racer);

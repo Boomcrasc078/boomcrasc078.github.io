@@ -13,207 +13,238 @@
 
 @if (modalRace != null)
 {
-	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5">Delete Race</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					Are you sure you want to delete @modalRace.Name?
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRace(modalRace)">
-						<span>Delete</span>
-						<i class="bi btn-bi bi-trash3"></i>
-					</button>
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal">
-						<span>Cancel</span>
-						<i class="bi btn-bi bi-x-lg"></i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Delete Race</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete @(modalRace.Name)?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="() => DeleteRace(modalRace)">
+                        <span>Delete</span>
+                        <i class="bi btn-bi bi-trash3"></i>
+                    </button>
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal">
+                        <span>Cancel</span>
+                        <i class="bi btn-bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Duplicate Race</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Do you want to keep @(modalRace.Name)'s previous timing?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="() => DuplicateRace(modalRace, true)">
+                        <span>Keep Timing</span>
+                        <i class="bi btn-bi bi-stopwatch"></i>
+                    </button>
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="() => DuplicateRace(modalRace, false)">
+                        <span>Reset Timing</span>
+                        <i class="bi btn-bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 
 <div class="page">
-	<div class="box-body box-body-stretch">
-		<div class="top-row">
-			<h1 class="top-row-title">All Races</h1>
-			<div class="top-row-buttons">
-				<div>
-					<InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
-					<label for="fileInput" class="btn btn-normal">
-						<span>Import</span>
-						<i class="bi btn-bi bi-box-arrow-in-down"></i>
-					</label>
-				</div>
-				<button class="btn btn-normal" @onclick="()=>AddRace()">
-					<span>Add Race</span>
-					<i class="bi btn-bi bi-plus-lg"></i>
-				</button>
-			</div>
-		</div>
+    <div class="box-body box-body-stretch">
+        <div class="top-row">
+            <h1 class="top-row-title">All Races</h1>
+            <div class="top-row-buttons">
+                <div>
+                    <InputFile OnChange="ImportRace" accept=".xlsx" class="d-none" id="fileInput" />
+                    <label for="fileInput" class="btn btn-normal">
+                        <span>Import</span>
+                        <i class="bi btn-bi bi-box-arrow-in-down"></i>
+                    </label>
+                </div>
+                <button class="btn btn-normal" @onclick="() => AddRace()">
+                    <span>Add Race</span>
+                    <i class="bi btn-bi bi-plus-lg"></i>
+                </button>
+            </div>
+        </div>
 
-		<div class="all-cards">
-			@if (races != null)
-			{
-				@foreach (Race race in races)
-				{
-					<div class="card @race.currentAnimation">
-						<div class="card-header">
-							<h5 class="card-title">
-								@if (race.Name == "")
-								{
-									<span>Untitled Race</span>
-								}
-								else
-								{
-									@race.Name
-								}
-							</h5>
-						</div>
-						<div class="card-body">
-							<div class="card-text">
-								<div>
-									<div>Created @race.creationDateTime.ToShortDateString()</div>
-									<div>
-										Last edited <span>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</span>
-									</div>
-								</div>
-								@if (race.Startlists.Count > 0)
-								{
-									<div>Startlists:</div>
-									<ul>
-										@foreach (Startlist startlist in race.Startlists)
-										{
-											<li>@startlist.Name</li>
-										}
-									</ul>
-								}
-							</div>
+        <div class="all-cards">
+            @if (races != null)
+            {
+                @foreach (Race race in races)
+                {
+                    <div class="card @race.currentAnimation">
+                        <div class="card-header">
+                            <h5 class="card-title">
+                                @if (race.Name == "")
+                                {
+                                    <span>Untitled Race</span>
+                                }
+                                else
+                                {
+                                    @race.Name
+                                }
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div>
+                                    <div>Created @race.creationDateTime.ToShortDateString()</div>
+                                    <div>
+                                        Last edited <span>@Race.TimeSpanToString(DateTime.Now - race.lastEditDateTime)</span>
+                                    </div>
+                                </div>
+                                @if (race.Startlists.Count > 0)
+                                {
+                                    <div>Startlists:</div>
+                                    <ul>
+                                        @foreach (Startlist startlist in race.Startlists)
+                                        {
+                                            <li>@startlist.Name</li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
 
-						</div>
-						<div class="card-footer">
-							<a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
-								<span>Edit</span>
-								<i class="bi btn-bi bi-pencil-square"></i>
-							</a>
-							<button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="()=>modalRace = race">
-								<span>Delete</span>
-								<i class="bi btn-bi bi-trash3"></i>
-							</button>
-							<button class="btn btn-normal btn-race" @onclick="()=>DuplicateRace(race)">
-								<span>Duplicate</span>
-								<i class="bi btn-bi bi-copy"></i>
-							</button>
-							<button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
-								<span>Export</span>
-								<i class="bi btn-bi bi-box-arrow-up"></i>
-							</button>
-						</div>
-					</div>
-				}
-			}
-		</div>
-	</div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
+                                <span>Edit</span>
+                                <i class="bi btn-bi bi-pencil-square"></i>
+                            </a>
+                            <button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => modalRace = race">
+                                <span>Delete</span>
+                                <i class="bi btn-bi bi-trash3"></i>
+                            </button>
+                            <button class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#duplicateModal" @onclick="() => modalRace = race">
+                                <span>Duplicate</span>
+                                <i class="bi btn-bi bi-copy"></i>
+                            </button>
+                            <button class="btn btn-normal btn-race" @onclick="() => ExportAndDownloadRace(race)">
+                                <span>Export</span>
+                                <i class="bi btn-bi bi-box-arrow-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 </div>
 
 @code {
-	private Random random = new Random();
-	private List<Race> races = new List<Race>();
-	private Race modalRace = new Race();
-	private Toasts toasts = new Toasts();
+    private Random random = new Random();
+    private List<Race> races = new List<Race>();
+    private Race modalRace = new Race();
+    private Toasts toasts = new Toasts();
 
-	protected override async Task OnInitializedAsync()
-	{
-		races = await RaceService.GetRacesAsync(JS);
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        races = await RaceService.GetRacesAsync(JS);
+    }
 
-	private async Task AddRace()
-	{
-		Race addRace = new Race()
-			{
-				Name = "Untitled Race",
-				Startlists = new List<Startlist>(),
-				creationDateTime = DateTime.Now,
-				lastEditDateTime = DateTime.Now,
-				Id = IdGenerator.GenerateUniqueId(races.Select(race => race.Id))
-			};
+    private async Task AddRace()
+    {
+        Race addRace = new Race()
+        {
+            Name = "Untitled Race",
+            Startlists = new List<Startlist>(),
+            creationDateTime = DateTime.Now,
+            lastEditDateTime = DateTime.Now,
+            Id = IdGenerator.GenerateUniqueId(races.Select(race => race.Id))
+        };
 
-		races.Add(addRace);
-		await RaceService.SaveRacesAsync(races, JS);
+        races.Add(addRace);
+        await RaceService.SaveRacesAsync(races, JS);
 
-		NavigationManager.NavigateTo($"/races/edit/{addRace.Id}");
-	}
+        NavigationManager.NavigateTo($"/races/edit/{addRace.Id}");
+    }
 
-	private async Task DeleteRace(Race deleteRace)
-	{
-		if (deleteRace == null)
-			return;
-		if (!races.Contains(deleteRace))
-			return;
+    private async Task DeleteRace(Race deleteRace)
+    {
+        if (deleteRace == null)
+            return;
+        if (!races.Contains(deleteRace))
+            return;
 
-		deleteRace.currentAnimation = "fade-out";
+        deleteRace.currentAnimation = "fade-out";
 
-		await Task.Delay(500);
+        await Task.Delay(500);
 
-		deleteRace.currentAnimation = "";
+        deleteRace.currentAnimation = "";
 
-		races.Remove(deleteRace);
-		await RaceService.SaveRacesAsync(races, JS);
-	}
+        races.Remove(deleteRace);
+        await RaceService.SaveRacesAsync(races, JS);
+    }
 
-	private async Task ExportAndDownloadRace(Race race)
-	{
-		using var memoryStream = ExcelHandler.ExportRaceToExcel(race);
-		var fileName = $"{race.Name}.xlsx";
-		var fileBytes = memoryStream.ToArray();
-		await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-	}
+    private async Task ExportAndDownloadRace(Race race)
+    {
+        using var memoryStream = ExcelHandler.ExportRaceToExcel(race);
+        var fileName = $"{race.Name}.xlsx";
+        var fileBytes = memoryStream.ToArray();
+        await DownloadFile(fileBytes, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
 
-	private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
-	{
-		var base64Data = Convert.ToBase64String(fileBytes);
-		await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
-	}
+    private async Task DownloadFile(byte[] fileBytes, string fileName, string contentType)
+    {
+        var base64Data = Convert.ToBase64String(fileBytes);
+        await JS.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
+    }
 
-	private async Task ImportRace(InputFileChangeEventArgs e)
-	{
-		try
-		{
-			var file = e.File;
-			var memoryStream = new MemoryStream();
-			await file.OpenReadStream().CopyToAsync(memoryStream);
-			memoryStream.Position = 0;
-			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
+    private async Task ImportRace(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+            var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
 
-			races.Add(importedRace);
+            races.Add(importedRace);
 
-			await RaceService.SaveRacesAsync(races, JS);
-			await InvokeAsync(StateHasChanged);
+            await RaceService.SaveRacesAsync(races, JS);
+            await InvokeAsync(StateHasChanged);
 
-			NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Error during file import: {ex.Message}\n" + ex.StackTrace);
-			toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
-		}
-	}
+            NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during file import: {ex.Message}\n" + ex.StackTrace);
+            toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
+        }
+    }
 
-	async Task DuplicateRace(Race race)
-	{
-		Console.WriteLine("Duplicating " + race.Name);
-		Race duplicatedRace = race.DuplicateRace(races.Select(r => r.Id));
+    async Task DuplicateRace(Race race, bool includeTiming)
+    {
+        Console.WriteLine("Duplicating " + race.Name);
+        Race duplicatedRace = race.DuplicateRace(races.Select(r => r.Id));
 
-		races.Add(duplicatedRace);
-		await RaceService.SaveRacesAsync(races, JS);
+        if (!includeTiming)
+        {
+            duplicatedRace.ClearTiming();
+        }
 
-		NavManager.NavigateTo($"/races/edit/{duplicatedRace.Id}");
+        races.Add(duplicatedRace);
+        await RaceService.SaveRacesAsync(races, JS);
 
-	}
+        NavManager.NavigateTo($"/races/edit/{duplicatedRace.Id}");
+
+    }
+
+
 }

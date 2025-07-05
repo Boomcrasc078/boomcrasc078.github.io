@@ -82,18 +82,11 @@ public class Race
 		return datetimes;
 	}
 
-	public class TimingEvent
+	public Race ClearTiming()
 	{
-		public Racer Racer { get; set; } = new Racer();
-		public DateTime DateTime { get; set; }
-		public TimingSpot TimingSpot { get; set; }
+		Startlists?.ForEach(s => s.Racers?.ForEach(r => r.Events.Clear()));
 
-		public TimingEvent(Racer racer, DateTime dateTime, TimingSpot timingSpot)
-		{
-			this.Racer = racer;
-			this.DateTime = dateTime;
-			TimingSpot = timingSpot;
-		}
+		return this;
 	}
 
 	public class TimingSpot

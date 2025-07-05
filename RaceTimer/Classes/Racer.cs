@@ -10,7 +10,6 @@ namespace RaceTimer.Classes
 		public string Bib { get; set; } = string.Empty;
 		public string Id { get; set; } = string.Empty;
 		public DateTime? StartDateTime { get; set; } = null;
-		public List<RacerEvent> LapEvents { get; set; } = new List<RacerEvent>();
 		public List<RacerEvent> Events { get; set; } = new List<RacerEvent>();
 		public string currentAnimation { get; set; } = string.Empty;
 		public List<CustomField> CustomFields { get; set; } = new List<CustomField>();
@@ -28,7 +27,7 @@ namespace RaceTimer.Classes
 		}
 
 		// Helper to get all lap DateTimes
-		private List<DateTime> GetLapDateTimes() => LapEvents.Select(e => e.DateTime).ToList();
+		private List<DateTime> GetLapDateTimes() => Events.Select(e => e.DateTime).ToList();
 
 		string? GetTime()
 		{
@@ -107,7 +106,7 @@ namespace RaceTimer.Classes
 				case "bib": return Bib;
 				case "id": return Id;
 				case "time": return GetTime();
-				case "laps": return LapEvents.Count;
+				case "laps": return Events.Count;
 				case "laptimes": return GetLaptimes();
 				default: return null;
 			}
@@ -122,5 +121,7 @@ namespace RaceTimer.Classes
 				default: return null;
 			}
 		}
+
+
 	}
 }

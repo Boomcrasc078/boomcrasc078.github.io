@@ -222,7 +222,7 @@
 			code = BuildEmbedString(currentStartlist, dataSelection);
 		}
 
-		string CreateEmbedTitleBox(List<Results.ResultDataOption> dataList)
+		string CreateEmbedTitleBox(List<Results.ResultDataOption> dataList, Startlist startlist)
 		{
 			string titleBox = "<div class=\"title-result-box\">";
 
@@ -233,6 +233,17 @@
 				if (!data.Value)
 					continue;
 
+				int maxLaps = CalculateMaxLaps(startlist);
+
+				if (data.Id == "laptimes")
+				{
+					for (int i = 0; i < maxLaps; i++)
+					{
+						titleBox += $"<span>Lap {i + 1}</span>";
+					}
+					continue;
+				}
+
 				titleBox += $"<span>{data.Name}</span>";
 			}
 
@@ -242,7 +253,7 @@
 			return titleBox;
 		}
 
-		string CreateEmbedRacerBox(Racer racer, List<Results.ResultDataOption> dataList)
+		string CreateEmbedRacerBox(Racer racer, List<Results.ResultDataOption> dataList, Startlist startlist)
 		{
 			string box = "<div class=\"result-box\"><div class=\"result-box-text\">";
 			box += $"<span>{racer.GetResultData("name")} {racer.GetResultData("surname")}</span>";
@@ -250,6 +261,36 @@
 			{
 				if (!data.Value)
 					continue;
+
+				if (data.Id == "pace" || data.Id == "speed")
+				{
+					if (startlist.DistanceMeters != 0)
+						box += $"<span>{(racer.GetResultData(data.Id, startlist.DistanceMeters) + "")}</span>";
+					else
+						box += "<span>Distance Not Set</span>";
+					continue;
+				}
+
+				if (data.Id == "laptimes")
+				{
+					int maxLaps = CalculateMaxLaps(startlist);
+
+					var getLaptimes = racer.GetResultData("laptimes");
+					if (getLaptimes == null)
+					{
+						for (int i = 0; i < maxLaps; i++)
+						{
+							box += "<span></span>";
+						}
+						continue;
+					}
+
+					var laptimes = (List<string>)getLaptimes;
+
+					laptimes.ForEach(x => box += $"<span>{x}</span>");
+
+					continue;
+				}
 
 				box += $"<span>{racer.GetResultData(data.Id)}</span>";
 			}
@@ -275,8 +316,8 @@
 					"border-radius: 12px; " +
 					$"width: {width + widthType}; " +
 					$"height: {height + heightType}; " +
-					$"{style} " +
 					"overflow: auto; " +
+					$"{style} " +
 					"}" +
 
 					".title-result-box{" +
@@ -321,11 +362,11 @@
 			"</style>";
 
 			string resultBoxes = "";
-			resultBoxes += CreateEmbedTitleBox(dataList);
+			resultBoxes += CreateEmbedTitleBox(dataList, startlist);
 
 			foreach (var racer in startlist.Racers)
 			{
-				resultBoxes += CreateEmbedRacerBox(racer, dataList);
+				resultBoxes += CreateEmbedRacerBox(racer, dataList, startlist);
 			}
 
 			string code =
@@ -338,6 +379,18 @@
 			return code;
 		}
 
+		int CalculateMaxLaps(Startlist startlist)
+		{
+			int maxLaps = 0;
+			foreach (var racer in startlist.Racers)
+			{
+				if (racer.Events.Count > maxLaps)
+				{
+					maxLaps = racer.Events.Count;
+				}
+			}
+			return maxLaps;
+		}
 
 	}
 
@@ -388,7 +441,7 @@
 			Rows = new List<List<string>>();
 
 			int place = 0;
-			foreach (var racer in currentStartlist.Racers.OrderByDescending(racer => racer.LapEvents.Count).ThenByDescending(racer => racer.StartDateTime - (racer.LapEvents.Count > 0 ? racer.LapEvents.Last().DateTime : DateTime.MinValue)))
+			foreach (var racer in currentStartlist.Racers.OrderByDescending(racer => racer.Events.Count).ThenByDescending(racer => racer.StartDateTime - (racer.Events.Count > 0 ? racer.Events.Last().DateTime : DateTime.MinValue)))
 			{
 				place++;
 				var row = CreateExcelRow(racer, currentStartlist, dataSelection, place);
@@ -438,9 +491,9 @@
 			int maxLaps = 0;
 			foreach (var racer in startlist.Racers)
 			{
-				if (racer.LapEvents.Count > maxLaps)
+				if (racer.Events.Count > maxLaps)
 				{
-					maxLaps = racer.LapEvents.Count;
+					maxLaps = racer.Events.Count;
 				}
 			}
 			return maxLaps;

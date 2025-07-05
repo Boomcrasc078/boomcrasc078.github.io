@@ -47,7 +47,7 @@
 				<input type="time" step="1" @bind="@currentRacer.StartDateTime" class="form-control" />
 			</div>
 		</div>
-		@foreach (var lap in currentRacer.LapEvents.Select((lap, index) => new { lap, index }))
+		@foreach (var lap in currentRacer.Events.Select((lap, index) => new { lap, index }))
 		{
 			<div class="content-box">
 				<div class="d-flex justify-content-between flex-wrap">
@@ -60,15 +60,15 @@
 					</div>
 				</div>
 				<div class="d-flex flex-column gap-3">
-					<input type="date" class="form-control" @bind="currentRacer.LapEvents[lap.index].DateTime" />
-					<input type="time" step="1" class="form-control" @bind="currentRacer.LapEvents[lap.index].DateTime" />
+					<input type="date" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
+					<input type="time" step="1" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
 				</div>
 
 				<div>
 
 				</div>
 
-				@if (currentRacer.LapEvents.Count - 1 == lap.index)
+				@if (currentRacer.Events.Count - 1 == lap.index)
 				{
 					<div class="d-flex">
 						<button class="btn btn-normal" @onclick="AddLap">
@@ -139,9 +139,9 @@ else
 
 	async Task DeleteLap(int index)
 	{
-		if (index >= 0 && index < currentRacer.LapEvents.Count)
+		if (index >= 0 && index < currentRacer.Events.Count)
 		{
-			currentRacer.LapEvents.RemoveAt(index);
+			currentRacer.Events.RemoveAt(index);
 		}
 		await SaveRacer();
 		await InvokeAsync(StateHasChanged);
@@ -151,7 +151,7 @@ else
 	{
 		// Add a new lap with the current time or a default value
 		var newLapTime = DateTime.Now;
-		currentRacer.LapEvents.Add(new RacerEvent("Lap", newLapTime, currentRacer.LapEvents.Select(e => e.Id)));
+		currentRacer.Events.Add(new RacerEvent("Lap", newLapTime, currentRacer.Events.Select(e => e.Id)));
 		await SaveRacer();
 		await InvokeAsync(StateHasChanged);
 	}
