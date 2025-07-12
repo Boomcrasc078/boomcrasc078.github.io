@@ -22,9 +22,8 @@
                 <h3>Export Method</h3>
                 <div>
                     <select class="form-select" @bind="exportMethod">
-                        <option value="Embed">HTML Embed (Interactive)</option>
-                        <option value="Text">Text (Not interactive)</option>
-                        <option value="Excel">Excel File (Only Racer Data)</option>
+                        <option value="Embed">HTML Embed</option>
+                        <option value="Excel">Excel File</option>
                     </select>
                 </div>
             </div>
@@ -114,7 +113,7 @@
                         </button>
                     </div>
                     <div>
-                        <h3>Embed</h3>
+                        <h3>Preview</h3>
                         <div class="embed-styling" style="display: flex; justify-content: center; height: 300px; overflow: auto;">
                             @((MarkupString)embed.code)
                         </div>
@@ -122,10 +121,10 @@
                     <div>
                         <h3>Embed Code</h3>
                         <div>
-                            <textarea readonly>
-								@embed.code
-							</textarea>
-                            <button class="btn btn-normal">
+                            <textarea id="embedCodeTextArea" readonly>
+                                @embed.code
+                            </textarea>
+                            <button class="btn btn-normal" @onclick="()=>CopyEmbedCodeToClipboard()">
                                 <span>Copy to clipboard</span>
                                 <i class="bi btn-bi bi-clipboard"></i>
                             </button>
@@ -171,20 +170,26 @@
                         <div>
                             <button class="btn btn-normal" @onclick="() => excelFile.DownloadExcelFile(currentRace, currentStartlist)">
                                 <span>Download File</span>
-                                <i class="bi btn-bi bi-clipboard"></i>
+                                <i class="bi btn-bi bi-download"></i>
                             </button>
                         </div>
                     </div>
-                    break;
-
-                case "Text":
-                    <div>Text</div>
                     break;
             }
         </div>
 
     }
 </div>
+
+<script>
+    function copyTextAreaToClipboard(textAreaId) {
+        var textArea = document.getElementById(textAreaId);
+        if (!textArea) return;
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // För mobila enheter
+        document.execCommand('copy');
+    }
+</script>
 
 
 @code {
@@ -473,7 +478,7 @@
                     //         break;
 
                     //     default:
-                            
+
                     //         break;
                     // }
 
@@ -502,7 +507,7 @@
             ".embed.collapsible-button{background: none; border: none;}" +
             ".embed.collapsible-content{display: none; overflow: hidden;}" +
             ".embed.collapsible-content-grid{display: grid; text-align: left; padding: 24px;}" +
-            "@media(max-width: 600px){.embed{font-size: calc(" + fontSize + fontSizeType + "/2)}}" +
+            "@media(max-width: 600px){.embed{font-size: calc(" + fontSize + fontSizeType + "/2);}}" +
             customStyling +
             "</style>";
 
@@ -557,6 +562,11 @@
             await jsRuntime.InvokeVoidAsync("downloadFileFromBlazor", fileName, contentType, base64Data);
         }
 
+    }
+    public async Task CopyEmbedCodeToClipboard()
+    {
+        await jsRuntime.InvokeVoidAsync("copyTextAreaToClipboard", "embedCodeTextArea");
+        await toasts.CreateToast(new Toast("", "Embed code copied to clipboard!", ""));
     }
 
 }

@@ -34,15 +34,15 @@
 					<table class="table table-responsive">
 						<thead>
 							<tr>
-								<td>Name</td>
-								<td>Start</td>
+								<th>Name</th>
+								<th>Start</th>
 							</tr>
 						</thead>
 						<tbody class="table-group-divider">
 							@foreach (var race in AllRaces)
 							{
 								<tr @onclick="@(()=>NavigationManager.NavigateTo($"/race-view/{race.Id}"))">
-									<th>@race.Name</th>
+									<td>@race.Name</td>
 									<td>
 										@if (race.AllStartDatetime().Count > 1)
 										{

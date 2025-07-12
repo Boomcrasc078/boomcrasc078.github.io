@@ -17,30 +17,36 @@
 					</a>
 				</div>
 			</div>
+            <div>
+            <h3>Race Summary</h3>
+            <p>
+                Select which overall race data fields you want to include in the summary results. Use the checkboxes to choose which information (such as Bib, Time, Pace, etc.) will be shown in the race summary.
+            </p>
+            <div>
+            @if (resultData != null && checkboxValuesInitialized)
+            {
+            @foreach (ResultDataOption checkbox in resultData)
+            {
+            <input type="checkbox" class="btn-normal-check" checked="@checkbox.Value" id="@($"{checkbox.Id}resultDataCheckbox")" @onchange="(ChangeEventArgs eventArgs)=>SetAndSaveCheckboxValues(eventArgs, checkbox)">
+            <label class="btn btn-normal" for="@($"{checkbox.Id}resultDataCheckbox")">
+            <span>@checkbox.Name</span>
+            <i class="bi btn-bi @((checkbox.Value)?"bi-check-circle":"bi-circle")" />
+            </label>
+            }
+            }
+            else
+            {
+            <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+            </div>
+            }
+            </div>
+            </div>
 			<div>
-				<h3>Result Data</h3>
-				<div>
-					@if (resultData != null && checkboxValuesInitialized)
-					{
-						@foreach (ResultDataOption checkbox in resultData)
-						{
-							<input type="checkbox" class="btn-normal-check" checked="@checkbox.Value" id="@($"{checkbox.Id}resultDataCheckbox")" @onchange="(ChangeEventArgs eventArgs)=>SetAndSaveCheckboxValues(eventArgs, checkbox)">
-							<label class="btn btn-normal" for="@($"{checkbox.Id}resultDataCheckbox")">
-								<span>@checkbox.Name</span>
-								<i class="bi btn-bi @((checkbox.Value)?"bi-check-circle":"bi-circle")" />
-							</label>
-						}
-					}
-					else
-					{
-						<div class="spinner-border" role="status">
-							<span class="visually-hidden">Loading...</span>
-						</div>
-					}
-				</div>
-			</div>
-			<div>
-				<h3>Racer Data</h3>
+				<h3>Individual Details</h3>
+				<p>
+				    Choose which data fields are displayed for each racer in the detailed results. You can also include any custom fields that have been added for racers. Use the checkboxes to control which details appear for each participant.
+				</p>
 				<div>
 					@if (racerResultData != null && checkboxValuesInitialized)
 					{
@@ -59,14 +65,6 @@
 							<span class="visually-hidden">Loading...</span>
 						</div>
 					}
-				</div>
-			</div>
-			<div>
-				<h3>Result Design</h3>
-				<div>
-					<select class="form-select">
-						<option value="value">Default Design</option>
-					</select>
 				</div>
 			</div>
 		</div>
