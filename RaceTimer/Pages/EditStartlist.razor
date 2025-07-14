@@ -6,324 +6,323 @@
 
 @if (selectedRacer != null)
 {
-	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					Are you sure you want to delete @selectedRacer.Name?
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>DeleteRacer(selectedRacer)">
-						<span>Delete</span>
-						<i class="bi btn-bi bi-trash3"></i>
-					</button>
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal">
-						<span>Cancel</span>
-						<i class="bi btn-bi bi-x-lg"></i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true" data-bs-backdrop="static">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="deleteModal">Edit @selectedRacer.Name @selectedRacer.Surname</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="()=>GetStartlist()" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div>
-						<div class="border-3 border-bottom pb-4">
-							<div class="form-floating mb-3">
-								<input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="selectedRacer.Name">
-								<label for="floatingInput">Name</label>
-							</div>
-							<div class="form-floating mb-3">
-								<input type="text" class="form-control" id="floatingInput" placeholder="Surname" @bind="selectedRacer.Surname">
-								<label for="floatingInput">Surname</label>
-							</div>
-							<div class="form-floating">
-								<input type="number" class="form-control" id="floatingInputGroup2" placeholder="Bib Number" @bind="selectedRacer.Bib">
-								<label for="floatingInputGroup2">Bib Number</label>
-							</div>
-						</div>
-						<div class="border-3 border-bottom py-4">
-							<div class="flex-custom-field-button">
-								<button class="btn btn-normal" @onclick="AddCustomField">
-									<span>Add Custom Field</span>
-									<i class="bi btn-bi bi-plus-lg"></i>
-								</button>
-							</div>
-							<div class="my-3">
-								@foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
-								{
-									<div class="input-group mb-3">
-										<div class="form-floating">
-											<input type="text" class="form-control" placeholder="Custom Field Name"
-												   @bind="selectedRacer.CustomFields[customField.index].Name"
-												   list="customFields" />
-											<datalist id="customFields">
-												<option value="E-Mail" />
-												<option value="Phone" />
-												<option value="Age" />
-												<option value="Sponsors" />
-											</datalist>
-											<label>Custom Field Name</label>
-										</div>
-										<div class="form-floating">
-											<input type="text" class="form-control" placeholder="Custom Field Data"
-												   @bind="selectedRacer.CustomFields[customField.index].Data" />
-											<label>
-												@if (@selectedRacer.CustomFields[customField.index].Name != "")
-												{
-													@selectedRacer.CustomFields[customField.index].Name
-												}
-												else
-												{
-													<span>Custom Field Data</span>
-												}
-											</label>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModal">Delete Race</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete @selectedRacer.Name?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="() => DeleteRacer(selectedRacer)">
+                        <span>Delete</span>
+                        <i class="bi btn-bi bi-trash3"></i>
+                    </button>
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal">
+                        <span>Cancel</span>
+                        <i class="bi btn-bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModal">Edit @selectedRacer.Name @selectedRacer.Surname</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" @onclick="() => GetStartlist()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="border-3 border-bottom pb-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="Name" @bind="selectedRacer.Name">
+                                <label for="floatingInput">Name</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="Surname" @bind="selectedRacer.Surname">
+                                <label for="floatingInput">Surname</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="floatingInputGroup2" placeholder="Bib Number" @bind="selectedRacer.Bib">
+                                <label for="floatingInputGroup2">Bib Number</label>
+                            </div>
+                        </div>
+                        <div class="border-3 border-bottom py-4">
+                            <div class="flex-custom-field-button">
+                                <button class="btn btn-normal" @onclick="AddCustomField">
+                                    <span>Add Custom Field</span>
+                                    <i class="bi btn-bi bi-plus-lg"></i>
+                                </button>
+                            </div>
+                            <div class="my-3">
+                                @foreach (var customField in selectedRacer.CustomFields.Select((field, index) => new { field, index }))
+                                {
+                                    <div class="input-group mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" placeholder="Custom Field Name"
+                                                   @bind="selectedRacer.CustomFields[customField.index].Name"
+                                                   list="customFields" />
+                                            <datalist id="customFields">
+                                                <option value="E-Mail" />
+                                                <option value="Phone" />
+                                                <option value="Age" />
+                                            </datalist>
+                                            <label>Custom Field Name</label>
+                                        </div>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" placeholder="Custom Field Data"
+                                                   @bind="selectedRacer.CustomFields[customField.index].Data" />
+                                            <label>
+                                                @if (@selectedRacer.CustomFields[customField.index].Name != "")
+                                                {
+                                                    @selectedRacer.CustomFields[customField.index].Name
+                                                }
+                                                else
+                                                {
+                                                    <span>Custom Field Data</span>
+                                                }
+                                            </label>
 
-										</div>
-									</div>
-								}
-							</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
 
-						</div>
-						<div class="border-3 pt-4">
-							<h5 class="mb-3">
-								Automatic Start
-							</h5>
-							<div class="form-floating mb-3">
-								<input type="date" class="form-control" id="floatingInput" placeholder="Start Date" @bind="selectedRacer.StartDateTime">
-								<label for="floatingInput">Start Date</label>
-							</div>
-							<div class="form-floating mb-3">
-								<input type="time" class="form-control" id="floatingInput" placeholder="Start Time" @bind="selectedRacer.StartDateTime">
-								<label for="floatingInput">Start Time</label>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#deleteModal">
-						<span>Delete</span>
-						<i class="bi btn-bi bi-trash3"></i>
-					</button>
-					<button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="()=>SaveRace()">
-						<span>Save</span>
-						<i class="bi btn-bi bi-floppy"></i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                        </div>
+                        <div class="border-3 pt-4">
+                            <h5 class="mb-3">
+                                Automatic Start
+                            </h5>
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="floatingInput" placeholder="Start Date" @bind="selectedRacer.StartDateTime">
+                                <label for="floatingInput">Start Date</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" id="floatingInput" placeholder="Start Time" @bind="selectedRacer.StartDateTime">
+                                <label for="floatingInput">Start Time</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <span>Delete</span>
+                        <i class="bi btn-bi bi-trash3"></i>
+                    </button>
+                    <button type="button" class="btn btn-normal" data-bs-dismiss="modal" @onclick="() => SaveRace()">
+                        <span>Save</span>
+                        <i class="bi btn-bi bi-floppy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 
 <div class="page">
 
-	@if (currentRace != null && currentStartlist != null)
-	{
-		<div class="box-body">
-			<div class="top-row">
-				<h1 class="top-row-title">@currentStartlist.Name</h1>
+    @if (currentRace != null && currentStartlist != null)
+    {
+        <div class="box-body">
+            <div class="top-row">
+                <h1 class="top-row-title">@currentStartlist.Name</h1>
 
-				<div class="top-row-buttons">
-					<a class="btn btn-normal" href="@($"/races/edit/{currentRace.Id}")">
-						<span>Back</span>
-						<i class="bi btn-bi bi-chevron-double-left"></i>
-					</a>
-				</div>
-			</div>
+                <div class="top-row-buttons">
+                    <a class="btn btn-normal" href="@($"/races/edit/{currentRace.Id}")">
+                        <span>Back</span>
+                        <i class="bi btn-bi bi-chevron-double-left"></i>
+                    </a>
+                </div>
+            </div>
 
-			<div>
-				<label>Name:</label>
-				<input type="text" @onchange="UpdateName" class="form-control" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
-			</div>
+            <div>
+                <label>Name:</label>
+                <input type="text" @onchange="UpdateName" class="form-control" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
+            </div>
 
-			<div>
-				<label>Type:</label>
-				<select class="form-control" placeholder="Untitled Startlist">
-					<option selected>Mass Start</option>
-				</select>
-			</div>
+            <div>
+                <label>Type:</label>
+                <select class="form-control" placeholder="Untitled Startlist">
+                    <option selected>Mass Start</option>
+                </select>
+            </div>
 
-			<div>
-				<label>Distance:</label>
-				<div class="input-group mb-3">
-					<input type="number" inputmode="decimal" class="form-control" aria-label="Distance" value="@currentStartlist.DistanceMeters" @onchange="UpdateDistance">
-					<span class="form-control">m</span>
-				</div>
-			</div>
+            <div>
+                <label>Distance:</label>
+                <div class="input-group mb-3">
+                    <input type="number" inputmode="decimal" class="form-control" aria-label="Distance" value="@currentStartlist.DistanceMeters" @onchange="UpdateDistance">
+                    <span class="form-control">m</span>
+                </div>
+            </div>
 
-		</div>
-		<div class="box-body box-body-stretch">
-			<div class="top-row">
-				<h1 class="top-row-title">Racers</h1>
-				<div class="top-row-buttons">
-					<button class="btn btn-normal" @onclick="()=>AddRacer()" data-bs-toggle="modal" data-bs-target="#editModal">
-						<span>Add</span>
-						<i class="bi btn-bi bi-plus-lg"></i>
-					</button>
-				</div>
+        </div>
+        <div class="box-body box-body-stretch">
+            <div class="top-row">
+                <h1 class="top-row-title">Racers</h1>
+                <div class="top-row-buttons">
+                    <button class="btn btn-normal" @onclick="() => AddRacer()" data-bs-toggle="modal" data-bs-target="#editModal">
+                        <span>Add</span>
+                        <i class="bi btn-bi bi-plus-lg"></i>
+                    </button>
+                </div>
 
-			</div>
-			<table class="table align-middle table-responsive table-hover">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Bib Number</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (Racer racer in currentStartlist.Racers)
-					{
-						<tr class="@racer.currentAnimation" @onclick="()=>selectedRacer=racer" data-bs-toggle="modal" data-bs-target="#editModal">
-							<td>@racer.Name @racer.Surname</td>
-							<td>@racer.Bib</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
+            </div>
+            <table class="table align-middle table-responsive table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Bib Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Racer racer in currentStartlist.Racers)
+                    {
+                        <tr class="@racer.currentAnimation" @onclick="() => selectedRacer = racer" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <td>@racer.Name @racer.Surname</td>
+                            <td>@racer.Bib</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-	}
-	else
-	{
-		<div class="page-spinner spinner-border" role="status">
-			<span class="visually-hidden">Loading...</span>
-		</div>
-	}
+    }
+    else
+    {
+        <div class="page-spinner spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    }
 </div>
 
 
 
 @code {
-	[Parameter] public string RaceId { get; set; } = "";
-	[Parameter] public string StartlistId { get; set; } = "";
-	private Race currentRace = new Race();
-	private Startlist currentStartlist;
-	private Racer selectedRacer = new Racer();
-	Toasts toasts = new Toasts();
+    [Parameter] public string RaceId { get; set; } = "";
+    [Parameter] public string StartlistId { get; set; } = "";
+    private Race currentRace = new Race();
+    private Startlist currentStartlist;
+    private Racer selectedRacer = new Racer();
+    Toasts toasts = new Toasts();
 
-	protected override async Task OnInitializedAsync()
-	{
-		await GetStartlist();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        await GetStartlist();
+    }
 
-	private async Task GetStartlist()
-	{
-		var getRace = await RaceService.GetRaceByIdAsync(RaceId, JS);
-		if (getRace == null)
-		{
-			throw new NullReferenceException("Race not found");
-		}
+    private async Task GetStartlist()
+    {
+        var getRace = await RaceService.GetRaceByIdAsync(RaceId, JS);
+        if (getRace == null)
+        {
+            throw new NullReferenceException("Race not found");
+        }
 
-		currentRace = getRace;
+        currentRace = getRace;
 
-		var getStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
+        var getStartlist = currentRace.Startlists.Find(s => s.Id == StartlistId);
 
-		if (getStartlist == null)
-		{
-			throw new NullReferenceException("Startlist not found");
-		}
+        if (getStartlist == null)
+        {
+            throw new NullReferenceException("Startlist not found");
+        }
 
-		currentStartlist = getStartlist;
-	}
+        currentStartlist = getStartlist;
+    }
 
-	private async Task SaveRace()
-	{
-		var index = currentRace.Startlists.FindIndex(s => s.Id == currentStartlist.Id);
+    private async Task SaveRace()
+    {
+        var index = currentRace.Startlists.FindIndex(s => s.Id == currentStartlist.Id);
 
-		if (index != -1)
-		{
-			currentRace.Startlists[index] = currentStartlist;
-			currentRace.lastEditDateTime = DateTime.UtcNow;
-			await RaceService.UpdateRaceAsync(currentRace, JS);
-		}
-	}
+        if (index != -1)
+        {
+            currentRace.Startlists[index] = currentStartlist;
+            currentRace.lastEditDateTime = DateTime.UtcNow;
+            await RaceService.UpdateRaceAsync(currentRace, JS);
+        }
+    }
 
-	private async Task UpdateName(ChangeEventArgs eventArgs)
-	{
-		if (eventArgs.Value != null)
-		{
-			currentStartlist.Name = eventArgs.Value?.ToString() ?? string.Empty;
-			await SaveRace();
-		}
-	}
+    private async Task UpdateName(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value != null)
+        {
+            currentStartlist.Name = eventArgs.Value?.ToString() ?? string.Empty;
+            await SaveRace();
+        }
+    }
 
-	private async Task UpdateDistance(ChangeEventArgs eventArgs)
-	{
-		var value = eventArgs.Value;
-		if (value == null)
-		{
-			return;
-		}
-		var stringValue = value.ToString();
-		if (stringValue == null)
-		{
-			return;
-		}
-		currentStartlist.DistanceMeters = float.Parse(stringValue);
-		await SaveRace();
-	}
+    private async Task UpdateDistance(ChangeEventArgs eventArgs)
+    {
+        var value = eventArgs.Value;
+        if (value == null)
+        {
+            return;
+        }
+        var stringValue = value.ToString();
+        if (stringValue == null)
+        {
+            return;
+        }
+        currentStartlist.DistanceMeters = float.Parse(stringValue);
+        await SaveRace();
+    }
 
-	private async Task AddRacer()
-	{
-		Racer addRacer = new Racer()
-			{
-				Name = "",
-				Id = IdGenerator.GenerateBase64String(5),
-				Bib = "1"
-			};
+    private async Task AddRacer()
+    {
+        Racer addRacer = new Racer()
+        {
+            Name = "",
+            Id = IdGenerator.GenerateBase64String(5),
+            Bib = "1"
+        };
 
-		while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Id).Contains(addRacer.Id) || addRacer.Id.Contains("/"))
-		{
-			addRacer.Id = IdGenerator.GenerateBase64String(5);
-		}
+        while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Id).Contains(addRacer.Id) || addRacer.Id.Contains("/"))
+        {
+            addRacer.Id = IdGenerator.GenerateBase64String(5);
+        }
 
-		while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Bib).Contains(addRacer.Bib))
-		{
-			addRacer.Bib = (int.Parse(addRacer.Bib) + 1).ToString();
-		}
+        while (currentRace.Startlists.SelectMany(s => s.Racers).Select(racer => racer.Bib).Contains(addRacer.Bib))
+        {
+            addRacer.Bib = (int.Parse(addRacer.Bib) + 1).ToString();
+        }
 
-		currentStartlist.Racers.Add(addRacer);
-		await SaveRace();
+        currentStartlist.Racers.Add(addRacer);
+        await SaveRace();
 
-		selectedRacer = addRacer;
-	}
+        selectedRacer = addRacer;
+    }
 
-	private async Task DeleteRacer(Racer DeleteRacer)
-	{
-		if (DeleteRacer == null)
-			return;
-		if (!currentStartlist.Racers.Contains(DeleteRacer))
-			return;
+    private async Task DeleteRacer(Racer DeleteRacer)
+    {
+        if (DeleteRacer == null)
+            return;
+        if (!currentStartlist.Racers.Contains(DeleteRacer))
+            return;
 
-		DeleteRacer.currentAnimation = "fade-out";
+        DeleteRacer.currentAnimation = "fade-out";
 
-		await Task.Delay(500);
+        await Task.Delay(500);
 
-		DeleteRacer.currentAnimation = "";
+        DeleteRacer.currentAnimation = "";
 
-		currentStartlist.Racers.Remove(DeleteRacer);
-		await SaveRace();
-	}
+        currentStartlist.Racers.Remove(DeleteRacer);
+        await SaveRace();
+    }
 
-	private void AddCustomField()
-	{
-		if (selectedRacer?.CustomFields == null)
-		{
-			selectedRacer.CustomFields = new List<Racer.CustomField>();
-		}
+    private void AddCustomField()
+    {
+        if (selectedRacer?.CustomFields == null)
+        {
+            selectedRacer.CustomFields = new List<Racer.CustomField>();
+        }
 
-		selectedRacer.CustomFields.Add(new Racer.CustomField("", ""));
-	}
+        selectedRacer.CustomFields.Add(new Racer.CustomField("", ""));
+    }
 
 }

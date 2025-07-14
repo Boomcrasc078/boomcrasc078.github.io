@@ -1,0 +1,157 @@
+﻿@page "/race-view/{RaceId}/{RacerId}/edit"
+
+<Toasts @ref="toasts"></Toasts>
+
+@if (currentRacer != null)
+{
+	<div class="content-box-section">
+		<div class="content-box">
+			<div class="d-flex justify-content-between flex-wrap">
+				@if (currentRacer.Name != "" || currentRacer.Surname != "")
+				{
+					<h1 class="top-row-title">@currentRacer.Name @currentRacer.Surname</h1>
+				}
+				else
+				{
+					<h1 class="top-row-title">Unnamed Racer</h1>
+				}
+				<div class="top-row-buttons">
+					<button class="btn btn-normal" @onclick="SaveRacerAndReturn">
+						<span>Save</span>
+						<i class="bi btn-bi bi-chevron-double-left" />
+					</button>
+				</div>
+			</div>
+			<div>
+				<label>Name:</label>
+				<input type="text" @bind="@currentRacer.Name" class="form-control" placeholder="John" />
+			</div>
+			<div>
+				<label>Surname:</label>
+				<input type="text" @bind="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
+			</div>
+			<div>
+				<label>Bib:</label>
+				<input type="number" @bind="@currentRacer.Bib" class="form-control" placeholder="123" />
+			</div>
+		</div>
+
+		<div class="content-box">
+			<div class="d-flex justify-content-between flex-wrap">
+				<h2 class="top-row-title">Start</h2>
+				<div class="top-row-buttons">
+				</div>
+			</div>
+			<div class="d-flex flex-column gap-3">
+				<input type="date" @bind="@currentRacer.StartDateTime" class="form-control" />
+				<input type="time" step="1" @bind="@currentRacer.StartDateTime" class="form-control" />
+			</div>
+		</div>
+		@foreach (var lap in currentRacer.Events.Select((lap, index) => new { lap, index }))
+		{
+			<div class="content-box">
+				<div class="d-flex justify-content-between flex-wrap">
+					<h2 class="top-row-title">@($"Lap {lap.index + 1}")</h2>
+					<div class="top-row-buttons">
+						<button class="btn btn-normal" @onclick="() => DeleteLap(lap.index)">
+							<span>Delete</span>
+							<i class="bi btn-bi bi-trash3" />
+						</button>
+					</div>
+				</div>
+				<div class="d-flex flex-column gap-3">
+					<input type="date" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
+					<input type="time" step="1" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
+				</div>
+
+				<div>
+				</div>
+
+				@if (currentRacer.Events.Count - 1 == lap.index)
+				{
+					<div class="d-flex">
+						<button class="btn btn-normal" @onclick="AddLap">
+							<span>Add Lap</span>
+							<i class="bi btn-bi bi-trash3" />
+						</button>
+					</div>
+				}
+			</div>
+		}
+	</div>
+}
+
+else
+{
+	<div class="page-spinner spinner-border" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
+}
+
+@code {
+	[Parameter] public string RaceId { get; set; }
+	[Parameter] public string RacerId { get; set; }
+	private Toasts toasts = new Toasts();
+	private Race currentRace { get; set; } = new Race();
+	private Racer currentRacer { get; set; } = new Racer();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadRace();
+		LoadRacer();
+	}
+
+	async Task LoadRace()
+	{
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
+
+		if (getRace == null)
+		{
+			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}", "text-bg-danger"));
+		}
+
+		currentRace = getRace;
+	}
+
+	void LoadRacer()
+	{
+		var getRacer = currentRace.Startlists.SelectMany(startlist => startlist.Racers).First(racer => racer.Id == RacerId);
+
+		if (getRacer == null)
+		{
+			toasts?.CreateToast(new Toast("", $"Could not find a racer with id: {RacerId}", "text-bg-danger"));
+		}
+
+		currentRacer = getRacer;
+	}
+
+	async Task SaveRacer()
+	{
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+	}
+
+	async Task SaveRacerAndReturn()
+	{
+		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+		NavigationManager.NavigateTo($"/race-view/{RaceId}");
+	}
+
+	async Task DeleteLap(int index)
+	{
+		if (index >= 0 && index < currentRacer.Events.Count)
+		{
+			currentRacer.Events.RemoveAt(index);
+		}
+		await SaveRacer();
+		await InvokeAsync(StateHasChanged);
+	}
+
+	async Task AddLap()
+	{
+		// Add a new lap with the current time or a default value
+		var newLapTime = DateTime.Now;
+		currentRacer.Events.Add(new RacerEvent("Lap", newLapTime, currentRacer.Events.Select(e => e.Id)));
+		await SaveRacer();
+		await InvokeAsync(StateHasChanged);
+	}
+}
