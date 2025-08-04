@@ -15,7 +15,7 @@
     padding: 12px;
     backdrop-filter: blur(10px);
     overflow: hidden;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     gap: 24px;
 }

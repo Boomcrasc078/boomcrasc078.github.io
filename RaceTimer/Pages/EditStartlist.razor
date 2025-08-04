@@ -145,21 +145,81 @@
                 <label>Name:</label>
                 <input type="text" @onchange="UpdateName" class="form-control" value="@currentStartlist.Name" placeholder="Untitled Startlist" />
             </div>
-
             <div>
-                <label>Type:</label>
-                <select class="form-control" placeholder="Untitled Startlist">
-                    <option selected>Mass Start</option>
+                <label>Race Type:</label>
+                <select class="form-control" @onchange="UpdateRaceType">
+                    @foreach (var raceType in RaceType.RaceTypes)
+                    {
+                        @if (currentStartlist.RaceType.Id == raceType.Id)
+                        {
+
+                            <option selected value="@raceType.Id">@raceType.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@raceType.Id">@raceType.Name</option>
+                        }
+                    }
                 </select>
             </div>
-
             <div>
-                <label>Distance:</label>
+                <label>Start Type:</label>
+                <select class="form-control" @onchange="UpdateStartType">
+                    @foreach (var startType in StartType.StartTypes)
+                    {
+                        @if (currentStartlist.StartType.Id == startType.Id)
+                        {
+                            <option selected value="@startType.Id">@startType.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@startType.Id">@startType.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            @if (currentStartlist.RaceType.Id == RaceType.MultipleLaps.Id)
+            {
+                <div>
+                    <label>Lap Count:</label>
+                    <div class="input-group mb-3">
+                        <input type="number" inputmode="numeric" step="1" class="form-control" aria-label="Lap Count" value="@currentStartlist.LapCount.ToString(CultureInfo.InvariantCulture)" @onchange="UpdateLapCount">
+                        <span class="form-control">Laps</span>
+                    </div>
+                </div>
+            }
+            <div>
+                @if (currentStartlist.RaceType.Id == RaceType.SingleCourse.Id)
+                {
+                    <label>Distance:</label>
+                }
+                else
+                {
+                    <label>Lap Distance:</label>
+                }
                 <div class="input-group mb-3">
-                    <input type="number" inputmode="decimal" class="form-control" aria-label="Distance" value="@currentStartlist.DistanceMeters" @onchange="UpdateDistance">
-                    <span class="form-control">m</span>
+                    <input type="number" inputmode="decimal" step="any" class="form-control" aria-label="Distance"
+                           value="@currentStartlist.DistanceKm.ToString(CultureInfo.InvariantCulture)"
+                           @onchange="UpdateDistance">
+                    <span class="form-control">Km</span>
                 </div>
             </div>
+            @if (currentStartlist.StartType.Id == StartType.MassStart.Id)
+            {
+                <div>
+                    <label>Start Time:</label>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" @bind="startDatetimeInput" />
+                        <input type="time" step="1" class="form-control" @bind=startDatetimeInput />
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn btn-normal" @onclick="UpdateStarttime">
+                            <span>Update Start Time</span>
+                            <i class="bi btn-bi bi-arrow-repeat"></i>
+                        </button>
+                    </div>
+                </div>
+            }
 
         </div>
         <div class="box-body box-body-stretch">
@@ -210,10 +270,13 @@
     private Startlist currentStartlist;
     private Racer selectedRacer = new Racer();
     Toasts toasts = new Toasts();
+    DateTime? startDatetimeInput = null;
 
     protected override async Task OnInitializedAsync()
     {
         await GetStartlist();
+        currentStartlist.StartType = CheckStarttype();
+        SaveRace();
     }
 
     private async Task GetStartlist()
@@ -236,6 +299,27 @@
         currentStartlist = getStartlist;
     }
 
+    private StartType CheckStarttype()
+    {
+        int i = 0;
+        DateTime? startTime = null;
+        while (i < currentStartlist.Racers.Count)
+        {
+            if (startTime == null)
+            {
+                startTime = currentStartlist.Racers[i].StartDateTime;
+            }
+            if (startTime != currentStartlist.Racers[i].StartDateTime)
+            {
+                return StartType.IndividualStart;
+            }
+            i++;
+        }
+        startDatetimeInput = startTime;
+        StateHasChanged();
+        return StartType.MassStart;
+    }
+
     private async Task SaveRace()
     {
         var index = currentRace.Startlists.FindIndex(s => s.Id == currentStartlist.Id);
@@ -243,9 +327,9 @@
         if (index != -1)
         {
             currentRace.Startlists[index] = currentStartlist;
-            currentRace.lastEditDateTime = DateTime.UtcNow;
             await RaceService.UpdateRaceAsync(currentRace, JS);
         }
+
     }
 
     private async Task UpdateName(ChangeEventArgs eventArgs)
@@ -257,6 +341,7 @@
         }
     }
 
+
     private async Task UpdateDistance(ChangeEventArgs eventArgs)
     {
         var value = eventArgs.Value;
@@ -264,12 +349,16 @@
         {
             return;
         }
-        var stringValue = value.ToString();
-        if (stringValue == null)
+
+        try
         {
-            return;
+            float floatValue = float.Parse(value.ToString(), CultureInfo.InvariantCulture);
+            currentStartlist.DistanceKm = floatValue;
         }
-        currentStartlist.DistanceMeters = float.Parse(stringValue);
+        catch (Exception exception)
+        {
+            await toasts.CreateToast(new Toast("", exception.Message, "text-bg-danger"));
+        }
         await SaveRace();
     }
 
@@ -317,7 +406,12 @@
 
     private void AddCustomField()
     {
-        if (selectedRacer?.CustomFields == null)
+        if (selectedRacer == null)
+        {
+            return;
+        }
+
+        if (selectedRacer.CustomFields == null)
         {
             selectedRacer.CustomFields = new List<Racer.CustomField>();
         }
@@ -325,4 +419,73 @@
         selectedRacer.CustomFields.Add(new Racer.CustomField("", ""));
     }
 
+    private async Task UpdateStartType(ChangeEventArgs args)
+    {
+        var value = args.Value;
+        if (value == null)
+        {
+            return;
+        }
+        var stringValue = value.ToString();
+        if (stringValue == null)
+        {
+            return;
+        }
+        var getStarttype = StartType.StartTypes.First(x => x.Id == stringValue);
+        currentStartlist.StartType = getStarttype;
+        await SaveRace();
+    }
+
+    private async Task UpdateRaceType(ChangeEventArgs args)
+    {
+        var value = args.Value;
+        if (value == null)
+        {
+            return;
+        }
+        var stringValue = value.ToString();
+        if (stringValue == null)
+        {
+            return;
+        }
+        var getSRacetype = RaceType.RaceTypes.First(x => x.Id == stringValue);
+        currentStartlist.RaceType = getSRacetype;
+
+        if(currentStartlist.RaceType.Id == RaceType.SingleCourse.Id)
+        {
+            currentStartlist.LapCount = 1;
+        }
+
+        await SaveRace();
+    }
+
+    private async Task UpdateLapCount(ChangeEventArgs args)
+    {
+        var value = args.Value;
+        if (value == null)
+        {
+            return;
+        }
+
+        try
+        {
+            float floatValue = float.Parse(value.ToString(), CultureInfo.InvariantCulture);
+            int intValue = (int)MathF.Floor(floatValue);
+            currentStartlist.LapCount = intValue;
+        }
+        catch (Exception exception)
+        {
+            await toasts.CreateToast(new Toast("", exception.Message, "text-bg-danger"));
+        }
+        await SaveRace();
+    }
+
+    private async Task UpdateStarttime()
+    {
+        foreach (var racer in currentStartlist.Racers)
+        {
+            racer.StartDateTime = startDatetimeInput;
+        }
+        await SaveRace();
+    }
 }

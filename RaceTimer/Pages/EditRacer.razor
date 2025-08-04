@@ -2,156 +2,300 @@
 
 <Toasts @ref="toasts"></Toasts>
 
-@if (currentRacer != null)
+@if (currentRacer != null && !changingStartlist)
 {
-	<div class="content-box-section">
-		<div class="content-box">
-			<div class="d-flex justify-content-between flex-wrap">
-				@if (currentRacer.Name != "" || currentRacer.Surname != "")
-				{
-					<h1 class="top-row-title">@currentRacer.Name @currentRacer.Surname</h1>
-				}
-				else
-				{
-					<h1 class="top-row-title">Unnamed Racer</h1>
-				}
-				<div class="top-row-buttons">
-					<button class="btn btn-normal" @onclick="SaveRacerAndReturn">
-						<span>Save</span>
-						<i class="bi btn-bi bi-chevron-double-left" />
-					</button>
-				</div>
-			</div>
-			<div>
-				<label>Name:</label>
-				<input type="text" @bind="@currentRacer.Name" class="form-control" placeholder="John" />
-			</div>
-			<div>
-				<label>Surname:</label>
-				<input type="text" @bind="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
-			</div>
-			<div>
-				<label>Bib:</label>
-				<input type="number" @bind="@currentRacer.Bib" class="form-control" placeholder="123" />
-			</div>
-		</div>
+    <div class="content-box-section">
+        <div class="content-box">
+            <div class="d-flex justify-content-between flex-wrap">
+                @if (currentRacer.Name != "" || currentRacer.Surname != "")
+                {
+                    <h1 class="top-row-title">@currentRacer.Name @currentRacer.Surname</h1>
+                }
+                else
+                {
+                    <h1 class="top-row-title">Unnamed Racer</h1>
+                }
+                <div class="top-row-buttons">
+                    <a class="btn btn-normal" href="@($"/race-view/{RaceId}/{RacerId}")">
+                        <span>Cancel</span>
+                        <i class="bi btn-bi bi-x-lg" />
+                    </a>
+                    <button class="btn btn-normal" @onclick="SaveRacerAndReturn">
+                        <span>Save</span>
+                        <i class="bi btn-bi bi-chevron-double-left" />
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="form-floating">
+                    <input type="text" @bind="@currentRacer.Name" class="form-control" placeholder="John" />
+                    <label>Name</label>
+                </div>
+            </div>
+            <div>
+                <div class="form-floating">
+                    <input type="text" @bind="@currentRacer.Surname" class="form-control" placeholder="Johnson" />
+                    <label>Surname</label>
+                </div>
+            </div>
+            <div>
+                <div class="form-floating">
+                    <input type="number" @bind="@currentRacer.Bib" class="form-control" placeholder="12" />
+                    <label>Bib</label>
+                </div>
+            </div>
+            <div>
+                <div class="form-floating">
+                    <select class="form-control" placeholder="John" @onchange="(ChangeEventArgs args) => ChangeRacersStartlist(args)">
+                        @foreach (Startlist startlist in currentRace.Startlists)
+                        {
+                            @if (currentRace.Startlists.First(s => s.Id == startlist.Id).Racers.Contains(currentRacer))
+                            {
+                                <option selected value="@startlist.Id">@startlist.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@startlist.Id">@startlist.Name</option>
+                            }
+                        }
+                    </select>
+                    <label>Startlist</label>
+                </div>
+            </div>
 
-		<div class="content-box">
-			<div class="d-flex justify-content-between flex-wrap">
-				<h2 class="top-row-title">Start</h2>
-				<div class="top-row-buttons">
-				</div>
-			</div>
-			<div class="d-flex flex-column gap-3">
-				<input type="date" @bind="@currentRacer.StartDateTime" class="form-control" />
-				<input type="time" step="1" @bind="@currentRacer.StartDateTime" class="form-control" />
-			</div>
-		</div>
-		@foreach (var lap in currentRacer.Events.Select((lap, index) => new { lap, index }))
-		{
-			<div class="content-box">
-				<div class="d-flex justify-content-between flex-wrap">
-					<h2 class="top-row-title">@($"Lap {lap.index + 1}")</h2>
-					<div class="top-row-buttons">
-						<button class="btn btn-normal" @onclick="() => DeleteLap(lap.index)">
-							<span>Delete</span>
-							<i class="bi btn-bi bi-trash3" />
-						</button>
-					</div>
-				</div>
-				<div class="d-flex flex-column gap-3">
-					<input type="date" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
-					<input type="time" step="1" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
-				</div>
+            @foreach (var customField in currentRacer.CustomFields.Select((field, index) => new { field, index }))
+            {
+                <div>
+                    <div class="input-group">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="Custom Field Name"
+                                   @bind="currentRacer.CustomFields[customField.index].Name"
+                                   list="customFields" />
+                            <datalist id="customFields">
+                                <option value="E-Mail" />
+                                <option value="Phone" />
+                                <option value="Age" />
+                            </datalist>
+                            <label>Custom Field Name</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="Custom Field Data"
+                                   @bind="currentRacer.CustomFields[customField.index].Data" />
+                            <label>
+                                @if (@currentRacer.CustomFields[customField.index].Name != "")
+                                {
+                                    @currentRacer.CustomFields[customField.index].Name
+                                }
+                                else
+                                {
+                                    <span>Custom Field Data</span>
+                                }
+                            </label>
 
-				<div>
-				</div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="d-flex">
+                <button class="btn btn-normal" @onclick="AddCustomField">
+                    <span>Add Custom Field</span>
+                    <i class="bi btn-bi bi-plus-lg"></i>
+                </button>
+            </div>
+        </div>
 
-				@if (currentRacer.Events.Count - 1 == lap.index)
-				{
-					<div class="d-flex">
-						<button class="btn btn-normal" @onclick="AddLap">
-							<span>Add Lap</span>
-							<i class="bi btn-bi bi-trash3" />
-						</button>
-					</div>
-				}
-			</div>
-		}
-	</div>
+
+        <div class="content-box">
+            <div class="d-flex justify-content-between flex-wrap">
+                <h2 class="top-row-title">Start</h2>
+                <div class="top-row-buttons">
+                </div>
+            </div>
+            <div class="d-flex flex-column gap-3">
+                <input type="date" @bind="@currentRacer.StartDateTime" class="form-control" />
+                <input type="time" step="1" @bind="@currentRacer.StartDateTime" class="form-control" />
+            </div>
+        </div>
+        @foreach (var lap in currentRacer.Events.Select((lap, index) => new { lap, index }))
+        {
+            <div class="content-box">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <h2 class="top-row-title">@($"Lap {lap.index + 1}")</h2>
+                    <div class="top-row-buttons">
+                        <button class="btn btn-normal" @onclick="() => DeleteLap(lap.index)">
+                            <span>Delete</span>
+                            <i class="bi btn-bi bi-trash3" />
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <input type="date" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
+                    <input type="time" step="1" class="form-control" @bind="currentRacer.Events[lap.index].DateTime" />
+                </div>
+
+                <div>
+                </div>
+
+                @if (currentRacer.Events.Count - 1 == lap.index)
+                {
+                    <div class="d-flex">
+                        <button class="btn btn-normal" @onclick="AddLap">
+                            <span>Add Lap</span>
+                            <i class="bi btn-bi bi-trash3" />
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
 }
 
 else
 {
-	<div class="page-spinner spinner-border" role="status">
-		<span class="visually-hidden">Loading...</span>
-	</div>
+    <div class="page-spinner spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
 }
 
 @code {
-	[Parameter] public string RaceId { get; set; }
-	[Parameter] public string RacerId { get; set; }
-	private Toasts toasts = new Toasts();
-	private Race currentRace { get; set; } = new Race();
-	private Racer currentRacer { get; set; } = new Racer();
+    [Parameter] public string RaceId { get; set; }
+    [Parameter] public string RacerId { get; set; }
+    private Toasts toasts = new Toasts();
+    private Race currentRace { get; set; } = new Race();
+    private Racer currentRacer { get; set; } = new Racer();
+    private bool changingStartlist = false;
 
-	protected override async Task OnInitializedAsync()
-	{
-		await LoadRace();
-		LoadRacer();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRace();
+        LoadRacer();
+    }
 
-	async Task LoadRace()
-	{
-		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
+    async Task LoadRace()
+    {
+        var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
 
-		if (getRace == null)
-		{
-			toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}", "text-bg-danger"));
-		}
+        if (getRace == null)
+        {
+            toasts?.CreateToast(new Toast("", $"Could not find a race with id: {RaceId}", "text-bg-danger"));
+        }
 
-		currentRace = getRace;
-	}
+        currentRace = getRace;
+    }
 
-	void LoadRacer()
-	{
-		var getRacer = currentRace.Startlists.SelectMany(startlist => startlist.Racers).First(racer => racer.Id == RacerId);
+    void LoadRacer()
+    {
+        var getRacer = currentRace.Startlists.SelectMany(startlist => startlist.Racers).First(racer => racer.Id == RacerId);
 
-		if (getRacer == null)
-		{
-			toasts?.CreateToast(new Toast("", $"Could not find a racer with id: {RacerId}", "text-bg-danger"));
-		}
+        if (getRacer == null)
+        {
+            toasts?.CreateToast(new Toast("", $"Could not find a racer with id: {RacerId}", "text-bg-danger"));
+        }
 
-		currentRacer = getRacer;
-	}
+        currentRacer = getRacer;
+    }
 
-	async Task SaveRacer()
-	{
-		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
-	}
+    async Task SaveRacer()
+    {
+        await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+    }
 
-	async Task SaveRacerAndReturn()
-	{
-		await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
-		NavigationManager.NavigateTo($"/race-view/{RaceId}");
-	}
+    async Task SaveRacerAndReturn()
+    {
+        await RaceService.UpdateRaceAsync(currentRace, jsRuntime);
+        NavigationManager.NavigateTo($"/race-view/{RaceId}/{RacerId}");
+    }
 
-	async Task DeleteLap(int index)
-	{
-		if (index >= 0 && index < currentRacer.Events.Count)
-		{
-			currentRacer.Events.RemoveAt(index);
-		}
-		await SaveRacer();
-		await InvokeAsync(StateHasChanged);
-	}
+    async Task DeleteLap(int index)
+    {
+        if (index >= 0 && index < currentRacer.Events.Count)
+        {
+            currentRacer.Events.RemoveAt(index);
+        }
+        await SaveRacer();
+        await InvokeAsync(StateHasChanged);
+    }
 
-	async Task AddLap()
-	{
-		// Add a new lap with the current time or a default value
-		var newLapTime = DateTime.Now;
-		currentRacer.Events.Add(new RacerEvent("Lap", newLapTime, currentRacer.Events.Select(e => e.Id)));
-		await SaveRacer();
-		await InvokeAsync(StateHasChanged);
-	}
+    async Task AddLap()
+    {
+        // Add a new lap with the current time or a default value
+        var newLapTime = DateTime.Now;
+        currentRacer.Events.Add(new RacerEvent("Lap", newLapTime, currentRacer.Events.Select(e => e.Id)));
+        await SaveRacer();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void AddCustomField()
+    {
+        if (currentRacer.CustomFields == null)
+        {
+            currentRacer.CustomFields = new List<Racer.CustomField>();
+        }
+
+        currentRacer.CustomFields.Add(new Racer.CustomField("", ""));
+    }
+
+    private async Task ChangeRacersStartlist(ChangeEventArgs args)
+    {
+        changingStartlist = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(50);
+        if (args.Value == null)
+        {
+            await toasts.CreateToast(new Toast("", "Argument is null", "text-bg-danger"));
+            return;
+        }
+
+        var getNewStartlistId = args.Value.ToString();
+
+        if (getNewStartlistId == null)
+        {
+            await toasts.CreateToast(new Toast("", "Value is null", "text-bg-danger"));
+            return;
+        }
+
+        string newStartlistId = getNewStartlistId;
+
+        try
+        {
+            Startlist? currentStartlist = currentRace.Startlists.Find(s => s.Racers.Contains(currentRacer));
+
+            if (currentStartlist == null)
+            {
+                await toasts.CreateToast(new Toast("", "Couldn't find the racers current startlist.", "text-bg-danger"));
+                return;
+            }
+
+            Startlist? newStartlist = currentRace.Startlists.Find(s => s.Id == newStartlistId);
+
+            if (newStartlist == null)
+            {
+                await toasts.CreateToast(new Toast("", "Couldn't find the new startlist.", "text-bg-danger"));
+                return;
+            }
+
+            currentStartlist.Racers.Remove(currentRacer);
+
+            IEnumerable<string> existingIds = newStartlist.Racers.Select(r => r.Id);
+            currentRacer.Id = IdGenerator.GenerateUniqueId(existingIds);
+
+            newStartlist.Racers.Add(currentRacer);
+
+            await SaveRacer();
+
+            NavigationManager.NavigateTo($"/race-view/{RaceId}/{currentRacer.Id}/edit");
+        }
+        catch (Exception exception)
+        {
+            string message = exception.Message;
+            var stackTrace = exception.StackTrace;
+
+            await toasts.CreateToast(new Toast("", "Something went wrong while trying to switch startlist: " + message, "text-bg-danger"));
+            Console.WriteLine(stackTrace);
+            return;
+        }
+        changingStartlist = false;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("Startlist switch succeded!");
+    }
 }

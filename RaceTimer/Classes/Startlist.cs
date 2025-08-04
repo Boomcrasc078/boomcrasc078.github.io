@@ -1,4 +1,5 @@
 ﻿using RaceTimer.Classes;
+using RaceTimer.Classes.Timing;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -8,16 +9,20 @@ public class Startlist
 	public string Name { get; set; }
 	public List<Racer> Racers { get; set; } = new();
 	public string CurrentAnimation { get; set; } = string.Empty;
-	public float DistanceMeters { get; set; }
-	public string StartType { get; set; }
+	public float DistanceKm { get; set; }
+	public StartType StartType { get; set; }
+	public RaceType RaceType { get; set; }
+	public int LapCount { get; set; }
 	public Startlist() { }
 	public Startlist(string name, IEnumerable<string> existingIds)
 	{
 		Name = name;
 		Id = IdGenerator.GenerateUniqueId(existingIds);
 		Racers = new();
-		DistanceMeters = 0;
-		StartType = "mass-start";
+		DistanceKm = 0;
+		StartType = StartType.MassStart;
+		RaceType = RaceType.SingleCourse;
+		LapCount = 1;
 	}
 
 	public Startlist DuplicateStartlist(IEnumerable<string> existingIds)
@@ -79,4 +84,6 @@ public class Startlist
 
 		return dateTimeString;
 	}
+	
+
 }

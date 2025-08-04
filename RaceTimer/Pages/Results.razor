@@ -120,8 +120,8 @@
 			new ResultDataOption("bib", "Bib"),
 			new ResultDataOption("time", "Time"),
 			new ResultDataOption("timestamp", "Timestamp"),
-			new ResultDataOption("pace", "Pace (min/km)"),
-			new ResultDataOption("speed", "Speed (km/h)"),
+			new ResultDataOption("pace", "Pace"),
+			new ResultDataOption("speed", "Speed"),
 			new ResultDataOption("laps", "Laps"),
 			new ResultDataOption("laptimes", "Laptimes")
 		};
@@ -131,8 +131,8 @@
 			new ResultDataOption("bib", "Bib"),
 			new ResultDataOption("time", "Time"),
 			new ResultDataOption("timestamp", "Timestamp"),
-			new ResultDataOption("pace", "Pace (min/km)"),
-			new ResultDataOption("speed", "Speed (km/h)"),
+			new ResultDataOption("pace", "Pace"),
+			new ResultDataOption("speed", "Speed"),
 			new ResultDataOption("laps", "Laps"),
 			new ResultDataOption("laptimes", "Laptimes"),
 		};
@@ -159,12 +159,14 @@
 	{
 		if (racerResultData != null)
 		{
+			int index = 0;
 			foreach (string customFieldName in customFieldNames)
 			{
 				racerResultData.Add
 				(
-					new ResultDataOption($"customField-{customFieldNames.IndexOf(customFieldName)}", customFieldName)
+					new ResultDataOption($"customField-{index}", customFieldName)
 				);
+				index++;
 			}
 		}
 	}

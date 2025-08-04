@@ -74,7 +74,7 @@
 					<th>Bib</th>
 					<th>Name</th>
 					<th>Time</th>
-					<th>Lap</th>
+					<th>Progress</th>
 				</tr>
 			</thead>
 			<tbody class="table-group-divider">
@@ -103,7 +103,29 @@
 								<span> (@((currentTime - racer.StartDateTime.Value).ToString("hh\\:mm\\:ss\\.ff")))</span>
 							}
 						</td>
-						<td>@racer.Events.Count</td>
+						@if(racer.Id != "")
+						{
+						if(currentRace.Startlists.First(s => s.Racers.Contains(racer)).LapCount <= racer.Events.Count)
+						{
+							<td>Finished</td>
+						}
+						else
+						{
+							if(currentRace.Startlists.First(s => s.Racers.Contains(racer)).RaceType.Id != RaceType.SingleCourse.Id)
+							{
+							<td>@racer.Events.Count @((racer.Events.Count == 1)? "lap" : "laps")</td>
+
+							}
+							else
+							{
+									<td>Not Finished</td>
+								}
+							}
+						}
+						else
+						{
+							<td></td>
+						}
 					</tr>
 				}
 			</tbody>

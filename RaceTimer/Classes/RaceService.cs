@@ -65,6 +65,8 @@ public static class RaceService
             .ThenBy(s => s.Name) // Then sort alphabetically
             .ToList();
 
+		updatedRace.lastEditDateTime = DateTime.Now;
+
         var races = await GetRacesAsync(js);
         var index = races.FindIndex(r => r.Id == updatedRace.Id);
 

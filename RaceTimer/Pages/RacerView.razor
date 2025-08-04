@@ -16,13 +16,21 @@
                     <h1 class="top-row-title">Unnamed Racer</h1>
                 }
                 <div class="top-row-buttons">
+                    <a class="btn btn-normal" href="@($"/race-view/{RaceId}")">
+                        <span>Back</span>
+                        <i class="bi btn-bi bi-chevron-double-left" />
+                    </a>
+                    <a class="btn btn-normal" href="@($"/race-view/{RaceId}/{RacerId}/edit")">
+                        <span>Edit</span>
+                        <i class="bi btn-bi bi-pen" />
+                    </a>
                 </div>
             </div>
             <div>
                 <div>Name: @currentRacer.Name</div>
                 <div>Surname: @currentRacer.Surname</div>
                 <div>Startlist: @(currentRace.Startlists.Find(startlist => startlist.Racers.Contains(currentRacer))?.Name)</div>
-                <div>Distance: @(currentRace.Startlists.Find(startlist => startlist.Racers.Contains(currentRacer))?.DistanceMeters)m</div>
+                <div>Distance: @(currentRace.Startlists.Find(startlist => startlist.Racers.Contains(currentRacer))?.DistanceKm)m</div>
                 @foreach (var customField in currentRacer.CustomFields)
                 {
                     switch (customField.Name)

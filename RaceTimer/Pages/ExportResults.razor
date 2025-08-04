@@ -329,6 +329,28 @@
                 if (!data.Value)
                     continue;
 
+                if(racer.Events.Count == 0)
+                {
+                    if(data.Id == "time")
+                    {
+                        row.Add("DNS");
+                        continue;
+                    }
+                    row.Add("");
+                    continue;
+                }
+
+                if (racer.Events.Count < startlist.LapCount)
+                {
+                    if (data.Id == "time")
+                    {
+                        row.Add("DNF");
+                        continue;
+                    }
+                    row.Add("");
+                    continue;
+                }
+
                 if (data.Id == "laptimes")
                 {
                     int maxLaps = CalculateMaxLaps(startlist);
@@ -350,7 +372,7 @@
 
                 if (data.Id == "pace" || data.Id == "speed")
                 {
-                    row.Add(racer.GetResultData(data.Id, startlist.DistanceMeters) + "");
+                    row.Add(racer.GetResultData(data.Id, startlist.DistanceKm) + "");
                     continue;
                 }
 

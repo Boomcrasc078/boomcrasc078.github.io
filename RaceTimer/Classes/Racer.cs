@@ -41,7 +41,7 @@ namespace RaceTimer.Classes
 			return timeString;
 		}
 
-		string? GetPace(float distanceMeters)
+		string? GetPace(float distanceKm)
 		{
 			var lapTimes = GetLapDateTimes();
 			if (lapTimes.Count == 0)
@@ -50,13 +50,15 @@ namespace RaceTimer.Classes
 				return null;
 			var time = lapTimes.Last() - StartDateTime.Value;
 			var laps = lapTimes.Count;
-            var pace = time / (distanceMeters * laps / 1000);
+			if (distanceKm * laps == 0)
+				return null;
+			var pace = time / (distanceKm * laps);
 
 			var stringPace = pace.ToString("mm\\:ss");
-			return stringPace;
+			return stringPace + " min/km";
 		}
 
-		string? GetSpeed(float distanceMeters)
+		string? GetSpeed(float distanceKm)
 		{
 			var lapTimes = GetLapDateTimes();
 			if (lapTimes.Count == 0)
@@ -65,10 +67,12 @@ namespace RaceTimer.Classes
 				return null;
 			var time = lapTimes.Last() - StartDateTime.Value;
 			var laps = lapTimes.Count;
-            var speed = (distanceMeters * laps / 1000) / time.TotalHours;
+			if (time.TotalHours == 0)
+				return null;
+			var speed = (distanceKm * laps) / time.TotalHours;
 
 			string stringSpeed = Double.Floor(speed).ToString();
-			return stringSpeed;
+			return stringSpeed + " km/h";
 		}
 
 		List<string>? GetLaptimes()
@@ -99,6 +103,7 @@ namespace RaceTimer.Classes
 
 		public object? GetResultData(string key)
 		{
+
 			switch (key)
 			{
 				case "name": return Name;
@@ -108,16 +113,25 @@ namespace RaceTimer.Classes
 				case "time": return GetTime();
 				case "laps": return Events.Count;
 				case "laptimes": return GetLaptimes();
-				default: return null;
+				default:
+					if (key.Contains("customField"))
+					{
+						int index = int.Parse(key.Split('-')[1]);
+						if (CustomFields.Count > index)
+						{
+							return CustomFields[index].Data;
+						}
+					}
+					return null;
 			}
 		}
 
-		public object? GetResultData(string key, float distanceMeters)
+		public object? GetResultData(string key, float distanceKm)
 		{
 			switch (key)
 			{
-				case "pace": return GetPace(distanceMeters);
-				case "speed": return GetSpeed(distanceMeters);
+				case "pace": return GetPace(distanceKm);
+				case "speed": return GetSpeed(distanceKm);
 				default: return null;
 			}
 		}
