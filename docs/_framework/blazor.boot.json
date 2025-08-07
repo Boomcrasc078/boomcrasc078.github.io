@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "RaceTimer",
   "resources": {
-    "hash": "sha256-nvni24mUmFU4gmDt9YyqwxBy26NX0lGDD/y5zv/A4Ew=",
+    "hash": "sha256-KSwhxMM+Iwu8SC/2jFP1mLY24Q5yoFxXc/Ex3EPMqJE=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-X6Zl5ztvWrCh/59nvIyiGPV8HEBCrJ09vyt1JEZOWBI="
     },
@@ -86,7 +86,7 @@
       "System.wasm": "sha256-n/f5afy4u9cEBgTcizWUZ+dkLRFdsZkcUvyhNiEyiq8=",
       "netstandard.wasm": "sha256-97z3UA3oi+u8WE3hbSa8v0vPwNwShlISUVKMzhl8pWo=",
       "System.Private.CoreLib.wasm": "sha256-+iSd60ppjxYrDERqngrugcbJBFy3JiwD7bw67lL/GDc=",
-      "RaceTimer.wasm": "sha256-uhC4xO/0KvcJZqPb88Kj9Mk3/HVwMtgpJjsbMYeU0iY="
+      "RaceTimer.wasm": "sha256-a7lCOWSskaUK9WPNLKphqfoCgJRv+k+O761y6WTPN8A="
     }
   },
   "cacheBootResources": true,
