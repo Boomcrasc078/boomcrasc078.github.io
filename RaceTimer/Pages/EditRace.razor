@@ -165,7 +165,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        currentRace = await RaceService.GetRaceByIdAsync(RaceId, JS);
+        currentRace = await Race.LoadRace(RaceId, jsRuntime, toasts);
     }
 
     private async Task UpdateName(ChangeEventArgs e)

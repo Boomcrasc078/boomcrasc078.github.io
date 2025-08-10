@@ -1,0 +1,24 @@
+﻿.content-box-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 95%;
+    height: calc(100dvh - 100px);
+    margin: 0px;
+}
+
+h5 {
+    font-weight: bold;
+}
+
+@media(max-width: 500px) {
+    .content-box-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 1020px) {
+    .content-box-section {
+        height: calc(100dvh - 100px - 70px);
+        width: 100%;
+    }
+}

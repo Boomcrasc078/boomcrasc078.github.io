@@ -1,4 +1,6 @@
-﻿using RaceTimer.Classes;
+﻿using Microsoft.JSInterop;
+using RaceTimer.Classes;
+using RaceTimer.Components;
 using System.Buffers.Text;
 using System.Collections.Generic;
 
@@ -87,6 +89,25 @@ public class Race
 		Startlists?.ForEach(s => s.Racers?.ForEach(r => r.Events.Clear()));
 
 		return this;
+	}
+
+	public static async Task<Race?> LoadRace(string? RaceId, IJSRuntime jsRuntime, Toasts? toasts)
+	{
+		if (string.IsNullOrEmpty(RaceId))
+		{
+			toasts?.CreateToast(new Toast("", "RaceId is null or empty", "text-bg-danger"));
+			return null;
+		}
+
+		var getRace = await RaceService.GetRaceByIdAsync(RaceId, jsRuntime);
+
+		if (getRace == null)
+		{
+			toasts?.CreateToast(new Toast("", "Race not found", "text-bg-danger"));
+			return null;
+		}
+
+		return getRace;
 	}
 
 	public class TimingSpot

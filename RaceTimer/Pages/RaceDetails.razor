@@ -1,0 +1,123 @@
+﻿@page "/race-details/{RaceId}"
+
+<Toasts @ref="toasts"></Toasts>
+
+@if (currentRace != null)
+{
+    <div class="content-box-section">
+        @foreach (var startlist in currentRace.Startlists)
+        {
+            <div class="content-box">
+                <div >
+                    <h2>
+                        @startlist.Name
+                    </h2>
+                    <div class="d-flex flex-column gap-3">
+                        <div>
+                            <label>Name:</label>
+                            <input type="text" class="form-control" value="@startlist.Name" placeholder="Untitled Startlist" />
+                        </div>
+                        <div>
+                            <label>Race Type:</label>
+                            <select class="form-control">
+                                @foreach (var raceType in RaceType.RaceTypes)
+                                {
+                                    @if (startlist.RaceType.Id == raceType.Id)
+                                    {
+
+                                        <option selected value="@raceType.Id">@raceType.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@raceType.Id">@raceType.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label>Start Type:</label>
+                            <select class="form-control">
+                                @foreach (var startType in StartType.StartTypes)
+                                {
+                                    @if (startlist.StartType.Id == startType.Id)
+                                    {
+                                        <option selected value="@startType.Id">@startType.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@startType.Id">@startType.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        @if (startlist.RaceType.Id == RaceType.MultipleLaps.Id)
+                        {
+                            <div>
+                                <label>Lap Count:</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" inputmode="numeric" step="1" class="form-control" aria-label="Lap Count" value="@startlist.LapCount.ToString(CultureInfo.InvariantCulture)">
+                                    <span class="form-control">Laps</span>
+                                </div>
+                            </div>
+                        }
+                        <div>
+                            @if (startlist.RaceType.Id == RaceType.SingleCourse.Id)
+                            {
+                                <label>Distance:</label>
+                            }
+                            else
+                            {
+                                <label>Lap Distance:</label>
+                            }
+                            <div class="input-group mb-3">
+                                <input type="number" inputmode="decimal" step="any" class="form-control" aria-label="Distance"
+                                       value="@startlist.DistanceKm.ToString(CultureInfo.InvariantCulture)">
+                                <span class="form-control">Km</span>
+                            </div>
+                        </div>
+                        @if (startlist.StartType.Id == StartType.MassStart.Id)
+                        {
+                            <div>
+                                <label>Start Time:</label>
+                                <div class="input-group mb-3">
+                                    <input type="date" class="form-control" />
+                                    <input type="time" step="1" class="form-control" />
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-normal">
+                                        <span>Update Start Time</span>
+                                        <i class="bi btn-bi bi-arrow-repeat"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+}
+else
+{
+    <div class="page-spinner spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+@code {
+    [Parameter] public string? RaceId { get; set; }
+    public Race? currentRace { get; set; }
+    private Toasts? toasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentRace = await Race.LoadRace(RaceId, jsRuntime, toasts);
+    }
+}
