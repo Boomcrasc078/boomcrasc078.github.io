@@ -1,5 +1,4 @@
-﻿@page "/new-race"
-
+﻿@* 
 <div class="content-box-section">
 	<div class="content-box">
 		<div>
@@ -65,5 +64,100 @@
 		await RaceService.SaveRacesAsync(races, jsRuntime);
 
 		NavigationManager.NavigateTo($"/races/edit/{addRace.Id}");
+	} 
+}
+*@
+@page "/new-race"
+@inject IJSRuntime JS
+@if(currentRace != null)
+{
+<div class="page">
+    <div class="box-body">
+        <div class="top-row">
+            <h1 class="top-row-title">@currentRace.Name</h1>
+
+        </div>
+    </div>
+	<div class="box-body box-body-stretch">
+		<div class="top-row">
+			
+			<h1 class="top-row-title">Startlists</h1>
+			
+			<div class="top-row-buttons">
+				<button class="btn btn-normal" @onclick="@(AddStartlist)">
+					<span>Add Startlist</span>
+					<i class="bi btn-bi bi-plus-lg"></i>
+				</button>
+			</div>
+		</div>
+		<div>
+			@foreach(var startlist in currentRace.Startlists)
+			{
+				<div>Startlist</div>
+			}
+		</div>
+	</div>
+	</div>
+
+}
+else
+{
+	<div class="page-spinner spinner-border" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
+}
+
+
+@code {
+    private Race? currentRace;
+    private Toasts toasts = new Toasts();
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentRace = await CreateNewRace();
+    }
+
+    private async Task<Race> CreateNewRace()
+    {
+        var races = await RaceService.GetRacesAsync(jsRuntime);
+
+        Race addRace = new Race()
+        {
+            Name = "Untitled Race",
+            Startlists = new List<Startlist>(),
+            creationDateTime = DateTime.Now,
+            lastEditDateTime = DateTime.Now,
+            Id = IdGenerator.GenerateUniqueId(races.Select(race => race.Id))
+        };
+
+        races.Add(addRace);
+        await RaceService.SaveRacesAsync(races, jsRuntime);
+
+        return addRace;
+    }
+
+	private async Task UpdateName(ChangeEventArgs e)
+	{
+		if (e.Value == null || currentRace == null)
+		{
+			return;
+		}
+		currentRace.Name = e.Value?.ToString() ?? string.Empty;
+		await SaveRace();
+	}
+
+	private async Task SaveRace()
+	{
+		currentRace.lastEditDateTime = DateTime.Now;
+		await RaceService.UpdateRaceAsync(currentRace, JS);
+	}
+
+	private async Task AddStartlist()
+	{
+		Startlist addStartlist = new Startlist("Untitled Startlist", currentRace.Startlists.Select(s => s.Id));
+
+		currentRace.Startlists.Add(addStartlist);
+		await SaveRace();
+
 	}
 }
