@@ -281,7 +281,7 @@
 			var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
 			races.Add(importedRace);
 			await RaceService.SaveRacesAsync(races, jsRuntime);
-			NavigationManager.NavigateTo($"/races/edit/{importedRace.Id}");
+			NavigationManager.NavigateTo($"/race-details/{importedRace.Id}");
 		}
 		catch (Exception ex)
 		{
