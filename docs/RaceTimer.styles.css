@@ -302,7 +302,7 @@ main[b-9rqfbddzmr] {
     }
 }
 /* /Pages/CreateRace.razor.rz.scp.css */
-.content-box-section[b-ce57wonfl0] {
+/*.content-box-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 95%;
@@ -310,20 +310,137 @@ main[b-9rqfbddzmr] {
     margin: 0px;
 }
 
-h5[b-ce57wonfl0]{
+h5{
     font-weight: bold;
 }
 
 @media(max-width: 500px) {
-    .content-box-section[b-ce57wonfl0] {
+    .content-box-section {
         grid-template-columns: 1fr;
     }
 }
 
 @media(max-width: 1020px) {
-    .content-box-section[b-ce57wonfl0] {
+    .content-box-section {
         height: calc(100dvh - 100px - 70px);
         width: 100%;
+    }
+}
+*/
+
+.page[b-ce57wonfl0] {
+    min-height: 95vh;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.box-body[b-ce57wonfl0] {
+    display: flex;
+    margin: 12px;
+    flex-direction: column;
+    background-color: rgba(var(--bs-body-bg-rgb), .3);
+    border-radius: 20px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+    gap: 24px;
+}
+
+    .box-body:is(.box-body-stretch)[b-ce57wonfl0] {
+        flex-grow: 1;
+    }
+
+.top-row[b-ce57wonfl0] {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 15%;
+    row-gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-row-buttons[b-ce57wonfl0] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+    .top-row-buttons > *[b-ce57wonfl0] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+
+.top-row-title[b-ce57wonfl0] {
+    font-weight: bold;
+}
+
+.all-cards[b-ce57wonfl0] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.card[b-ce57wonfl0] {
+    background-color: rgba(var(--bs-body-bg-rgb), 0);
+}
+
+.card-title[b-ce57wonfl0] {
+    padding-block-start: 6px;
+}
+
+.card-header[b-ce57wonfl0] {
+    display: flex;
+    align-content: center;
+}
+
+.card-body[b-ce57wonfl0] {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-footer[b-ce57wonfl0] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.fade-in[b-ce57wonfl0] {
+    opacity: 0;
+    animation: fadeIn-b-ce57wonfl0 1s forwards;
+}
+
+@keyframes fadeIn-b-ce57wonfl0 {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-out[b-ce57wonfl0] {
+    opacity: 1;
+    animation: fadeOut-b-ce57wonfl0 0.5s forwards;
+}
+
+@keyframes fadeOut-b-ce57wonfl0 {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
     }
 }
 /* /Pages/Dashboard.razor.rz.scp.css */
@@ -933,6 +1050,31 @@ input[b-jxngacnqfe] {
 	backdrop-filter: blur(10px);
 	overflow: hidden;
 	min-height: none;
+}
+/* /Pages/RaceDetails.razor.rz.scp.css */
+.content-box-section[b-tj373vpju3] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 95%;
+    height: calc(100dvh - 100px);
+    margin: 0px;
+}
+
+h5[b-tj373vpju3] {
+    font-weight: bold;
+}
+
+@media(max-width: 800px) {
+    .content-box-section[b-tj373vpju3] {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 1020px) {
+    .content-box-section[b-tj373vpju3] {
+        height: calc(100dvh - 100px - 70px);
+        width: 100%;
+    }
 }
 /* /Pages/RacerView.razor.rz.scp.css */
 .content-box-section[b-0zc5v6i50c] {

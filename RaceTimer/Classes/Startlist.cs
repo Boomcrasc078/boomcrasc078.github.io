@@ -1,5 +1,9 @@
-﻿using RaceTimer.Classes;
+﻿using DocumentFormat.OpenXml.Office2021.DocumentTasks;
+using Microsoft.AspNetCore.Components;
+using RaceTimer.Classes;
 using RaceTimer.Classes.Timing;
+using RaceTimer.Components;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -84,6 +88,81 @@ public class Startlist
 
 		return dateTimeString;
 	}
-	
 
+	public void InputRaceType(ChangeEventArgs args)
+	{
+		var value = args.Value;
+		if (value == null)
+		{
+			return;
+		}
+		var stringValue = value.ToString();
+		if (stringValue == null)
+		{
+			return;
+		}
+		var getSRacetype = RaceType.RaceTypes.First(x => x.Id == stringValue);
+		this.RaceType = getSRacetype;
+
+		if (this.RaceType.Id == RaceType.SingleCourse.Id)
+		{
+			this.LapCount = 1;
+		}
+	}
+
+	public void InputStarttype(ChangeEventArgs args)
+	{
+		var value = args.Value;
+		if (value == null)
+		{
+			return;
+		}
+		var stringValue = value.ToString();
+		if (stringValue == null)
+		{
+			return;
+		}
+		var getStarttype = StartType.StartTypes.First(x => x.Id == stringValue);
+		StartType = getStarttype;
+	}
+
+
+	public async System.Threading.Tasks.Task InputDistance(ChangeEventArgs eventArgs, Toasts toasts)
+	{
+		var value = eventArgs.Value;
+		if (value == null)
+		{
+			return;
+		}
+
+		try
+		{
+			float floatValue = float.Parse(value.ToString() ?? "0", CultureInfo.InvariantCulture);
+			DistanceKm = floatValue;
+		}
+		catch (Exception exception)
+		{
+			await toasts.CreateToast(new Toast("", exception.Message, "text-bg-danger"));
+		}
+	}
+
+	public async System.Threading.Tasks.Task InputLapCount(ChangeEventArgs args, Toasts toasts)
+	{
+		var value = args.Value;
+		if (value == null)
+		{
+			return;
+		}
+
+		try
+		{
+			float floatValue = float.Parse(value.ToString() ?? "1", CultureInfo.InvariantCulture);
+			int intValue = (int)MathF.Floor(floatValue);
+			LapCount = intValue;
+		}
+		catch (Exception exception)
+		{
+			await toasts.CreateToast(new Toast("", exception.Message, "text-bg-danger"));
+		}
+	}
 }
