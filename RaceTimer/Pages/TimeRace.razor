@@ -105,7 +105,7 @@
 						</td>
 						@if(racer.Id != "")
 						{
-						if(currentRace.Startlists.First(s => s.Racers.Contains(racer)).LapCount <= racer.Events.Count)
+						if(currentRace.Startlists.First(s => s.Racers.Contains(racer)).LapCount <= racer.Events.Count && currentRace.Startlists.First(s => s.Racers.Contains(racer)).RaceType.Id != RaceType.TimeBased.Id)
 						{
 							<td>Finished</td>
 						}
