@@ -107,13 +107,16 @@
                                         }
 
                                     </div>
+                                    @if (startlist.RaceType.Id == RaceType.MultipleLaps.Id)
+                                    {
+                                        <div>Laps: @startlist.LapCount</div>
+                                    }
                                     @if (startlist.RaceType.Id == RaceType.SingleCourse.Id)
                                     {
                                         <div>Distance: @(startlist.DistanceKm + " Km")</div>
                                     }
                                     else
                                     {
-                                        <div>Laps: @startlist.LapCount</div>
                                         <div>Lap Distance: @(startlist.DistanceKm + " Km")</div>
                                     }
                                     <div>Total Racers: @startlist.Racers.Count</div>

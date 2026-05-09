@@ -122,14 +122,17 @@
 
                         </div>
                         <div class="card-footer">
-                            <a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
-                                <span>Edit</span>
-                                <i class="bi btn-bi bi-pencil-square"></i>
-                            </a>
-                            <button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => modalRace = race">
-                                <span>Delete</span>
-                                <i class="bi btn-bi bi-trash3"></i>
-                            </button>
+                            <div>
+                                <InputFile OnChange="@((InputFileChangeEventArgs args)=>UpdateRace(race, args))" accept=".xlsx" class="d-none" id="@(race.Id + "fileInput")" />
+                                <label for="@(race.Id + "fileInput")" class="btn btn-normal">
+                                    <span>Update</span>
+                                    <i class="bi btn-bi bi-arrow-repeat"></i>
+                                </label>
+                            </div>
+                            @* <button type="button" class="btn btn-normal btn-race" @onclick="() => UpdateRace(race)">
+                                <span>Update</span>
+                                <i class="bi btn-bi bi-arrow-repeat"></i>
+                            </button> *@
                             <button class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#duplicateModal" @onclick="() => modalRace = race">
                                 <span>Duplicate</span>
                                 <i class="bi btn-bi bi-copy"></i>
@@ -138,6 +141,14 @@
                                 <span>Export</span>
                                 <i class="bi btn-bi bi-box-arrow-up"></i>
                             </button>
+                            <button type="button" class="btn btn-normal btn-race" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => modalRace = race">
+                                <span>Delete</span>
+                                <i class="bi btn-bi bi-trash3"></i>
+                            </button>
+                            <a href="@($"/races/edit/{race.Id}")" class="btn btn-normal btn-race">
+                                <span>Edit</span>
+                                <i class="bi btn-bi bi-pencil-square"></i>
+                            </a>
                         </div>
                     </div>
                 }
@@ -246,5 +257,27 @@
 
     }
 
+    async Task UpdateRace(Race race, InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+            var importedRace = ExcelHandler.ImportRaceFromExcel(memoryStream, races, ExcelHandler.RemoveExcelFileExtension(file.Name));
 
+            await race.MergeRace(importedRace);
+            await RaceService.SaveRacesAsync(races, JS);
+
+            await InvokeAsync(StateHasChanged);
+
+            //NavManager.NavigateTo($"/races/edit/{importedRace.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during file import: {ex.Message}\n" + ex.StackTrace);
+            toasts?.CreateToast(new Toast("", $"Error during file import: {ex.Message}", "text-bg-danger"));
+        }
+    }
 }

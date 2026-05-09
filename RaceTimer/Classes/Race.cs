@@ -121,4 +121,25 @@ public class Race
 			Id = IdGenerator.GenerateUniqueId(existingIds);
 		}
 	}
+
+	public async Task MergeRace(Race raceToMerge)
+	{
+		Startlists.ForEach(s => { s.Racers = new(); });
+
+		foreach (var startlist in raceToMerge.Startlists)
+		{
+			var existingStartlist = Startlists.FirstOrDefault(s => s.Name == startlist.Name);
+			if (existingStartlist != null)
+			{
+				existingStartlist.Racers.AddRange(startlist.Racers);
+			}
+			else
+			{
+				Startlists.Add(startlist);
+			}
+		}
+
+		lastEditDateTime = DateTime.Now;
+		await Task.CompletedTask;
+	}
 }
